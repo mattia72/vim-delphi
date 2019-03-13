@@ -1,0 +1,255 @@
+/* 
+ * Ab Initio Data Manipulation Language (DML) functions
+ */
+
+include "${AI_DML}/utils.dml"
+
+// line comment
+let float(2) f_num=0.0;
+
+out::get_xvalue(xml_element_var , in) =
+begin
+  out:: xml_get_element(xml_element_var, in ).cdata ;
+end ;
+
+
+natural_keys_type out::get_natural_keys(xml_element_var) = begin
+  let xml_element natural_keys = xml_get_element(xml_element_var, "natural_keys" );
+  out.batch_id :: xml_get_element(natural_keys,  "batch_id").cdata  ;
+  out.prcs_id  :: xml_get_element(natural_keys,  "prcs_id").cdata   ;
+  out.otpt_nm  :: xml_get_element(natural_keys,  "otpt_nm").cdata   ;
+  out.run_ts   :: xml_get_element(natural_keys,  "run_ts").cdata    ;
+end ;
+
+out::get_update_where_clause_sql(string('')  join_key)= begin
+  let string('')[integer(4)] var = allocate();
+  let string('') mstr            = '';
+  let is_and                     = '';
+  let int i                      = 0;
+  let float('') f_num            = 100.5;
+
+  var = string_split(string_downcase(join_key)," ");
+  for ( i , i< length_of(var)) begin
+    mstr = string_concat(mstr, var[i], "= :",var[i], (i < (length_of(var) - 1)) ?" and\n" : " \n" );
+  end
+
+  out::mstr;
+end;
+
+out::get_update_table_sql(string('') database_name , string('') table_name , string('') dml_file, string('') join_key) =
+begin
+  let string('')  result_= "update " + database_name + "." + table_name + " set \n";
+  let string('') [int] name_str= allocate() ;
+  let dml_field_info_vec dml_info_vec = allocate();
+  let int i= 0 ;
+  dml_info_vec = record_info(read_type(dml_file));
+  name_str = for ( i , i < length_of(dml_info_vec))   : dml_info_vec[i].name;
+  for ( i , i < length_of(name_str))
+  begin
+    if ( name_str[i] != "newline" )
+    begin
+      if ( i == 0 )
+        result_ =  result_ + name_str[i] + "= :" + name_str[i] + "\n";
+      else
+        result_ =  result_ + "," + name_str[i] + "= :" + name_str[i] + "\n";
+    end
+  end //end of for
+  result_ = result_ + "\n" + "where \n" + get_update_where_clause_sql(join_key);
+  result_ = result_ + ";";
+
+  out :: result_;
+
+end;
+
+out::get_update_column_sql(string('') database_name , string('') table_name , string('') dml_file, string(int) update_cols, string('') join_key) =
+begin
+  let string('')  result_ = "update " + database_name + "." + table_name + " set \n";
+  let string('') [int] name_str = allocate() ;
+  let dml_field_info_vec dml_info_vec = allocate();
+  let int i = 0 ;
+  dml_info_vec = record_info(read_type(dml_file));
+  name_str = for ( i , i < length_of(dml_info_vec))   : if (string_downcase(dml_info_vec[i].name)
+	  member string_split(string_downcase(update_cols)," "))  dml_info_vec[i].name;
+	  for ( i , i < length_of(name_str)) begin
+	    if ( name_str[i] != "newline" )
+	    begin
+	      if ( i == 0 )
+	        result_ =  result_ + name_str[i] + "= :" + name_str[i] + "\n";
+	      else
+	        result_ =  result_ + "," + name_str[i] + "= :" + name_str[i] + "\n";
+	    end
+	  end //end of for
+	  result_ = result_ + "\n" + "where \n" + get_update_where_clause_sql(join_key);
+	  result_ = result_ + ";";
+	  out :: result_;
+end;
+
+out :: get_opx_fields() =
+begin
+
+  out:: [record
+	  row_excp_id 0
+	  batch_id 0
+	  prcs_id 0
+	  otpt_nm ""
+	  run_ts now1()
+	  src_row_ntrl_key_id ""
+	  dup_seq_nbr 0
+	  excp_id 0
+	  exctd_ts now1()
+	  sys_msg_txt ""
+	  sys_msg_type_cd ""
+	  opx_batch_id "u440233"
+	  opx_ins_by "u440233"
+	  opx_ins_ts now1()
+	  opx_mod_by "u440233"
+	  opx_mod_ts now1()
+	  opx_mod_cd "C"
+	  newline "\n"] ;
+
+end;
+
+out::get_insert_table_sql(string('') database_name , string('') table_name , string('') dml_file) =
+begin
+  let string('')  result_ = "insert into " + database_name + "." + table_name + "(\n";
+  let string('') [int] name_str = allocate() ;
+  let dml_field_info_vec dml_info_vec = allocate();
+  let int i = 0 ;
+  dml_info_vec = record_info(read_type(dml_file));
+  name_str = for ( i , i < length_of(dml_info_vec))   : dml_info_vec[i].name;
+
+  for ( i , i < length_of(name_str)) begin
+    if ( name_str[i] != "newline" ) begin
+      if ( i == 0 )
+        result_ =  result_ + name_str[i] + "\n";
+      else
+        result_ =  result_ + "," + name_str[i] + "\n";
+    end
+  end //end of for
+  result_ = result_ + ")\n";
+	result_ = result_ + "values \n(";
+
+	for ( i , i < length_of(name_str)) begin
+    if ( name_str[i] != "newline" )
+	  begin
+	    if ( i == 0 )
+	      result_ =  result_ + ":" +  name_str[i] + "\n";
+	    else
+	      result_ =  result_ + "," + ":" +  name_str[i] + "\n";
+	    result_ =  result_ ;
+	  end
+	end //end of for
+
+	result_ = result_ + ")\n";
+	result_ = result_ + ";";
+	out :: result_;
+
+end;
+
+out::get_directory_listing(src_directory,pattern)=
+begin
+  let string('') [int] data_file_vec = allocate();
+  let string(int) result_;
+  let int i = 0;
+  data_file_vec=directory_listing(src_directory,pattern);
+  result_=string_join(data_file_vec, "\n");
+  out::result_;
+end;
+
+out::get_input_type(in) =
+begin
+  out :: type_info(type_of(in));
+end;
+
+type config_type = record
+	string('=') config_name ;
+	string('') config_value ;
+end;
+
+out::is_project_config_file_present(dir) =
+begin
+  out::if (("project" + ".cfg")
+    member directory_listing(dir)) 1 else 0 ;
+end;
+
+
+out::is_graph_config_file_present(dir,graph_name) =
+begin
+  out::if ((graph_name + ".cfg")
+    member directory_listing(dir)) 1 else 0 ;
+end;
+
+
+out::parse_config_file(config_file, name) =
+begin
+  let string('') config_file_str = read_file(config_file);
+  let int i;
+  let string('') [int] config_file_vec = string_split(config_file_str , "\n");
+  let string('') result;
+  let int fnd;
+  for ( i , i < length_of(config_file_vec))
+  begin
+    if ( config_file_vec[i] != ""
+	    and reinterpret_as(config_type,config_file_vec[i]).config_name == name)
+	    result=reinterpret_as(config_type,config_file_vec[i]).config_value;
+  end
+  if ( is_defined(result) and !is_blank(result) ) fnd = 1 ; else fnd = 0 ;
+  out::if ( fnd == 1 ) [record config_value result found fnd ] else [record config_value "" found 0];
+end;
+
+out::my_transform() =
+begin
+  let string('') result = "";
+  let string('\001') skel = make_transform("join",[vector make_arg("in1"), make_arg("in2")],[vector make_arg("out")]);
+  result = add_locals(skel, [vector make_local("first_name" , "string('')","first"),make_local("last_name","string('')","last")]);
+  result = add_rules(result, [vector make_rule("out.*","in.*")]);
+  out::result ;
+end;
+
+
+out::get_paramter_value(config_param, graph_param) =
+begin
+  out :: if (!is_blank(graph_param))
+    graph_param else
+      if (parse_config_file("/home/u440233/sand/xfr" + "/" + "project" + ".cfg","SLEEP").found)
+        parse_config_file("/home/u440233/sand/xfr" + "/" + "project"  + ".cfg","SLEEP").config_value
+      else "";
+end;
+
+out::record_to_string(input) =
+begin
+  let string(int) _result = "string_concat ( ";
+  let dml_field_info_vec r  =  record_info(input);
+  let int i = 0 ;
+
+  for ( i , i < length_of(r))
+  begin
+    _result =  _result + " in." + r[i].name  ;
+    if ( i != length_of(r)-1)
+      _result = _result +  " ,  ' ' ,  ";
+  end
+
+  _result = _result + " )";
+    out::_result ;
+end;
+
+out::compare_strings(str1 ) = begin
+  out ::  (string_downcase(string_lrtrim(_metric[i].name)) == string_downcase(string_lrtrim(_name)) )? 1 : 0;
+end;
+
+out::create(index) = begin
+  let string('\0') Type = [vector 'W1', 'W2', 'W4', 'W5'][index];
+  out.Child.Type ::Type;
+  if(Type == "W1") begin
+    out.Child.W1 :: random_value();  
+    out.Child.Weiß2 :: NULL;
+    out.Child.Wäöüóúűőéá4 :: NULL;
+  end
+  if(Type == "W2")
+    out.Child.W2 :: random_value(); 
+  if(Type == "W4")
+    out.Child.W4 :: random_value();  
+  if(Type == "W5")
+    out.Child.W5 :: random_value();
+end;
+

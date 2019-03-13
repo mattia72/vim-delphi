@@ -1,0 +1,27 @@
+"
+" Most used Ab Initio keywords
+"
+
+syn keyword abBuiltInFunc accumulation avg close_output concatenation copy_data count 
+syn keyword abBuiltInFunc final_log_output first input_connected last log_error 
+syn keyword abBuiltInFunc make_error max min  new_xml_doc output_connected output_for_error  
+syn keyword abBuiltInFunc peek_object previous product read_byte read_object read_record 
+syn keyword abBuiltInFunc read_string reject_data  set_starting_byte_offset stdev sum 
+syn keyword abBuiltInFunc vector_concatenation write_data write_record write_string 
+syn keyword abBuiltInFunc xml_add_attribute xml_add_cdata  xml_add_element  xml_begin_document  
+syn keyword abBuiltInFunc xml_begin_element  xml_end_document xml_end_element xml_format  
+syn keyword abBuiltInFunc xml_get_attribute xml_get_element xml_parse 
+
+
+syn keyword abBuiltInFunc char_string decimal_lpad decimal_lrepad decimal_strip edit_distance 
+syn keyword abBuiltInFunc ends_with hamming_distance is_blank is_bzero make_byte_flags re_get_match 
+syn keyword abBuiltInFunc re_get_matches re_get_matches re_index re_match_replace re_match_replace_all re_replace 
+syn keyword abBuiltInFunc re_replace_first re_split re_split_no_empty starts_with string_char string_cleanse 
+syn keyword abBuiltInFunc string_cleanse_euc_jp string_cleanse_shift_jis string_compare string_concat string_convert_explicit string_downcase 
+syn keyword abBuiltInFunc string_filter string_filter_out string_from_hex string_han_to_zen_hiragana string_han_to_zen_katakana string_index 
+syn keyword abBuiltInFunc string_is_alphabetic string_is_numeric string_join string_length string_like string_lpad 
+syn keyword abBuiltInFunc string_lrepad string_lrtrim string_ltrim string_pad string_prefix string_repad 
+syn keyword abBuiltInFunc string_replace string_replace_first string_rindex string_split string_split_no_empty string_substring 
+syn keyword abBuiltInFunc string_split_quoted string_suffix string_to_hex string_trim string_truncate_explicit string_upcase 
+syn keyword abBuiltInFunc test_characters_all test_characters_any to_json to_xml unicode_char_string url_decode_escapes 
+syn keyword abBuiltInFunc url_encode_escapes 
