@@ -1,40 +1,40 @@
 "=============================================================================
-" File:          vim-abinitio.vim
+" File:          delphi.vim
 " Author:        Mattia72 
 " Description:   DESCRIPTION   
 " Created:       10 nov. 2016
-" Project Repo:  https://github.com/Mattia72/vim-abinitio
+" Project Repo:  https://github.com/Mattia72/delphi
 "=============================================================================
 
 scriptencoding utf-8
 
 " Preprocessing {{{
-if exists('g:loaded_vim_abinito')
+if exists('g:loaded_delphi_vim')
   finish
 elseif v:version < 700
-  echoerr 'vim-abinito does not work this version of Vim "' . v:version . '".'
+  echoerr 'delphi.vim does not work this version of Vim "' . v:version . '".'
   finish
 endif
 
-let g:loaded_vim_abinito = 1
+let g:loaded_delphi_vim = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 " Preprocessing }}}
 
 " Global options defintion. {{{
-"let g:vim_abinito_auto_open =
-      "\ get(g:, 'vim_abinito_auto_open', 1)
+"let g:delphi_vim_auto_open =
+      "\ get(g:, 'delphi_vim_auto_open', 1)
 " Global options defintion. }}}
 
 " Autocommands {{{
-" augroup vim_abinito_global_command_group
+" augroup delphi_vim_global_command_group
 "   autocmd!
 " augroup END
 " Autocommands }}}
 
-" Define commands to operate vim-abinitio
-function! g:abinitio#DmlFileLineCount(...)
+" Define commands to operate delphi
+function! g:delphi#PascalFileLineCount(...)
   echomsg string(line('$'))
 endfunction
 
@@ -52,8 +52,8 @@ omap if :normal Vif<CR>
 
 if exists(':Tabularize')
   " Align selected assignes in nice columns with plugin
-  vnoremap <buffer> <silent> <leader>t= :Tabularize /=<CR>
-  vnoremap <buffer> <silent> <leader>t: :Tabularize /::<CR>
+  vnoremap <buffer> <silent> <leader>t= :Tabularize /:=<CR>
+  vnoremap <buffer> <silent> <leader>t: :Tabularize /:=<CR>
 else 
   " Align lines by words in nice columns with external program
   vnoremap <buffer> <silent> <leader>t= :!column -t<CR>

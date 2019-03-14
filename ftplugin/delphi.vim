@@ -1,9 +1,9 @@
 "=============================================================================
-" File:          abinitio.vim
+" File:          delphi.vim
 " Author:        Mattia72 
-" Description:   File type plugin file for Ab Initio Data Manipulating Language    
+" Description:   File type plugin file for Delphi Data Manipulating Language    
 " Created:       22 okt. 2015
-" Project Repo:  https://github.com/Mattia72/vim-abinitio
+" Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
 "   Permission is hereby granted, free of charge, to any person obtaining
 "   a copy of this software and associated documentation files (the
@@ -47,14 +47,21 @@ let b:did_ftplugin = 1
 let b:end_match_words = '\%(\<begin\>\|\%(\[\)\@<!\%(\<vector\>\|\<union\>\|\<record\>\|\<switch\>\)\)'
 
 " For matchit plugin to jump with % to the matching word:
-let b:match_words = b:end_match_words.':\<end\>,\<if\>:\<else\>'
+if exists("loaded_matchit")
+    let b:match_ignorecase = 1 " (pascal is case-insensitive)
+
+    let b:match_words = '\<\%(begin\|case\|record\|class\|object\|try\)\>'
+    let b:match_words .= ':\<^\s*\%(except\|finally\)\>:\<end\>'
+    let b:match_words .= ',\<repeat\>:\<until\>'
+    let b:match_words .= ',\<if\>:\<else\>'
+endif
 
 " Set path for neosnippets
 if exists("g:neosnippet#snippets_directory")
   let s:plugin_directory = fnamemodify(resolve(expand('<sfile>:p')), ':h')
-  let g:abinitio#neosnippet_directory = simplify(s:plugin_directory."/../snippets")
-  if stridx(string(g:neosnippet#snippets_directory), g:abinitio#neosnippet_directory) < 0
-    let g:neosnippet#snippets_directory.=', '.g:abinitio#neosnippet_directory
+  let g:delphi#neosnippet_directory = simplify(s:plugin_directory."/../snippets")
+  if stridx(string(g:neosnippet#snippets_directory), g:delphi#neosnippet_directory) < 0
+    let g:neosnippet#snippets_directory.=', '.g:delphi#neosnippet_directory
     "echomsg "get_dir:".string(neosnippet#get_snippets_directory())
   endif
 endif
@@ -63,10 +70,10 @@ setlocal textwidth=0
 setlocal commentstring=//%s
 setlocal formatoptions=tcqro
 
-" Change the browse dialog on Win32 to show mainly Ab Initio related files
+" Change the browse dialog on Win32 to show mainly Delphi related files
 if has("gui_win32")
 	let b:browsefilter =
-				\ "All Ab Initio Files (*.dml,*.xfr)\t*.dml;*.xfr\n" .
+				\ "All Delphi Files (*.pas,*.dpr)\t*.pas;*.dpr\n" .
 				\ "All Files (*.*)\t*.*\n"
 endif
 

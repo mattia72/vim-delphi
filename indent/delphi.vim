@@ -1,9 +1,9 @@
 "=============================================================================
-" File:          abinitio.vim
+" File:          delphi.vim
 " Author:        Mattia72 
 " Description:   Vim indent file for Ab Initio Data Manipulating Language   
 " Created:       24 okt. 2015
-" Project Repo:  https://github.com/Mattia72/vim-abinitio
+" Project Repo:  https://github.com/Mattia72/delphi.vim
 " License:       MIT license  {{{
 "   Permission is hereby granted, free of charge, to any person obtaining
 "   a copy of this software and associated documentation files (the
@@ -27,9 +27,7 @@
 "=============================================================================
 
 " Only load this indent file when no other was loaded.
-if exists("b:did_indent")
-  finish
-endif
+if exists("b:did_indent") | finish | endif
 let b:did_indent = 1
 
 let s:save_cpo = &cpo
@@ -41,14 +39,14 @@ else
     let b:undo_indent = '|'
 endif
 
-setlocal indentexpr=GetAbinitioIndent(v:lnum)
+setlocal indentexpr=GetDelphiIndent(v:lnum)
 setlocal indentkeys&
 setlocal indentkeys+==end,==begin,==;
 setlocal indentkeys+==if,==else,==switch,==case,==default,
 setlocal indentkeys+==while,==for 
 setlocal indentkeys+==vector,==record,==union,==type
 
-if exists("*GetAbinitioIndent")
+if exists("*GetDelphiIndent")
   finish
 endif
 
@@ -114,7 +112,7 @@ let s:ind_line_words = join([ 'if', 'else',
                             \ 'case','default'], '\>\|')
 
 
-function! GetAbinitioIndent( line_num )
+function! GetDelphiIndent( line_num )
 	" Line 0 always goes at column 0
 	if a:line_num == 0 | return 0 | endif
 
