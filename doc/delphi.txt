@@ -1,56 +1,56 @@
-*abinitio.txt*   Ab Initio syntax plugin for Vim       Last modified: 23.10.2015
+*delphi.txt*   Delphi syntax plugin for Vim       Last modified: 16.03.2018
 
 Version:    1.0
 Maintainer: Mattia72 <mattia72@gmail.com>
 License:    Apache 2.0
 
-                    SHORT REFERENCE MANUAL FOR VIM-ABINITIO
+                    SHORT REFERENCE MANUAL FOR VIM-delphi
 ==============================================================================
-CONTENTS                                                     *abinitio-contents*
+CONTENTS                                                     *delphi-contents*
 
-Introduction.............................................|abinitio-introduction|
-Install.......................................................|abinitio-install|
-Folding.......................................................|abinitio-folding|
-Indentation...............................................|abinitio-indentation|
-Matchit support...............................................|abinitio-matchit|
-Snippets.....................................................|abinitio-snippets|
+Introduction.............................................|delphi-introduction|
+Install.......................................................|delphi-install|
+Folding.......................................................|delphi-folding|
+Indentation...............................................|delphi-indentation|
+Matchit support...............................................|delphi-matchit|
+Snippets.....................................................|delphi-snippets|
 
 ==============================================================================
-INTRODUCTION                                             *abinitio-introduction*
+INTRODUCTION                                             *delphi-introduction*
 
 This plugin provides Vim syntax, indent and filetype detection for 
-Ab Initio Data Manipulating Language (aka. DML) files.
+Delphi Pascal Language (aka. delphi) files.
 
 Grab the latest version or report a bug on GitHub:
-http://github.com/mattia72/vim-abinitio
+http://github.com/mattia72/vim-delphi
 
 ==============================================================================
-INSTALL                                                       *abinitio-install*
+INSTALL                                                       *delphi-install*
 
 Copy the included directories into your .vim or vimfiles directory.
 Or even better, use neobundle and simply put this line after your 
 neobundle list in your .vimrc: >
 
- NeoBundleLazy 'mattia72/vim-abinitio'
+ NeoBundleLazy 'mattia72/vim-delphi'
 >
 then add this line in your auto commands section: >
 
- autocmd FileType abinitio NeoBundleSource vim-abinitio
+ autocmd FileType delphi NeoBundleSource vim-delphi
 >
 So the plugin will loaded only if you open a *.dml file or call 
-:set filetype=abinitio.
+:set filetype=delphi.
 
 ==============================================================================
-FOLDING                                                       *abinitio-folding*
+FOLDING                                                       *delphi-folding*
 
-The abinitio syntax file provides syntax folding (see |:syn-fold|) for code blocks.
+The delphi syntax file provides syntax folding (see |:syn-fold|) for code blocks.
 When 'foldmethod' is set to "syntax" then begin-end blocks will be folded.
 
 Note: syntax folding might slow down syntax highlighting significantly,
 especially for large files.
 
 ==============================================================================
-MATCHIT SUPPORT                                               *abinitio-matchit*
+MATCHIT SUPPORT                                               *delphi-matchit*
 
 Matchit plugin is supported by defining |b:match_words| variable. The user can 
 switch between 'begin'/'record'/'union' etc. and the corresponding 'end' 
@@ -61,16 +61,15 @@ activated. For instructions type: >
       :help matchit-install 
 >
 ==============================================================================
-INDENTATION                                               *abinitio-indentation*
+INDENTATION                                               *delphi-indentation*
 
 ggVG=               Indents the whole file
 ==                  Indents the current line
 
 ==============================================================================
-SNIPPETS                                                     *abinitio-snippets*
+SNIPPETS                                                     *delphi-snippets*
 
-See |neosnippet.txt| and <plugin_dir>/vim-abinitio/snippets directory.
-
+See |neosnippet.txt| and <plugin_dir>/vim-delphi/snippets directory.
 
 ------------------------------------------------------------------------------
  vim:tw=79:ts=8:ft=help:norl:

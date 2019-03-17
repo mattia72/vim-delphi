@@ -1,6 +1,6 @@
 # delphi.vim  (under construction) 
-A VIM syntax plugin for Object Pascal the primary programming language of
-Delphi.
+A VIM syntax plugin for Delphi Pascal the primary programming language of
+Delphi IDE.
 
 ##  Installation
 Copy the included directories into your .vim or vimfiles directory.

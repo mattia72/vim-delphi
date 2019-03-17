@@ -1,9 +1,9 @@
 "=============================================================================
-" File:          abinitio.vim
+" File:          delphi.vim
 " Author:        Mattia72 
-" Description:   Vim syntax file for Ab Initio Data Manipulating Language   
+" Description:   Vim syntax file for Delphi Pascal Language
 " Created:       24 okt. 2015
-" Project Repo:  https://github.com/Mattia72/vim-abinitio
+" Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
 "   Permission is hereby granted, free of charge, to any person obtaining
 "   a copy of this software and associated documentation files (the
@@ -35,185 +35,133 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn case match
+syn case ignore
 
-syn cluster abNotTop contains=abSpecial,abTodo
-syn cluster abTypes contains=abType,abRecordType,abVectorType,abUnionType
-syn cluster abTypeDeclContent contains=@abTypes,abKeyword,abString,abConstant,abNumber,abVariable,
-syn cluster abExpression contains=@abTypeDeclContent,abOperator,abColumnName
+syn match delphiAsm "\v<asm>"
+syn match delphiBeginEnd "\<\%(begin\|end\)\>"
+syn region delphiBegEnd  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>"  contains=ALLBUT,delphiFunc, fold 
+syn match delphiIdentifier "\v\&?[a-z_]\w*"
+" Highlight all function names
+syn match delphiFunc /\w\+\s*(/me=e-1,he=e-1
 
-" Operators
-syn match  abOperator "-=\|/=\|\*=\|&=\|&&\|/=\|||\|%=\|+=\|!\~\|!=\|=="
-syn keyword abOperator or
-syn keyword abOperator and
-syn keyword abOperator not
-syn match abAssignOp "::"
+syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\."
+syn match delphiOperator "\v|\[|\]|,|\.|\;|\:"
 
-syn match abSpecial  display contained "\\\(x\x\+\|\o\{1,3}\|.\|$\)"
-syn match abSpecial  display contained '%\(?:\d+\$\)\?[dfsu]'
+syn keyword delphiReservedWord array dispinterface finalization goto implementation inherited initialization label of packed set type uses with
+syn keyword delphiReservedWord constructor destructor function operator procedure property
+syn keyword delphiReservedWord const out threadvar var
 
+syn keyword delphiLoop for to downto while repeat until do
+" TODO handle `of` conditionally: "case..of" is conditional; "array of" isn't
+syn keyword delphiConditional if then case else
+syn keyword delphiExcept try finally except on raise at
+syn keyword delphiStructure class interface object record
 
-" Integer with - + or nothing in front
-syn match abNumber '\d\+'
-syn match abNumber '[-+]\d\+'
-" Floating point number with decimal no E or e (+,-)
-syn match abNumber '\d\+\.\d*'
-syn match abNumber '[-+]\d\+\.\d*'
-" Floating point like number with E and no decimal point (+,-)
-syn match abNumber '[-+]\=\d[[:digit:]]*[eE][\-+]\=\d\+'
-syn match abNumber '\d[[:digit:]]*[eE][\-+]\=\d\+'
-" Floating point like number with E and decimal point (+,-)
-syn match abNumber '[-+]\=\d[[:digit:]]*\.\d*[eE][\-+]\=\d\+'
-syn match abNumber '\d[[:digit:]]*\.\d*[eE][\-+]\=\d\+'
+syn keyword delphiCallingConv cdecl pascal register safecall stdcall winapi
+syn keyword delphiDirective library package program unit
+syn keyword delphiDirective absolute abstract assembler delayed deprecated dispid dynamic experimental export external final forward implements inline name message overload override packed platform readonly reintroduce static unsafe varargs virtual writeonly
+syn keyword delphiDirective helper reference sealed
+syn keyword delphiDirective "contains" requires
+syn keyword delphiDirective far near resident
+syn keyword delphiVisibility private protected public published strict
 
-syn region abParen transparent start='(' end=')' contains=ALLBUT,@Spell
+syn keyword delphiPropDirective default index nodefault read stored write
 
-"Variable is: name but not .name
-syn match abVariable "^\<\h[a-zA-Z0-9#_]*\>"
-syn match abVariable "[^.]\zs\<\h[a-zA-Z0-9#_]*\>"
-syn match abColumnName "\.\zs\%(\<\h[a-zA-Z0-9#_]*\>\|\*\)"
-syn match abPort "\<\%(in\|out\|error\|\(file\)*reject\|log\)\d*\>" nextgroup=abColumnName 
+syn keyword delphiNil nil
+syn keyword delphiBool true false
+syn keyword delphiPredef result self
+syn keyword delphiAssert assert
 
-"TODO key specifier 
-syn match abKeySpec "{\<\h[a-zA-Z0-9#_]*\>*}"
+syn keyword delphiOperator and as div in is mod not or shr shl xor
 
-"TODO: After abPort.abColumnName '=' is not allowed
-syn match abAssignError display contained "\%(\<\%(in\|out\|error\|\(file\)*reject\|log\)\d*\>\.\%(\<\h[a-zA-Z0-9#_]*\>\|\*\)\s*\)\zs=" 
+syn keyword delphiTodo contained TODO FIXME NOTE
+syn region delphiComment start="{" end="}" contains=delphiTodo
+syn region delphiComment start="(\*" end="\*)" contains=delphiTodo
+syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
+syn region delphiDefine start="{\$" end="}"
+syn region delphiDefine start="(\*\$" end="\*)"
 
-syn keyword abType type  
-syn keyword abType string date datetime short signed unsigned void skipwhite nextgroup=abParen
-syn keyword abType decimal float real long int integer double skipwhite nextgroup=abParen
+syn keyword delphiWindowsType bool dword ulong
+syn match delphiWindowsType "\v<h(dc|result|wnd)>"
+syn match delphiType "\v<(byte|word|long)bool>"
+syn keyword delphiType boolean
+syn match delphiType "\v<(short|small|long|nativeu?)int>"
+syn match delphiType "\v<u?int(8|16|32|64|128)>"
+syn match delphiType "\v<(long)?word>"
+syn keyword delphiType byte integer cardinal pointer
+syn keyword delphiType single double extended comp currency
+syn match delphiType "\v<real(48)?>"
+syn match delphiType "\v<(ansi|wide)?char>"
+syn match delphiType "\v<(ansi|wide|unicode|short)?string>"
+syn match delphiType "\v<(ole)?variant>"
+" Let's define a type as being anything that starts with a capital E, I, P, or
+" T, has a capital second letter, and has some lowercase letter. We require
+" the capital second letter to exclude variable and function names that happen
+" to start with E, I, P, or T, and we require the lowercase letter to exclude
+" translated macros and abbreviations that just happen to be in all caps. It's
+" not perfect, but it's a good approximation in the absence of a symbol table.
+syn match delphiClassType "\v\C[IPTE][A-Z]\w*[a-z]\w*"
 
-syn keyword abLet let skipwhite nextgroup=@abTypes
+syn match delphiInteger "\v[-+]?\$[0-9a-f]+"
+syn match delphiInteger "\v[-+]?\d+"
+syn match delphiReal "\v[-+]?\d+\.\d*(e[-+]?\d+)?"
+syn match delphiReal "\v[-+]?\.\d+(e[-+]?\d+)?"
+syn match delphiReal "\v[-+]?\d+e[-+]?\d+"
 
-syn keyword abConstant NULL
+syn region delphiString start="'" end="'" skip="''" oneline
+syn match delphiChar "\v\#\d+"
+syn match delphiChar "\v\#\$[0-9a-f]{1,6}"
 
-syn keyword abInclude include 
+syn region delphiAsmBlock start="\v<asm>" end="\v<end>" contains=delphiComment,delphiLineComment,delphiAsm keepend
 
-syn keyword abKeyword _KEYTYPE_ constant delimiter 
-syn keyword abKeyword member metadata package packed 
-
-syn keyword abCodePage iso_8859_1 iso_8859_2 iso_8859_3 iso_8859_4 iso_8859_5 iso_8859_6 iso_8859_7 iso_8859_8 iso_8859_9 
-syn keyword abCodePage iso_arabic iso_cyrillic iso_easteuropean iso_turkish iso_greek iso_hebrew iso_latin_1 iso_latin_2 iso_latin_3 iso_latin_4 jis_201
-syn keyword abCodePage ascii ebcdic endian euc_jis ibm ieee unicode utf8 big little 
-
-syn keyword abComponent reformat join rollup normalize denormalize scan 
-
-syn keyword abConditional if else case default
-
-syn keyword abRepeat while for do
-
-syn keyword abBuiltInFunc reformat first_defined reinterpret_as shift_jis 
-syn keyword abBuiltInFunc this_record 
-
-"Core functions
-syn keyword abBuiltInFunc accumulation avg close_output concatenation copy_data count 
-syn keyword abBuiltInFunc final_log_output first input_connected last log_error 
-syn keyword abBuiltInFunc make_error max min  new_xml_doc output_connected output_for_error  
-syn keyword abBuiltInFunc peek_object previous product read_byte read_object read_record 
-syn keyword abBuiltInFunc read_string reject_data  set_starting_byte_offset stdev sum 
-syn keyword abBuiltInFunc vector_concatenation write_data write_record write_string 
-syn keyword abBuiltInFunc xml_add_attribute xml_add_cdata  xml_add_element  xml_begin_document  
-syn keyword abBuiltInFunc xml_begin_element  xml_end_document xml_end_element xml_format  
-syn keyword abBuiltInFunc xml_get_attribute xml_get_element xml_parse 
-"String functions
-syn keyword abBuiltInFunc char_string decimal_lpad decimal_lrepad decimal_strip edit_distance 
-syn keyword abBuiltInFunc ends_with hamming_distance is_blank is_bzero make_byte_flags re_get_match 
-syn keyword abBuiltInFunc re_get_matches re_get_matches re_index re_match_replace re_match_replace_all re_replace 
-syn keyword abBuiltInFunc re_replace_first re_split re_split_no_empty starts_with string_char string_cleanse 
-syn keyword abBuiltInFunc string_cleanse_euc_jp string_cleanse_shift_jis string_compare string_concat string_convert_explicit string_downcase 
-syn keyword abBuiltInFunc string_filter string_filter_out string_from_hex string_han_to_zen_hiragana string_han_to_zen_katakana string_index 
-syn keyword abBuiltInFunc string_is_alphabetic string_is_numeric string_join string_length string_like string_lpad 
-syn keyword abBuiltInFunc string_lrepad string_lrtrim string_ltrim string_pad string_prefix string_repad 
-syn keyword abBuiltInFunc string_replace string_replace_first string_rindex string_split string_split_no_empty string_substring 
-syn keyword abBuiltInFunc string_split_quoted string_suffix string_to_hex string_trim string_truncate_explicit string_upcase 
-syn keyword abBuiltInFunc test_characters_all test_characters_any to_json to_xml unicode_char_string url_decode_escapes 
-syn keyword abBuiltInFunc url_encode_escapes 
-"Date time functions
-syn keyword abBuiltInFunc date_add_months date_day date_day_of_month date_day_of_week date_day_of_year date_difference_days 
-syn keyword abBuiltInFunc date_difference_months date_month date_month_end date_to_int date_year datetime_add 
-syn keyword abBuiltInFunc datetime_add_months datetime_change_zone datetime_day datetime_day_of_month datetime_day_of_week datetime_day_of_year 
-syn keyword abBuiltInFunc datetime_difference datetime_difference_abs datetime_difference_days datetime_difference_hours datetime_difference_minutes datetime_difference_months 
-syn keyword abBuiltInFunc datetime_difference_seconds datetime_from_390_tod datetime_from_unixtime datetime_hour datetime_microsecond datetime_minute 
-syn keyword abBuiltInFunc datetime_month datetime_second datetime_to_unixtime datetime_year datetime_zone_offset decode_date 
-syn keyword abBuiltInFunc decode_date_record decode_datetime decode_datetime_as_local encode_date encode_datetime encode_local_datetime 
-syn keyword abBuiltInFunc local_now now now1 today today1 utc_now 
-
-syn keyword abTodo contained TODO FIXME NOTE
-syn match abLineComment "//.*$" contains=abTodo
-
-syn region abComment   matchgroup=abCommentStart start="/\*" end="\*/" contains=cCommentString,cCharacter,cNumbersCom,cSpaceError,@Spell fold extend
-
-syn region  abString   start=+L\="+ skip=+\\\\\|\\"+ end=+"+ contains=abSpecial,@Spell extend
-syn region  abString   start=+L\='+ skip=+\\\\\|\\'+ end=+'+ contains=abSpecial,@Spell extend
-
-syn match  abUnionDef    "\[\s*union\>.*\]"
-syn match  abRecordDef   "\[\s*record\>.*\]"
-syn match  abVectorDef   "\[\s*vector\>.*\]"
-syn match  abUnionTypeDecl   "\<\%(union\|end\)\>"
-syn match  abRecordTypeDecl "\<\%(record\|end\)\>"
-syn match  abVectorTypeDecl "\<\%(vector\|end\)\>"
-syn match  abSwitchBlock     "\<\%(switch\|end\)\>"
-syn match  abBlock      "\<\%(begin\|end\)\>"
-
-" [vector val1, val2 ] [record field "val" ... ] ok
-syn region abVectorVal  matchgroup=abVectorDef     start="\[\s*\<vector\>" end="\]"      contains=ALL fold 
-syn region abUnionVal   matchgroup=abUnionDef      start="\[\s*\<union\>"  end="\]"      contains=ALL fold 
-syn region abRecordVal  matchgroup=abRecordDef     start="\[\s*\<record\>" end="\]"      contains=ALL fold 
-" 
-syn region abVectorType  matchgroup=abVectorTypeDecl start="\<vector\>"    end="\<end\>" contains=ALL fold 
-syn region abUnionType   matchgroup=abUnionTypeDecl  start="\<union\>"     end="\<end\>" contains=ALL fold 
-syn region abRecordType  matchgroup=abRecordTypeDecl start="\<record\>"    end="\<end\>" contains=ALL  fold 
-syn region abSwitch  matchgroup=abSwitchBlock   start="\<switch\>"      end="\<end\>"  contains=ALL fold 
-syn region abBegEnd  matchgroup=abBlock         start="\<begin\>"       end="\<end\>"  contains=ALL fold 
+syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
 
 syn sync fromstart
 
 " highlight abKeywords guifg=blue
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
-if version >= 508 || !exists("did_abinitio_syntax_inits")
+if version >= 508 || !exists("did_delphi_syntax_inits")
   if version < 508
-    let did_abinitio_syntax_inits = 1
+    let did_delphi_syntax_inits = 1
     command -nargs=+ HiLink hi link <args>
   else
     command -nargs=+ HiLink hi def link <args>
   endif
-  HiLink abTodo        Todo         
-  HiLink abLineComment Comment      
-  HiLink abComment     PreProc      
-  HiLink abCommentStart PreProc      
-  HiLink abKeyword    Keyword    
-  HiLink abBlock       Type
-  HiLink abSwitchBlock Statement 
-  HiLink abUnionDef    Structure 
-  HiLink abUnionTypeDecl   Type 
-  HiLink abRecordDef   Structure 
-  HiLink abRecordTypeDecl  Type 
-  HiLink abVectorDef   Structure 
-  HiLink abVectorTypeDecl  Type 
-  HiLink abBuiltInFunc Function    
-  HiLink abPort        Type
-  HiLink abKeySpec     Identifier
-  HiLink abVariable    Normal    
-  HiLink abColumnName  Identifier    
-  HiLink abLet         Statement    
-  HiLink abNumber      Constant     
-  HiLink abOperator    Operator     
-  HiLink abAssignOp    Normal     
-  HiLink abConditional Conditional
-  HiLink abConstant    Constant
-  HiLink abString      String       
-  HiLink abRepeat      Repeat       
-  HiLink abType        Type         
-  HiLink abCodePage    Type         
-  HiLink abInclude     Include      
-  HiLink abSpecial     SpecialChar
-  HiLink abAssignError Error
+  HiLink   delphiTodo            Todo         
+  HiLink   delphiFunc            Function
+  HiLink   delphiBeginEnd        Keyword
+  HiLink   delphiLineComment     Comment
+  HiLink   delphiComment         PreProc
+  HiLink   delphiType            Type
+  HiLink   delphiClassType       Function
+  HiLink   delphiWindowsType     Type
+  HiLink   delphiReservedWord    Keyword
+  HiLink   delphiAsm             Keyword
+  HiLink   delphiInteger         Number
+  HiLink   delphiReal            Float
+  HiLink   delphiDefine          PreProc
+  HiLink   delphiString          String
+  HiLink   delphiChar            Character
+  HiLink   delphiIdentifier      NONE
+  HiLink   delphiOperator        Operator
+  HiLink   delphiNil             Constant
+  HiLink   delphiBool            Boolean
+  HiLink   delphiPredef          Special
+  HiLink   delphiAssert          Debug
+  HiLink   delphiLoop            Repeat
+  HiLink   delphiConditional     Conditional
+  HiLink   delphiExcept          Exception
+  HiLink   delphiBadChar         Error
+  HiLink   delphiVisibility      StorageClass
+  HiLink   delphiCallingConv     StorageClass
+  HiLink   delphiDirective       StorageClass
+  HiLink   delphiPropDirective   StorageClass
+  HiLink   delphiStructure       Structure
   delcommand HiLink
 endif
 
-let b:current_syntax = "abinitio"
+let b:current_syntax = "delphi"
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

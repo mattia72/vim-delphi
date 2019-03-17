@@ -1,7 +1,7 @@
 "=============================================================================
 " File:          delphi.vim
 " Author:        Mattia72 
-" Description:   File type plugin file for Delphi Data Manipulating Language    
+" Description:   File type plugin file for Delphi Pascal Language    
 " Created:       22 okt. 2015
 " Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
@@ -25,7 +25,7 @@
 "   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
 "=============================================================================
-
+" Preprocessing {{{
 let s:save_cpo = &cpo
 set cpo&vim
 
@@ -42,18 +42,34 @@ endif
 
 " Don't load another plug-in for this buffer
 let b:did_ftplugin = 1
+" Preprocessing }}}
 
-" This variable is used in indent script also
-let b:end_match_words = '\%(\<begin\>\|\%(\[\)\@<!\%(\<vector\>\|\<union\>\|\<record\>\|\<switch\>\)\)'
 
-" For matchit plugin to jump with % to the matching word:
-if exists("loaded_matchit")
-    let b:match_ignorecase = 1 " (pascal is case-insensitive)
+if 0 && exists("loaded_matchit")
+  let b:match_ignorecase = 1 " (pascal is case-insensitive)
 
-    let b:match_words = '\<\%(begin\|case\|record\|class\|object\|try\)\>'
-    let b:match_words .= ':\<^\s*\%(except\|finally\)\>:\<end\>'
-    let b:match_words .= ',\<repeat\>:\<until\>'
-    let b:match_words .= ',\<if\>:\<else\>'
+	let s:sol          = '\%(^\|;\)\s*'
+  "let s:not_if      = '\%(\<if\s\+\)\@<!'
+  let s:begin_words ='\<\%(begin\|case\|record\|object\|class\|try\)\>'
+  let s:middle_words = '\<\%(except\|finally\)\>'
+  "let s:not_begin_words ='\%('.s:begin_words.'\s\+\)\@<!'
+  "let s:begin_end_words ='<\%(begin\|case\|record\|object\|class\|try\|end\)\>'
+  "let s:not_begin_end_words ='\%('.s:begin_end_words.'\s\+\)\@<!'
+  "let s:if_begin_end_words ='<\%(if\|begin\|case\|record\|object\|class\|try\|end\)\>'
+  "let s:not_if_begin_end_words ='\%('.s:if_begin_end_words.'\s\+\)\@<!'
+
+  
+	"let s:notbeginend       = '\%(\<begin\|end\s\+\)\@<!'
+	"" start of line or ;
+  let b:match_words  = s:begin_words.':'.s:sol.s:middle_words.':\<end\>'
+  let b:match_words .= ',\<repeat\>:\<until\>'
+  let b:match_words .= ',\<while\>:\<do\>'
+  "let b:match_words .= ',\<while\>:'.s:not_begin_words.'\<end\>'
+  "let b:match_words .= ',\<do\>:'.s:not_begin_words.'\<end\>'
+  let b:match_words .= ',\<if\>:\<else\>'
+  "let b:match_words .= ',\<if\>:'.s:not_if.'\<else\>:'.s:not_begin_end_words.'\<end\>'
+  "let b:match_words .= ',\<then\>:'.s:not_if_begin_end_words.'\<end\>'
+  "let b:match_words .= ',\<else\>:'.s:not_if_begin_end_words.'\<end\>'
 endif
 
 " Set path for neosnippets
@@ -66,10 +82,6 @@ if exists("g:neosnippet#snippets_directory")
   endif
 endif
 
-setlocal textwidth=0
-setlocal commentstring=//%s
-setlocal formatoptions=tcqro
-
 " Change the browse dialog on Win32 to show mainly Delphi related files
 if has("gui_win32")
 	let b:browsefilter =
@@ -79,8 +91,8 @@ endif
 
 " Undo the stuff we changed
 let b:undo_ftplugin .= "
-      \ setlocal textwidth< commentstring< formatoptions<  
-      \ | unlet! b:browsefilter b:match_words b:end_match_words"
+      \ unlet! b:browsefilter b:match_words b:end_match_words"
+      \ | setlocal foldmethod< foldlevelstart< 
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

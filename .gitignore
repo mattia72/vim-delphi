@@ -2,3 +2,4 @@
 *.swp
 Session.vim
 test*.dml
+doc/tags

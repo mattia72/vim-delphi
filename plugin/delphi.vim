@@ -1,8 +1,8 @@
 "=============================================================================
 " File:          delphi.vim
 " Author:        Mattia72 
-" Description:   DESCRIPTION   
-" Created:       10 nov. 2016
+" Description:   plugin definitions
+" Created:       16.03.2019
 " Project Repo:  https://github.com/Mattia72/delphi
 "=============================================================================
 
@@ -23,6 +23,13 @@ set cpo&vim
 " Preprocessing }}}
 
 " Global options defintion. {{{
+"
+let pascal_delphi=1
+let pascal_symbol_operator=1
+let pascal_one_line_string=1
+" tabs won't be shown as error
+if exists("pascal_no_tabs") | unlet pascal_no_tabs | endif        " let pascal_no_tabs=0 has no effect. Checked with exists() in syntax pascal.vim
+
 "let g:delphi_vim_auto_open =
       "\ get(g:, 'delphi_vim_auto_open', 1)
 " Global options defintion. }}}
@@ -33,11 +40,11 @@ set cpo&vim
 " augroup END
 " Autocommands }}}
 
+
 " Define commands to operate delphi
 function! g:delphi#PascalFileLineCount(...)
   echomsg string(line('$'))
 endfunction
-
 
 
 set foldmethod=syntax
