@@ -32,7 +32,6 @@ set cpo&vim
 if version < 700
   syntax clear
 elseif exists("b:current_syntax")
-  echom "delphi syntax finisched."
   finish
 endif
 
@@ -48,7 +47,6 @@ syn keyword delphiLoop          for to downto while repeat until do
 syn keyword delphiReservedWord array dispinterface finalization implementation inherited initialization of packed set type uses with
 syn keyword delphiReservedWord constructor destructor function operator procedure property
 syn keyword delphiReservedWord const out threadvar var
-
 
 syn keyword delphiPredef        result self
 syn keyword delphiAssert        assert
@@ -112,13 +110,22 @@ syn match delphiType "\v<(ole)?variant>"
 " to start with E, I, P, or T, and we require the lowercase letter to exclude
 " translated macros and abbreviations that just happen to be in all caps. It's
 " not perfect, but it's a good approximation in the absence of a symbol table.
-syn match delphiClassType "\v\C[IPTE][A-Z]\w*[a-z]\w*"
+syn match delphiClassType "\v\C<[IPTE][A-Z]\w*[a-z]\w*>"
 
-syn match delphiInteger "\v[-+]?\$[0-9a-f]+"
-syn match delphiInteger "\v[-+]?\d+"
-syn match delphiReal "\v[-+]?\d+\.\d*(e[-+]?\d+)?"
-syn match delphiReal "\v[-+]?\.\d+(e[-+]?\d+)?"
-syn match delphiReal "\v[-+]?\d+e[-+]?\d+"
+"syn match delphiInteger "\v<[-+]?\$[0-9a-f]+>"
+"syn match delphiInteger "\v<[-+]?\d+>"
+"syn match delphiReal "\v<[-+]?\d+\.\d*(e[-+]?\d+)?>"
+"syn match delphiReal "\v<[-+]?\.\d+(e[-+]?\d+)?>"
+"syn match delphiReal "\v<[-+]?\d+e[-+]?\d+>"
+
+syn match  delphiNumber		"-\?\<\d\+\>"
+syn match  delphiFloat		"-\?\<\d\+\.\d\+\>"
+syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE]-\=\d\+\>"
+syn match  delphiHexNumber	"\$[0-9a-fA-F]\+\>"
+" Highlight all function names
+syn match delphiFunc "<[\w_]\+\s*("me=e-1,he=e-1 contained
+syn match delphiIdentifier "\v<[a-z_]\w*>" contained
+" syn match   pascalIdentifier		"\<[a-zA-Z_][a-zA-Z0-9_]*\>"
 
 syn region delphiString start="'" end="'" skip="''" oneline
 syn match delphiChar "\v\#\d+"
@@ -128,9 +135,6 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
 syn region delphiAsmBlock start="\v<asm>" end="\v<end>" contains=delphiComment,delphiLineComment,delphiAsm keepend
 syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>"  contains=ALLBUT,delphiFunc,delphiBeginEnd fold 
 
-" Highlight all function names
-syn match delphiFunc /\w\+\s*(/me=e-1,he=e-1 contained
-syn match delphiIdentifier "\v\&?[a-z_]\w*" contained
 
 "restart highlighting 
 "syn sync fromstart
@@ -138,25 +142,28 @@ syn match delphiIdentifier "\v\&?[a-z_]\w*" contained
 " highlight abKeywords guifg=blue
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
-if version >= 508 || !exists("did_delphi_syntax_inits")
-  if version < 508
-    let did_delphi_syntax_inits = 1
-    command -nargs=+ HiLink hi link <args>
-  else
+"if version >= 508 || !exists("did_delphi_syntax_inits")
+  "if version < 508
+    "let did_delphi_syntax_inits = 1
+    "command -nargs=+ HiLink hi link <args>
+  "else
     command -nargs=+ HiLink hi def link <args>
-  endif
+  "endif
   HiLink   delphiTodo            Todo         
   HiLink   delphiFunc            Function
   HiLink   delphiBeginEnd        Keyword 
   HiLink   delphiLineComment     Comment
   HiLink   delphiComment         PreProc
   HiLink   delphiType            Type
-  HiLink   delphiClassType       Function
+  HiLink   delphiClassType       Type
   HiLink   delphiWindowsType     Type
   HiLink   delphiReservedWord    Keyword
   HiLink   delphiAsm             Keyword
-  HiLink   delphiInteger         Number
-  HiLink   delphiReal            Float
+  "HiLink   delphiInteger         Number
+  HiLink   delphiNumber         Number
+  HiLink   delphiHexNumber         Number
+  "HiLink   delphiReal            Float
+  HiLink   delphiFloat            Float
   HiLink   delphiDefine          PreProc
   HiLink   delphiString          String
   HiLink   delphiChar            Character
@@ -178,7 +185,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiLabel           Label
   HiLink   delphiSpaceError	 Error
   delcommand HiLink
-endif
+"endif
 
 let b:current_syntax = "delphi"
 

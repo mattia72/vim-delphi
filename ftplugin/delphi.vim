@@ -46,7 +46,8 @@ let b:did_ftplugin = 1
 
 set autoindent noexpandtab tabstop=2 shiftwidth=2 
 
-if 0 && exists("loaded_matchit")
+"if 0 && exists("loaded_matchit")
+if exists("loaded_matchit")
   let b:match_ignorecase = 1 " (pascal is case-insensitive)
 
 	let s:sol          = '\%(^\|;\)\s*'

@@ -49,7 +49,7 @@ endfunction
 
 set foldmethod=syntax
 " folds are closed initially
-set foldlevelstart=99
+" set foldlevelstart=99
 
 " select inside a begin-end block:
 vnoremap af :<C-U>silent! normal! [zV]z<CR>
@@ -60,15 +60,8 @@ omap if :normal Vif<CR>
 if exists(':Tabularize')
   " Align selected assignes in nice columns with plugin
   vnoremap <buffer> <silent> <leader>t= :Tabularize /:=<CR>
-  vnoremap <buffer> <silent> <leader>t: :Tabularize /:=<CR>
-else 
-  " Align lines by words in nice columns with external program
-  vnoremap <buffer> <silent> <leader>t= :!column -t<CR>
-  vnoremap <buffer> <silent> <leader>t: :!column -t<CR>
+  vnoremap <buffer> <silent> <leader>t: :Tabularize /:<CR>
 endif
-
-" Align lines by words in nice columns
-vnoremap <buffer> <silent> <leader>at :!column -t<CR>
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
