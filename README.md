@@ -1,6 +1,6 @@
 # vim-delphi  (under construction) 
 
-**This plugin is under development! Don't use it, unless you know what you do!**
+**This plugin is under development! Don't use it unless you know what you do!**
 
 A VIM syntax plugin for Delphi Pascal the primary programming language of
 Delphi IDE.
