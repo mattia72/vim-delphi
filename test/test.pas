@@ -67,8 +67,11 @@ implementation
 constructor TFruit.Create(diameter: single);
 begin
   // Indicate that we have a round fruit, and set its size
+  goto label1;
   isRound       := true;
   self.diameter := diameter;
+  label label1
+
 end;
 
 // Create a long fruit object
