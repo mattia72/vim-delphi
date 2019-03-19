@@ -3,7 +3,7 @@
 " Author:        Mattia72 
 " Description:   Vim indent file for Delphi Pascal Language
 " Created:       24 okt. 2015
-" Project Repo:  https://github.com/Mattia72/delphi.vim
+" Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
 "   Permission is hereby granted, free of charge, to any person obtaining
 "   a copy of this software and associated documentation files (the

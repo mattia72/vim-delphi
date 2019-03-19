@@ -12,7 +12,7 @@ scriptencoding utf-8
 if exists('g:loaded_delphi_vim')
   finish
 elseif v:version < 700
-  echoerr 'delphi.vim does not work this version of Vim "' . v:version . '".'
+  echoerr 'vim-delphi does not work this version of Vim "' . v:version . '".'
   finish
 endif
 

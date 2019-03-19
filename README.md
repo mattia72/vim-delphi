@@ -1,4 +1,7 @@
-# delphi.vim  (under construction) 
+# vim-delphi  (under construction) 
+
+**This plugin is under development! Don't use it, unless you know what you do!**
+
 A VIM syntax plugin for Delphi Pascal the primary programming language of
 Delphi IDE.
 
@@ -18,7 +21,7 @@ plugin list:
 call dein#add('Shougo/neosnippet')      " Recommended  
 call dein#add('godlygeek/tabular',     
       \{ 'on_cmd' : 'Tabularize' })     " Recommended 
-call dein#add('mattia72/delphi.vim' , 
+call dein#add('mattia72/vim-delphi' , 
       \{ 'on_ft': ['delphi' ] }) 
 ```
 
@@ -29,7 +32,7 @@ plugin list:
 Plug 'Shougo/neosnippet'            " Recommended  
 Plug 'godlygeek/tabular',     
       \{ 'on' : 'Tabularize' })     " Recommended 
-call dein#add('mattia72/delphi.vim', 
+call dein#add('mattia72/vim-delphi', 
       \{ 'for': ['delphi' ] }) 
 ```
 ## Syntax highlight (under construction)
@@ -48,7 +51,7 @@ Indentation works well (in most cases :))
 ## Tabular (under construction)
 To format lines, that assigns values (contains `:=` ), we can use the 
 famous [tabular](http://github.com/godlygeek/tabular) plugin.
-[delphi.vim] (http://github.com/mattia72/delphi.vim) maps the appropriate
+[vim-delphi] (http://github.com/mattia72/vim-delphi) maps the appropriate
 commands for you.
 * `<leader>t=` helps you line up assignments by aligning the `:=` on each line.
 * `<leader>t:` helps you line up assignments by aligning the `:=` on each line.
@@ -58,7 +61,7 @@ For this feature you need to install [neosnippet](http://github.com/Shougo/neosn
 
 The snippet file should loaded automatically, if not, you can load it by:
 ```
-:NeoSnippetSource <path_to_the_delphi.vim_plugin>\snippets\delphi.snip
+:NeoSnippetSource <path_to_the_vim-delphi_plugin>\snippets\delphi.snip
 ```    
 Then you can start type a snippet alias eg. `func`. 
 * `C-k` selects and expands a snippet from the [neocomplcache](https://github.com/Shougo/neocomplcache.vim)/ [neocomplete](https://github.com/Shougo/neocomplete.vim) popup (Use `C-n` and `C-p` to select it). 

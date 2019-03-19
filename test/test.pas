@@ -7,6 +7,11 @@ unit Unit1;
 
 interface
 
+asm
+// asm block
+mov ax, cx
+end;
+
 uses
   SysUtils, Forms, Dialogs;
 
@@ -89,7 +94,9 @@ begin
   ShowFruit(banana);
 end;
 
+{*DEFINE ???}
 { Comment
+TODO: more than one line
 }
 // Show what the characteristics of our fruit are
 procedure TForm1.ShowFruit(fruit: TFruit);
@@ -100,7 +107,7 @@ begin
     ShowMessage('We have a round fruit, with diam = ';
 
   if fruit.round then begin
-    ShowMessage('We have a round fruit, with diam = '+
+    ShowMessage('We have a round fruit, with diam = ';
       FloatToStr(fruit.diam))
     end else if (fruit.length > 10) then begin
       ShowMessage('We have a long fruit');

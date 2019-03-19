@@ -32,28 +32,46 @@ set cpo&vim
 if version < 700
   syntax clear
 elseif exists("b:current_syntax")
+  echom "delphi syntax finisched."
   finish
 endif
 
 syn case ignore
+syn sync lines=250
 
-syn match delphiAsm "\v<asm>"
-syn match delphiBeginEnd "\<\%(begin\|end\)\>"
-syn region delphiBegEnd  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>"  contains=ALLBUT,delphiFunc, fold 
-syn match delphiIdentifier "\v\&?[a-z_]\w*"
-" Highlight all function names
-syn match delphiFunc /\w\+\s*(/me=e-1,he=e-1
-
-syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\."
-syn match delphiOperator "\v|\[|\]|,|\.|\;|\:"
-
-syn keyword delphiReservedWord array dispinterface finalization goto implementation inherited initialization label of packed set type uses with
+syn keyword delphiBool          true false
+syn keyword delphiConditional   if then case else
+syn keyword delphiConstant      nil maxint
+syn keyword delphiLabel         goto label
+syn keyword delphiOperator      and as div in is mod not or shr shl xor
+syn keyword delphiLoop          for to downto while repeat until do
+syn keyword delphiReservedWord array dispinterface finalization implementation inherited initialization of packed set type uses with
 syn keyword delphiReservedWord constructor destructor function operator procedure property
 syn keyword delphiReservedWord const out threadvar var
 
-syn keyword delphiLoop for to downto while repeat until do
+
+syn keyword delphiPredef        result self
+syn keyword delphiAssert        assert
+
+syn match delphiAsm "\v<asm>"
+syn keyword delphiBeginEnd begin end
+"\<\%(begin\|end\)\>" contained
+
+syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\." contained
+syn match delphiOperator "\v|\[|\]|,|\.|\;|\:"
+
+" 20010723az: When wanted, highlight the trailing whitespace -- this is
+" based on c_space_errors; to enable, use "delphi_space_errors".
+if exists("delphi_space_errors")
+  if !exists("delphi_no_trail_space_error")
+    syn match delphiSpaceError "\s\+$"
+  endif
+  if !exists("delphi_no_tab_space_error")
+    syn match delphiSpaceError " \+\t"me=e-1
+  endif
+endif
+
 " TODO handle `of` conditionally: "case..of" is conditional; "array of" isn't
-syn keyword delphiConditional if then case else
 syn keyword delphiExcept try finally except on raise at
 syn keyword delphiStructure class interface object record
 
@@ -67,12 +85,6 @@ syn keyword delphiVisibility private protected public published strict
 
 syn keyword delphiPropDirective default index nodefault read stored write
 
-syn keyword delphiNil nil
-syn keyword delphiBool true false
-syn keyword delphiPredef result self
-syn keyword delphiAssert assert
-
-syn keyword delphiOperator and as div in is mod not or shr shl xor
 
 syn keyword delphiTodo contained TODO FIXME NOTE
 syn region delphiComment start="{" end="}" contains=delphiTodo
@@ -111,12 +123,17 @@ syn match delphiReal "\v[-+]?\d+e[-+]?\d+"
 syn region delphiString start="'" end="'" skip="''" oneline
 syn match delphiChar "\v\#\d+"
 syn match delphiChar "\v\#\$[0-9a-f]{1,6}"
-
-syn region delphiAsmBlock start="\v<asm>" end="\v<end>" contains=delphiComment,delphiLineComment,delphiAsm keepend
-
 syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
 
-syn sync fromstart
+syn region delphiAsmBlock start="\v<asm>" end="\v<end>" contains=delphiComment,delphiLineComment,delphiAsm keepend
+syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>"  contains=ALLBUT,delphiFunc,delphiBeginEnd fold 
+
+" Highlight all function names
+syn match delphiFunc /\w\+\s*(/me=e-1,he=e-1 contained
+syn match delphiIdentifier "\v\&?[a-z_]\w*" contained
+
+"restart highlighting 
+"syn sync fromstart
 
 " highlight abKeywords guifg=blue
 " Define the default highlighting.
@@ -130,7 +147,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   endif
   HiLink   delphiTodo            Todo         
   HiLink   delphiFunc            Function
-  HiLink   delphiBeginEnd        Keyword
+  HiLink   delphiBeginEnd        Keyword 
   HiLink   delphiLineComment     Comment
   HiLink   delphiComment         PreProc
   HiLink   delphiType            Type
@@ -143,9 +160,9 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiDefine          PreProc
   HiLink   delphiString          String
   HiLink   delphiChar            Character
-  HiLink   delphiIdentifier      NONE
+  HiLink   delphiIdentifier      Identifier
   HiLink   delphiOperator        Operator
-  HiLink   delphiNil             Constant
+  HiLink   delphiConstant             Constant
   HiLink   delphiBool            Boolean
   HiLink   delphiPredef          Special
   HiLink   delphiAssert          Debug
@@ -158,6 +175,8 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiDirective       StorageClass
   HiLink   delphiPropDirective   StorageClass
   HiLink   delphiStructure       Structure
+  HiLink   delphiLabel           Label
+  HiLink   delphiSpaceError	 Error
   delcommand HiLink
 endif
 

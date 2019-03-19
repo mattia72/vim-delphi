@@ -44,6 +44,7 @@ endif
 let b:did_ftplugin = 1
 " Preprocessing }}}
 
+set autoindent noexpandtab tabstop=2 shiftwidth=2 
 
 if 0 && exists("loaded_matchit")
   let b:match_ignorecase = 1 " (pascal is case-insensitive)
@@ -91,8 +92,8 @@ endif
 
 " Undo the stuff we changed
 let b:undo_ftplugin .= "
-      \ unlet! b:browsefilter b:match_words b:end_match_words"
-      \ | setlocal foldmethod< foldlevelstart< 
+      \ unlet! b:browsefilter b:match_words b:begin_words b:middle_words 
+      \ | setlocal foldmethod< foldlevelstart<" 
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
