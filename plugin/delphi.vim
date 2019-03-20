@@ -41,15 +41,19 @@ if exists("pascal_no_tabs") | unlet pascal_no_tabs | endif        " let pascal_n
 " Autocommands }}}
 
 
-" Define commands to operate delphi
-function! g:delphi#PascalFileLineCount(...)
+" Define commands to operate delphi {{{
+function! g:delphi#LineCount(...)
   echomsg string(line('$'))
 endfunction
 
-
-set foldmethod=syntax
-" folds are closed initially
-" set foldlevelstart=99
+function! g:delphi#SwitchPasOrDfm()
+  if (expand ("%:e") == "pas")
+    find %:t:r.dfm
+  else
+    find %:t:r.pas
+  endif
+endfunction
+"}}}
 
 " select inside a begin-end block:
 vnoremap af :<C-U>silent! normal! [zV]z<CR>

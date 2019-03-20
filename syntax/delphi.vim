@@ -121,13 +121,7 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
 
 " the most common pattern comes first...
 syn match delphiIdentifier "\v<[a-z_]\w*>" 
-" Let's define a type as being anything that starts with a capital E, I, P, or
-" T, has a capital second letter, and has some lowercase letter. We require
-" the capital second letter to exclude variable and function names that happen
-" to start with E, I, P, or T, and we require the lowercase letter to exclude
-" translated macros and abbreviations that just happen to be in all caps. It's
-" not perfect, but it's a good approximation in the absence of a symbol table.
-"syn match delphiClassType "\v\C<[IPTE][A-Z]\w*[a-z]\w*>"
+" syn match   pascalIdentifier		"\<[a-zA-Z_][a-zA-Z0-9_]*\>"
 
 " Highlight all function names
 syn match    delphiCustomParen    "("   "contains=cParen,cCppParen
@@ -135,8 +129,6 @@ syn match    delphiCustomFunc     "\w\+\s*(" contains=delphiCustomParen
 syn match    delphiCustomScope    "\."
 syn match    delphiCustomClass    "\w\+\s*\." contains=delphiCustomScope
 
-"syn match delphiFunc /\<[\w_]+\s*(/he=e-1
-" syn match   pascalIdentifier		"\<[a-zA-Z_][a-zA-Z0-9_]*\>"
 
 syn region delphiString start="'" end="'" skip="''" oneline
 
@@ -175,9 +167,9 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end=
   HiLink   delphiDefine          PreProc
   HiLink   delphiString          String
   HiLink   delphiChar            Character
-  HiLink   delphiIdentifier      Identifier
+  HiLink   delphiIdentifier      NONE "Identifier
   HiLink   delphiOperator        Operator
-  HiLink   delphiConstant             Constant
+  HiLink   delphiConstant        Constant
   HiLink   delphiBool            Boolean
   HiLink   delphiPredef          Special
   HiLink   delphiAssert          Debug
@@ -192,8 +184,8 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end=
   HiLink   delphiStructure       Structure
   HiLink   delphiLabel           Label
   HiLink   delphiSpaceError	 Error
-  HiLink  delphiCustomFunc       NONE
-  HiLink  delphiCustomClass      Macro
+  HiLink   delphiCustomFunc      Function
+  HiLink   delphiCustomClass     Type
   delcommand HiLink
 "endif
 

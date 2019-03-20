@@ -1,8 +1,8 @@
 "=============================================================================
-" File:          delphi.vim
+" File:          dfm.vim
 " Author:        Mattia72 
-" Description:   File type plugin file for Delphi Pascal Language    
-" Created:       22 okt. 2015
+" Description:   DFM files
+" Created:       20.03.2019
 " Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
 "   Permission is hereby granted, free of charge, to any person obtaining
@@ -25,6 +25,7 @@
 "   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
 "=============================================================================
+
 " Preprocessing {{{
 let s:save_cpo = &cpo
 set cpo&vim
@@ -45,45 +46,13 @@ exec "source " . s:path . "/common.vim"
 if exists("loaded_matchit")
   let b:match_ignorecase = 1 " (pascal is case-insensitive)
 
-	let s:sol          = '\%(^\|;\)\s*'
-  "let s:not_if      = '\%(\<if\s\+\)\@<!'
-  let s:begin_words ='\<\%(begin\|case\|record\|object\|class\|try\)\>'
-  let s:middle_words = '\<\%(except\|finally\)\>'
-  "let s:not_begin_words ='\%('.s:begin_words.'\s\+\)\@<!'
-  "let s:begin_end_words ='<\%(begin\|case\|record\|object\|class\|try\|end\)\>'
-  "let s:not_begin_end_words ='\%('.s:begin_end_words.'\s\+\)\@<!'
-  "let s:if_begin_end_words ='<\%(if\|begin\|case\|record\|object\|class\|try\|end\)\>'
-  "let s:not_if_begin_end_words ='\%('.s:if_begin_end_words.'\s\+\)\@<!'
+  let s:begin_words ='\<\%(inherited\|object\)\>'
+  let s:not_begin_words ='\%('.s:begin_words.'\s\+\)\@<!'
 
-	"let s:notbeginend       = '\%(\<begin\|end\s\+\)\@<!'
-	"" start of line or ;
-  let b:match_words  = s:begin_words.':'.s:sol.s:middle_words.':\<end\>'
-  let b:match_words .= ',\<repeat\>:\<until\>'
-  let b:match_words .= ',\<while\>:\<do\>'
-  "let b:match_words .= ',\<while\>:'.s:not_begin_words.'\<end\>'
-  "let b:match_words .= ',\<do\>:'.s:not_begin_words.'\<end\>'
-  let b:match_words .= ',\<if\>:\<else\>'
-  "let b:match_words .= ',\<if\>:'.s:not_if.'\<else\>:'.s:not_begin_end_words.'\<end\>'
-  "let b:match_words .= ',\<then\>:'.s:not_if_begin_end_words.'\<end\>'
-  "let b:match_words .= ',\<else\>:'.s:not_if_begin_end_words.'\<end\>'
+  let b:match_words  = '\<object\>:' . s:not_begin_words . '\<end\>'
+  let b:match_words .= ',\<inherited\>:' . s:not_begin_words . '\<end\>'
 endif
 
-" Set path for neosnippets
-if exists("g:neosnippet#snippets_directory")
-  let s:plugin_directory = fnamemodify(resolve(expand('<sfile>:p')), ':h')
-  let g:delphi#neosnippet_directory = simplify(s:plugin_directory."/../snippets")
-  if stridx(string(g:neosnippet#snippets_directory), g:delphi#neosnippet_directory) < 0
-    let g:neosnippet#snippets_directory.=', '.g:delphi#neosnippet_directory
-    "echomsg "get_dir:".string(neosnippet#get_snippets_directory())
-  endif
-endif
-
-" Change the browse dialog on Win32 to show mainly Delphi related files
-if has("gui_win32")
-	let b:browsefilter =
-				\ "All Delphi Files (*.pas,*.dpr,*.dfm)\t*.pas;*.dpr;*.dfm\n" .
-				\ "All Files (*.*)\t*.*\n"
-endif
 
 " Undo the stuff we changed
 if !exists('b:undo_ftplugin')
