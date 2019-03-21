@@ -46,11 +46,9 @@ exec "source " . s:path . "/common.vim"
 if exists("loaded_matchit")
   let b:match_ignorecase = 1 " (pascal is case-insensitive)
 
-  let s:begin_words ='\<\%(inherited\|object\)\>'
-  let s:not_begin_words ='\%('.s:begin_words.'\s\+\)\@<!'
+  let s:begin_words ='\<\%(inherited\|object\|item\)\>'
 
-  let b:match_words  = '\<object\>:' . s:not_begin_words . '\<end\>'
-  let b:match_words .= ',\<inherited\>:' . s:not_begin_words . '\<end\>'
+  let b:match_words  = s:begin_words . ':\<end\>'
 endif
 
 

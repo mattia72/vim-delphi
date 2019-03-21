@@ -38,8 +38,17 @@ endif
 syn case ignore
 syn sync lines=250
 
-syn keyword dfmKeyword inherited object end 
+syn keyword dfmKeyword inherited object item end 
 syn keyword dfmBoolean true false
+
+syn match  dfmNumber		"-\?\<\d\+\>"
+syn region dfmString start="'" end="'" skip="''" oneline
+
+syn match    dfmCustomScope    "\."
+syn match    dfmCustomClass    "\v\w+\s*\.[^.]"me=e-1 contains=dfmCustomScope
+" Declaration
+syn match    dfmCustomScope    "\:"
+syn match    dfmCustomClass    "\:\s*\w\+" contains=dfmCustomScope
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -50,8 +59,12 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   else
     command -nargs=+ HiLink hi def link <args>
   endif
-  HiLink   dfmKeyword        Keyword 
-  HiLink   dfmBoolean        Boolean
+  HiLink  dfmKeyword        Keyword 
+  HiLink  dfmBoolean        Boolean
+  HiLink  dfmCustomScope    Normal
+  HiLink  dfmCustomClass    Type
+  HiLink  dfmNumber         Number
+  HiLink   dfmString          String
   delcommand HiLink
 endif
 

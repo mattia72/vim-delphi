@@ -83,6 +83,10 @@ syn keyword delphiVisibility private protected public published strict
 
 syn keyword delphiPropDirective default index nodefault read stored write
 
+syn keyword delphiWindowsType bool dword ulong
+syn keyword delphiType boolean
+syn keyword delphiType byte integer cardinal pointer
+syn keyword delphiType single double extended comp currency
 
 syn keyword delphiTodo contained TODO FIXME NOTE
 syn region delphiComment start="{" end="}" contains=delphiTodo
@@ -91,24 +95,15 @@ syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
 syn region delphiDefine start="{\$" end="}"
 syn region delphiDefine start="(\*\$" end="\*)"
 
-syn keyword delphiWindowsType bool dword ulong
 syn match delphiWindowsType "\v<h(dc|result|wnd)>"
 syn match delphiType "\v<(byte|word|long)bool>"
-syn keyword delphiType boolean
 syn match delphiType "\v<(short|small|long|nativeu?)int>"
 syn match delphiType "\v<u?int(8|16|32|64|128)>"
 syn match delphiType "\v<(long)?word>"
-syn keyword delphiType byte integer cardinal pointer
-syn keyword delphiType single double extended comp currency
 syn match delphiType "\v<real(48)?>"
 syn match delphiType "\v<(ansi|wide)?char>"
 syn match delphiType "\v<(ansi|wide|unicode|short)?string>"
 syn match delphiType "\v<(ole)?variant>"
-"syn match delphiInteger "\v<[-+]?\$[0-9a-f]+>"
-"syn match delphiInteger "\v<[-+]?\d+>"
-"syn match delphiReal "\v<[-+]?\d+\.\d*(e[-+]?\d+)?>"
-"syn match delphiReal "\v<[-+]?\.\d+(e[-+]?\d+)?>"
-"syn match delphiReal "\v<[-+]?\d+e[-+]?\d+>"
 
 syn match  delphiNumber		"-\?\<\d\+\>"
 syn match  delphiFloat		"-\?\<\d\+\.\d\+\>"
@@ -121,13 +116,16 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
 
 " the most common pattern comes first...
 syn match delphiIdentifier "\v<[a-z_]\w*>" 
-" syn match   pascalIdentifier		"\<[a-zA-Z_][a-zA-Z0-9_]*\>"
 
 " Highlight all function names
 syn match    delphiCustomParen    "("   "contains=cParen,cCppParen
 syn match    delphiCustomFunc     "\w\+\s*(" contains=delphiCustomParen
+" 
 syn match    delphiCustomScope    "\."
-syn match    delphiCustomClass    "\w\+\s*\." contains=delphiCustomScope
+syn match    delphiCustomClass    "\v\w+\s*\.[^.]"me=e-1 contains=delphiCustomScope
+" Declaration
+syn match    delphiCustomScope    "\:"
+syn match    delphiCustomClass    "\:\s*\w\+" contains=delphiCustomScope
 
 
 syn region delphiString start="'" end="'" skip="''" oneline
@@ -153,7 +151,7 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end=
   HiLink   delphiFunc            Function
   HiLink   delphiBeginEnd        Keyword 
   HiLink   delphiLineComment     Comment
-  HiLink   delphiComment         PreProc
+  HiLink   delphiComment         SpecialComment
   HiLink   delphiType            Type
   HiLink   delphiClassType       Type
   HiLink   delphiWindowsType     Type
