@@ -42,7 +42,7 @@ syn keyword delphiBool          true false
 syn keyword delphiConditional   if then case else
 syn keyword delphiConstant      nil maxint
 syn keyword delphiLabel         goto label
-syn keyword delphiOperator      and as div in is mod not or shr shl xor
+syn keyword delphiOperator      not and or xor div mod as in is shr shl 
 syn keyword delphiLoop          for to downto while repeat until do
 syn keyword delphiReservedWord array dispinterface finalization implementation inherited initialization of packed set type uses with
 syn keyword delphiReservedWord constructor destructor function operator procedure property
@@ -53,18 +53,16 @@ syn keyword delphiAssert        assert
 
 syn match delphiAsm "\v<asm>"
 syn keyword delphiBeginEnd begin end
-"\<\%(begin\|end\)\>" contained
 
-syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\." contained
+syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\.|\^" contained
 syn match delphiOperator "\v|\[|\]|,|\.|\;|\:"
 
-" 20010723az: When wanted, highlight the trailing whitespace -- this is
 " based on c_space_errors; to enable, use "delphi_space_errors".
 if exists("delphi_space_errors")
-  if !exists("delphi_no_trail_space_error")
+  if exists("delphi_trailing_space_error")
     syn match delphiSpaceError "\s\+$"
   endif
-  if !exists("delphi_no_tab_space_error")
+  if exists("delphi_leading_tab_error")
     syn match delphiSpaceError " \+\t"me=e-1
   endif
 endif
@@ -89,8 +87,9 @@ syn keyword delphiType byte integer cardinal pointer
 syn keyword delphiType single double extended comp currency
 
 syn keyword delphiTodo contained TODO FIXME NOTE
-syn region delphiComment start="{" end="}" contains=delphiTodo
-syn region delphiComment start="(\*" end="\*)" contains=delphiTodo
+syn match delphiSpecialComment "@\w\+" 
+syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment 
+syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment 
 syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
 syn region delphiDefine start="{\$" end="}"
 syn region delphiDefine start="(\*\$" end="\*)"
@@ -148,10 +147,11 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end=
     command -nargs=+ HiLink hi def link <args>
   "endif
   HiLink   delphiTodo            Todo         
+  HiLink   delphiSpecialComment  SpecialComment         
   HiLink   delphiFunc            Function
   HiLink   delphiBeginEnd        Keyword 
   HiLink   delphiLineComment     Comment
-  HiLink   delphiComment         SpecialComment
+  HiLink   delphiComment         Comment
   HiLink   delphiType            Type
   HiLink   delphiClassType       Type
   HiLink   delphiWindowsType     Type

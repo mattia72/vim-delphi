@@ -45,27 +45,25 @@ exec "source " . s:path . "/common.vim"
 if exists("loaded_matchit")
   let b:match_ignorecase = 1 " (pascal is case-insensitive)
 
-	let s:sol          = '\%(^\|;\)\s*'
-  "let s:not_if      = '\%(\<if\s\+\)\@<!'
-  let s:begin_words ='\<\%(begin\|case\|record\|object\|class\|try\)\>'
-  let s:middle_words = '\<\%(except\|finally\)\>'
-  "let s:not_begin_words ='\%('.s:begin_words.'\s\+\)\@<!'
-  "let s:begin_end_words ='<\%(begin\|case\|record\|object\|class\|try\|end\)\>'
-  "let s:not_begin_end_words ='\%('.s:begin_end_words.'\s\+\)\@<!'
-  "let s:if_begin_end_words ='<\%(if\|begin\|case\|record\|object\|class\|try\|end\)\>'
-  "let s:not_if_begin_end_words ='\%('.s:if_begin_end_words.'\s\+\)\@<!'
-
-	"let s:notbeginend       = '\%(\<begin\|end\s\+\)\@<!'
+  "let s:not_if   = '\%(\<if\s\+\)\@<!'
+	"let s:notbegin = '\%(\<begin\s\+\)\@<!'
+	"let s:notend   = '\%(\<end\s\+\)\@<!'
 	"" start of line or ;
-  let b:match_words  = s:begin_words.':'.s:sol.s:middle_words.':\<end\>'
-  let b:match_words .= ',\<repeat\>:\<until\>'
-  let b:match_words .= ',\<while\>:\<do\>'
-  "let b:match_words .= ',\<while\>:'.s:not_begin_words.'\<end\>'
-  "let b:match_words .= ',\<do\>:'.s:not_begin_words.'\<end\>'
-  let b:match_words .= ',\<if\>:\<else\>'
-  "let b:match_words .= ',\<if\>:'.s:not_if.'\<else\>:'.s:not_begin_end_words.'\<end\>'
-  "let b:match_words .= ',\<then\>:'.s:not_if_begin_end_words.'\<end\>'
-  "let b:match_words .= ',\<else\>:'.s:not_if_begin_end_words.'\<end\>'
+  let s:sol              = '\%(^\|;\)\s*'
+  let s:not_func_or_proc = '\%(\s\+\%(function\|procedure\)\)\@<!'
+  let s:begin_words      = '\<\%(begin\|case\|record\|object\|except\|finally\)\>'
+  let s:middle_words     = '\<\%(except\|finally\)\>'
+  let s:end_word         = '\<end\>'
+
+  let b:match_words     = s:begin_words.':'.s:end_word
+  let b:match_words     .= ',\<try\>:'.s:middle_words " .':'.s:end_word   !!!! :( not begin end !!!!
+  let b:match_words     .= ',\<unit\>:\<interface\>:\<implementation\>:\<end\.'
+  let b:match_words     .= ',\%(= \s*\)\zsclass\>:'.s:end_word
+  let b:match_words     .= ',\<uses\>:;'
+  let b:match_words     .= ',\<repeat\>:\<until\>'
+  let b:match_words     .= ',\<while\>:\<do\>'
+  let b:match_words     .= ',\<if\>:\<then\>:\<else\>' " it works only if 'else' exists
+  "let b:match_words     .= ',\<\%(procedure\|function\)\>:\<const\>:\<var\>:\<begin\>:\<end\>' " 
 endif
 
 " Set path for neosnippets
