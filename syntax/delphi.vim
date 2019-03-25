@@ -38,24 +38,24 @@ endif
 syn case ignore
 syn sync lines=250
 
+" http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
+"
 syn keyword delphiBool          true false
 syn keyword delphiConditional   if then case else
 syn keyword delphiConstant      nil maxint
 syn keyword delphiLabel         goto label
 syn keyword delphiOperator      not and or xor div mod as in is shr shl 
 syn keyword delphiLoop          for to downto while repeat until do
-syn keyword delphiReservedWord array dispinterface finalization implementation inherited initialization of packed set type uses with
-syn keyword delphiReservedWord constructor destructor function operator procedure property
-syn keyword delphiReservedWord const out threadvar var
+syn keyword delphiReservedWord  array dispinterface finalization inherited initialization of packed set type with
+syn keyword delphiReservedWord  const out threadvar var property
+syn keyword delphiReservedWord  unit implementation interface 
 
 syn keyword delphiPredef        result self
 syn keyword delphiAssert        assert
 
-syn match delphiAsm "\v<asm>"
-syn keyword delphiBeginEnd begin end
-
-syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\.|\^" contained
-syn match delphiOperator "\v|\[|\]|,|\.|\;|\:"
+"syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\.|\^" 
+"syn match delphiOperator "\v|\[|\]|\.|\:"
+syn match delphiComma "\v[,;]"
 
 " based on c_space_errors; to enable, use "delphi_space_errors".
 if exists("delphi_space_errors")
@@ -69,10 +69,10 @@ endif
 
 " TODO handle `of` conditionally: "case..of" is conditional; "array of" isn't
 syn keyword delphiExcept try finally except on raise at
-syn keyword delphiStructure class interface object record
+syn keyword delphiStructure class object record
 
 syn keyword delphiCallingConv cdecl pascal register safecall stdcall winapi
-syn keyword delphiDirective library package program unit
+syn keyword delphiDirective library package program 
 syn keyword delphiDirective absolute abstract assembler delayed deprecated dispid dynamic experimental export external final forward implements inline name message overload override packed platform readonly reintroduce static unsafe varargs virtual writeonly
 syn keyword delphiDirective helper reference sealed
 syn keyword delphiDirective "contains" requires
@@ -86,13 +86,6 @@ syn keyword delphiType boolean
 syn keyword delphiType byte integer cardinal pointer
 syn keyword delphiType single double extended comp currency
 
-syn keyword delphiTodo contained TODO FIXME NOTE
-syn match delphiSpecialComment "@\w\+" 
-syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment 
-syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment 
-syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
-syn region delphiDefine start="{\$" end="}"
-syn region delphiDefine start="(\*\$" end="\*)"
 
 syn match delphiWindowsType "\v<h(dc|result|wnd)>"
 syn match delphiType "\v<(byte|word|long)bool>"
@@ -113,42 +106,68 @@ syn match delphiChar "\v\#\d+"
 syn match delphiChar "\v\#\$[0-9a-f]{1,6}"
 syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
 
-" the most common pattern comes first...
-syn match delphiIdentifier "\v<[a-z_]\w*>" 
 
-" Highlight all function names
-syn match    delphiCustomParen    "("   "contains=cParen,cCppParen
-syn match    delphiCustomFunc     "\w\+\s*(" contains=delphiCustomParen
-" 
-syn match    delphiCustomScope    "\."
-syn match    delphiCustomClass    "\v\w+\s*\.[^.]"me=e-1 contains=delphiCustomScope
+
+" most common region begin .. end
+
+syn match delphiIdentifier "\v<[a-z_]\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained
+"syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained
+syn match delphiQualifiedIdentifier "\v\.<[a-z_]\w*>[^(]"ms=s+1,me=e-1 contains=delphiScopeSeparator,delphiIdentifier containedin=delphiBeginEndBlock contained
+
+syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiUnitName,delphiDeclareType fold 
+
+" Highlight all function names ...after identifier!!!
+syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>"
+syn match delphiParenthesis  "\v[()]"  contained 
+syn match delphiCustomFunc   "\v<[a-z_]\w*>\s*\(" contains=delphiParenthesis 
+
+
+" -----------------------------
+" Regions...
+" -----------------------------
+
+" Type declaration TClassName = Class(...) ... end;
+syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="end;" 
+      \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
+
+" Uses unit list
+syn match delphiScopeSeparator    "\." contained
+syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
+syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";" 
+      \ contains=delphiComment,delphiLineComment,delphiUnitName,delphiScopeSeparator,delphiComma keepend fold
+
 " Declaration
-syn match    delphiCustomScope    "\:"
-syn match    delphiCustomClass    "\:\s*\w\+" contains=delphiCustomScope
+syn match    delphiScopeSeparator "\:" contained
+syn match    delphiDeclareType    "\v\:\s*<[a-z_]\w*>" contains=delphiScopeSeparator
 
+" Asm syntax
+syn include @asm syntax/tasm.vim
+syn region delphiAsmBlock matchgroup=delphiAsmBlockSeparator start="\v<asm>" end="\v<end>" contains=@asm
 
+" Comments
+syn keyword delphiTodo contained TODO FIXME NOTE
+syn match delphiSpecialComment "@\w\+" 
+syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment 
+syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment 
+syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
+syn region delphiDefine start="{\$" end="}"
+syn region delphiDefine start="(\*\$" end="\*)"
+
+" String
 syn region delphiString start="'" end="'" skip="''" oneline
 
-syn region delphiAsmBlock start="\v<asm>" end="\v<end>" contains=delphiComment,delphiLineComment,delphiAsm keepend
-syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>"  contains=ALLBUT,delphiFunc,delphiBeginEnd fold 
-
-
-"restart highlighting 
-"syn sync fromstart
-
-" highlight abKeywords guifg=blue
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
-"if version >= 508 || !exists("did_delphi_syntax_inits")
-  "if version < 508
-    "let did_delphi_syntax_inits = 1
-    "command -nargs=+ HiLink hi link <args>
-  "else
+if version >= 508 || !exists("did_delphi_syntax_inits")
+  if version < 508
+    let did_delphi_syntax_inits = 1
+    command -nargs=+ HiLink hi link <args>
+  else
     command -nargs=+ HiLink hi def link <args>
-  "endif
+  endif
   HiLink   delphiTodo            Todo         
   HiLink   delphiSpecialComment  SpecialComment         
-  HiLink   delphiFunc            Function
   HiLink   delphiBeginEnd        Keyword 
   HiLink   delphiLineComment     Comment
   HiLink   delphiComment         Comment
@@ -156,20 +175,18 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end=
   HiLink   delphiClassType       Type
   HiLink   delphiWindowsType     Type
   HiLink   delphiReservedWord    Keyword
-  HiLink   delphiAsm             Keyword
-  "HiLink   delphiInteger         Number
-  HiLink   delphiNumber         Number
-  HiLink   delphiHexNumber         Number
-  "HiLink   delphiReal            Float
-  HiLink   delphiFloat            Float
-  HiLink   delphiDefine          PreProc
+  HiLink   delphiAsmBlockSeparator  PreProc
+  HiLink   delphiNumber          Number
+  HiLink   delphiHexNumber       Number
+  HiLink   delphiFloat           Float
+  HiLink   delphiDefine          Macro
   HiLink   delphiString          String
   HiLink   delphiChar            Character
-  HiLink   delphiIdentifier      NONE "Identifier
+  HiLink   delphiIdentifier      Identifier
   HiLink   delphiOperator        Operator
   HiLink   delphiConstant        Constant
   HiLink   delphiBool            Boolean
-  HiLink   delphiPredef          Special
+  HiLink   delphiPredef          Constant
   HiLink   delphiAssert          Debug
   HiLink   delphiLoop            Repeat
   HiLink   delphiConditional     Conditional
@@ -183,9 +200,15 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end=
   HiLink   delphiLabel           Label
   HiLink   delphiSpaceError	 Error
   HiLink   delphiCustomFunc      Function
-  HiLink   delphiCustomClass     Type
+  HiLink   delphiCallableType    Keyword
+  HiLink   delphiQualifiedIdentifier Identifier
+  HiLink   delphiDeclareType     Type
+  HiLink   delphiContainerType   Type
+  HiLink   delphiUsesBlockSeparator Keyword
+  HiLink   delphiTypeBlockSeparator Type
+  HiLink   DelphiUnitName        Type
   delcommand HiLink
-"endif
+endif
 
 let b:current_syntax = "delphi"
 

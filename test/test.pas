@@ -1,19 +1,29 @@
-// Full Unit code.
-// -----------------------------------------------------------
-// You must store this code in a unit called Unit1 with a form
-// called Form1 that has an OnCreate event called FormCreate.
+{
+
+ Test delphi code
+
+ @project: vim-delphi
+ @date   : 25.03.2019
+ @author : mattia
+}
 
 unit Unit1;
 
 interface
 
 asm
-// asm block
-mov ax, cx
+  PUSH    ESI
+  MOV     EAX, e
+  MOV     ESI, DMTINDEX TExample.DynamicMethod
+  CALL    System.@CallDynaInst
+  POP ESI
 end;
 
 uses
-  SysUtils, Forms, Dialogs;
+  SysUtils, 
+  Forms, //FIXME comment
+  Dialogs
+  ;
 
 type
   // Define the classes in this Unit at the very start for clarity
@@ -36,14 +46,10 @@ type
     // Externally accessible and inspectable fields and methods
   published
     // Note that properties must use different names to local defs
-    property round : Boolean
-    read   isRound;
-    property len   : single
-    read   length;
-    property wide  : single
-    read   width;
-    property diam  : single
-    read   diameter;
+    property round : Boolean read   isRound;
+    property len   : single read   length;
+    property wide  : single read   width;
+    property diam  : single read   diameter;
   end;                    // End of the TFruit class definition
 
   // The actual TForm1 class is now defined
@@ -63,14 +69,14 @@ implementation
 
 {$R *.dfm}
 
-// Create a round fruit object
+// TODO Create a round fruit object
 constructor TFruit.Create(diameter: single);
 begin
   // Indicate that we have a round fruit, and set its size
   goto label1;
   isRound       := true;
   self.diameter := diameter;
-  label label1
+  label label1;
 
 end;
 
@@ -105,12 +111,12 @@ TODO: more than one line
 procedure TForm1.ShowFruit(fruit: TFruit);
 begin
   if fruit.round then 
-    ShowMessage('We have a round fruit, with diam = ';
+    ShowMessage('We have a round fruit, with diam = ');
   else
-    ShowMessage('We have a round fruit, with diam = ';
+    ShowMessage('We have a round fruit, with diam = ');
 
   if fruit.round then begin
-    ShowMessage('We have a round fruit, with diam = ';
+    ShowMessage('We have a round fruit, with diam = ');
       FloatToStr(fruit.diam))
     end else if (fruit.length > 10) then begin
       ShowMessage('We have a long fruit');
