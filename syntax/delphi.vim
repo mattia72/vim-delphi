@@ -68,7 +68,7 @@ if exists("delphi_space_errors")
 endif
 
 " TODO handle `of` conditionally: "case..of" is conditional; "array of" isn't
-syn keyword delphiExcept try finally except on raise at
+syn keyword delphiExcept try on raise at
 syn keyword delphiStructure class object record
 
 syn keyword delphiCallingConv cdecl pascal register safecall stdcall winapi
@@ -114,8 +114,8 @@ syn match delphiIdentifier "\v<[a-z_]\w*>[^(]"me=e-1  containedin=delphiBeginEnd
 "syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained
 syn match delphiQualifiedIdentifier "\v\.<[a-z_]\w*>[^(]"ms=s+1,me=e-1 contains=delphiScopeSeparator,delphiIdentifier containedin=delphiBeginEndBlock contained
 
-syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiUnitName,delphiDeclareType fold 
+syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<\%(begin\|case\|record\|object\|except\|finally\)\>" end="\<end\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiUnitName,delphiDeclareType extend fold 
 
 " Highlight all function names ...after identifier!!!
 syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>"
@@ -131,6 +131,9 @@ syn match delphiCustomFunc   "\v<[a-z_]\w*>\s*\(" contains=delphiParenthesis
 syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="end;" 
       \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
 
+syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(\s*)\zsvar>" end="begin" nextgroup=delphiBeginEndBlock
+      \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
+
 " Uses unit list
 syn match delphiScopeSeparator    "\." contained
 syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
@@ -143,13 +146,13 @@ syn match    delphiDeclareType    "\v\:\s*<[a-z_]\w*>" contains=delphiScopeSepar
 
 " Asm syntax
 syn include @asm syntax/tasm.vim
-syn region delphiAsmBlock matchgroup=delphiAsmBlockSeparator start="\v<asm>" end="\v<end>" contains=@asm
+syn region delphiAsmBlock matchgroup=delphiAsmBlockSeparator start="\v<asm>" end="\v<end>" contains=@asm fold
 
 " Comments
 syn keyword delphiTodo contained TODO FIXME NOTE
 syn match delphiSpecialComment "@\w\+" 
-syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment 
-syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment 
+syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment fold
+syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment fold
 syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
 syn region delphiDefine start="{\$" end="}"
 syn region delphiDefine start="(\*\$" end="\*)"
