@@ -41,7 +41,7 @@ type
     // Externally accessible fields and methods
   public
     // 2 constructors - one for round fruit, the other long fruit
-    constructor Create(diameter : single);               overload;
+    constructor Create(_diameter : single);               overload;
     constructor Create(length : single; width : single); overload;
     // Externally accessible and inspectable fields and methods
   published
@@ -70,12 +70,12 @@ implementation
 {$R *.dfm}
 
 // TODO Create a round fruit object
-constructor TFruit.Create(diameter: single);
+constructor TFruit.Create(_diameter: single);
 begin
   // Indicate that we have a round fruit, and set its size
   goto label1;
   isRound       := true;
-  self.diameter := diameter;
+  self._diameter := _diameter;
   label label1;
 
 end;
@@ -124,8 +124,37 @@ begin
       ShowMessage('    it has width  = '+FloatToStr(fruit.wide));
     end;
 
-    while (true) do 
-      ShowMessage('    it has width  = '+FloatToStr(fruit.wide));
+  	while (true) do 
+		if RecModified then begin
+			iRes := AShowJaNeinAbbrechenAbfrage('Sollen die Daten gespeichert werden?'); // FST 28.09.05 jetzt mit Möglichkeit zum Abbruch
+			case iRes of
+				mrYes: Result := RecWrite;
+				mrCancel: Result := False;
+				mrNo:
+				begin
+					Result := True;
+					SetModified(False);
+
+					// FST 12.09.18 wenn bei Neuanlage nicht gespeichert wird, dann werden evtl. vorhandene Sätze in AL_P_SchwerBH mit dieser Personalnummer gelöscht
+					if bNewRec and gbSchwerbehinderung.Visible then begin
+						TboPersSchwerbh.LoeschenSchwerBH(edP_Nr.Text);
+					end;
+				end;
+			end;
+		end else begin  // FST 18.04.05
+			DecodeDate(boMain.FieldByName('P_Eintritt').AsDateTime, Jahr, Monat, Tag);
+		end;
+
+		if (Jahr = rLohnParams.iLohnJahr) and (Monat = rLohnParams.iLohnMonatZahl) then begin
+			if (boMain.FieldByName('P_PersNr_2Te').AsString <> '') and
+				(boMain.FieldByName('P_Kz_2Te').AsString = 'A') and
+				bBuchungenErfassung then begin
+				bBuchungenErfassung := False;
+				bModified := True;
+				Result := RecWrite; // in diesem Fall ein erneutes Abspeichern erzwingen
+			end;
+		end;
+		end;
     
     while (true) do 
     begin

@@ -40,7 +40,7 @@ syn sync lines=250
 
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "
-syn keyword delphiBool          true false
+syn keyword delphiBool          true false 
 syn keyword delphiConditional   if then case else
 syn keyword delphiConstant      nil maxint
 syn keyword delphiLabel         goto label
@@ -77,6 +77,7 @@ syn keyword delphiDirective absolute abstract assembler delayed deprecated dispi
 syn keyword delphiDirective helper reference sealed
 syn keyword delphiDirective "contains" requires
 syn keyword delphiDirective far near resident
+
 syn keyword delphiVisibility private protected public published strict
 
 syn keyword delphiPropDirective default index nodefault read stored write
@@ -87,32 +88,38 @@ syn keyword delphiType byte integer cardinal pointer
 syn keyword delphiType single double extended comp currency
 
 
-syn match delphiWindowsType "\v<h(dc|result|wnd)>"
-syn match delphiType "\v<(byte|word|long)bool>"
-syn match delphiType "\v<(short|small|long|nativeu?)int>"
-syn match delphiType "\v<u?int(8|16|32|64|128)>"
-syn match delphiType "\v<(long)?word>"
-syn match delphiType "\v<real(48)?>"
-syn match delphiType "\v<(ansi|wide)?char>"
-syn match delphiType "\v<(ansi|wide|unicode|short)?string>"
-syn match delphiType "\v<(ole)?variant>"
+syn match delphiWindowsType "\v<h(dc|result|wnd)>" display
+syn match delphiType "\v<(byte|word|long)bool>" display
+syn match delphiType "\v<(short|small|long|nativeu?)int>" display
+syn match delphiType "\v<u?int(8|16|32|64|128)>" display
+syn match delphiType "\v<(long)?word>" display
+syn match delphiType "\v<real(48)?>" display
+syn match delphiType "\v<(ansi|wide)?char>" display
+syn match delphiType "\v<(ansi|wide|unicode|short)?string>" display
+syn match delphiType "\v<(ole)?variant>" display
 
-syn match  delphiNumber		"-\?\<\d\+\>"
-syn match  delphiFloat		"-\?\<\d\+\.\d\+\>"
-syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE]-\=\d\+\>"
-syn match  delphiHexNumber	"\$[0-9a-fA-F]\+\>"
+syn match  delphiNumber		"-\?\<\d\+\>" display
+syn match  delphiFloat		"-\?\<\d\+\.\d\+\>" display
+syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE]-\=\d\+\>"   display
+syn match  delphiHexNumber	"\$[0-9a-fA-F]\+\>" display
 
-syn match delphiChar "\v\#\d+"
-syn match delphiChar "\v\#\$[0-9a-f]{1,6}"
-syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~"
+syn match delphiChar "\v\#\d+" display
+syn match delphiChar "\v\#\$[0-9a-f]{1,6}" display
+
+syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 
 
 
 " most common region begin .. end
+" Var block
+syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zsvar>" end="\v%(<begin>)\@<=" nextgroup=delphiBeginEndBlock
+      \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
 
-syn match delphiIdentifier "\v<[a-z_]\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained
-"syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained
+syn match delphiIdentifier "\v<[a-z_]\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained  display
+syn match delphiLocalIdentifier "\v<_\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained display
+syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained
 syn match delphiQualifiedIdentifier "\v\.<[a-z_]\w*>[^(]"ms=s+1,me=e-1 contains=delphiScopeSeparator,delphiIdentifier containedin=delphiBeginEndBlock contained
+syn match delphiLocalIdentifier "\v<_\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained display
 
 syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<\%(begin\|case\|record\|object\|except\|finally\)\>" end="\<end\>" 
       \ contains=ALLBUT,delphiUsesBlock,delphiUnitName,delphiDeclareType extend fold 
@@ -120,8 +127,7 @@ syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<\%(begin\|cas
 " Highlight all function names ...after identifier!!!
 syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>"
 syn match delphiParenthesis  "\v[()]"  contained 
-syn match delphiCustomFunc   "\v<[a-z_]\w*>\s*\(" contains=delphiParenthesis 
-
+syn match delphiFunction   "\v<[a-z_]\w*>\(" contains=delphiParenthesis display
 
 " -----------------------------
 " Regions...
@@ -129,9 +135,6 @@ syn match delphiCustomFunc   "\v<[a-z_]\w*>\s*\(" contains=delphiParenthesis
 
 " Type declaration TClassName = Class(...) ... end;
 syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="end;" 
-      \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
-
-syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(\s*)\zsvar>" end="begin" nextgroup=delphiBeginEndBlock
       \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
 
 " Uses unit list
@@ -185,7 +188,8 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiDefine          Macro
   HiLink   delphiString          String
   HiLink   delphiChar            Character
-  HiLink   delphiIdentifier      Identifier
+  HiLink   delphiIdentifier      Normal
+  HiLink   delphiLocalIdentifier Identifier
   HiLink   delphiOperator        Operator
   HiLink   delphiConstant        Constant
   HiLink   delphiBool            Boolean
@@ -198,11 +202,11 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiVisibility      StorageClass
   HiLink   delphiCallingConv     StorageClass
   HiLink   delphiDirective       StorageClass
-  HiLink   delphiPropDirective   StorageClass
+  HiLink   delphiPropDirective   Function
   HiLink   delphiStructure       Structure
   HiLink   delphiLabel           Label
   HiLink   delphiSpaceError	 Error
-  HiLink   delphiCustomFunc      Function
+  HiLink   delphiFunction      Function
   HiLink   delphiCallableType    Keyword
   HiLink   delphiQualifiedIdentifier Identifier
   HiLink   delphiDeclareType     Type
