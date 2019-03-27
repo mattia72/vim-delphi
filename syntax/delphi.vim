@@ -47,7 +47,6 @@ syn keyword delphiLabel         goto label
 syn keyword delphiOperator      not and or xor div mod as in is shr shl 
 syn keyword delphiLoop          for to downto while repeat until do
 syn keyword delphiReservedWord  array dispinterface finalization inherited initialization of packed set type with
-syn keyword delphiReservedWord  const out threadvar var property
 syn keyword delphiReservedWord  unit implementation interface 
 
 syn keyword delphiPredef        result self
@@ -110,10 +109,6 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 
 
 
-" most common region begin .. end
-" Var block ???
-"syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zsvar>" end="\v%(<begin>)\@<=" nextgroup=delphiBeginEndBlock
-      "\ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
 
 syn match delphiIdentifier "\v<[a-z_]\w*>"  containedin=delphiBeginEndBlock contained  display
 
@@ -126,9 +121,7 @@ syn match delphiFunctionParameter "\v<_\w*>[^(]"me=e-1 display
 "syn match delphiQualifiedIdentifier "\v\.\s*<[a-z_]\w*>"ms=s+1 contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained display
 
 
-syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<\%(begin\|case\|record\|object\|except\|finally\)\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType extend fold 
-
+"syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator 
 
 " Highlight all function names ...after identifier!!!
 syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>"
@@ -139,7 +132,14 @@ syn match delphiFunction   "\v<[a-z_]\w*>\(" contains=delphiParenthesis display
 " Regions...
 " -----------------------------
 
-"syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator 
+" Var block
+syn match delphiTypeModifier  "\v%(const|out|threadvar|var|property)"
+syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs%(var|const)>" end="\v%(;\n+)\ze\s*<%(var|const|begin|function|procedure)>" 
+      \ contains=ALLBUT,delphiTypeModifier,delphiBeginEndBlock,delphiUnitName keepend fold 
+
+" begin .. end
+syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<\%(begin\|case\|record\|object\|except\|finally\)\>" end="\<end\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType extend fold 
 
 " Type declaration TClassName = Class(...) ... end;
 syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="end;" 
@@ -191,6 +191,8 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiClassType       Type
   HiLink   delphiWindowsType     Type
   HiLink   delphiReservedWord    Keyword
+  HiLink   delphiTypeModifier    Keyword
+  HiLink   delphiVarBlockSeparator Keyword
   HiLink   delphiAsmBlockSeparator  PreProc
   HiLink   delphiNumber          Number
   HiLink   delphiHexNumber       Number
