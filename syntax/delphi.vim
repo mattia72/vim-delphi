@@ -116,7 +116,8 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
       "\ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
 
 syn match delphiIdentifier "\v<[a-z_]\w*>"  containedin=delphiBeginEndBlock contained  display
-" See c++
+
+" Templates?? See c++
 syn match delphiTemplateSeparator "\v[<>]"
 syn match delphiTemplateParameter "<[,\w]+>"  contains=delphiTemplateSeparator,delphiComma display
 
@@ -166,7 +167,7 @@ syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecial
 syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
 syn region delphiDefine start="{\$" end="}"
 
-"syn region delphiRegion start="{\$region.*}" end="$endregion}" contains=ALL fold
+syn region delphiRegion start="{\$region.*}" end="$endregion}" contains=ALL keepend fold
 syn region delphiDefine start="(\*\$" end="\*)"
 
 " String
