@@ -135,17 +135,17 @@ syn match delphiFunction   "\v<[a-z_]\w*>\(" contains=delphiParenthesis display
 " -----------------------------
 
 " Var block
-syn match delphiTypeModifier  "\v%(const|out|threadvar|var|property)"
+syn match delphiTypeModifier  "\v<%(const|out|threadvar|var|property)>"
 syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs%(var|const)>" end="\v%(;\n+)\ze\s*<%(var|const|begin|function|procedure)>" 
       \ contains=ALLBUT,delphiTypeModifier,delphiBeginEndBlock,delphiUnitName keepend fold 
 
 " begin .. end
 syn region delphiBeginEndBlock  matchgroup=delphiBeginEnd start="\<\%(begin\|case\|record\|object\|except\|finally\)\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType extend fold 
+      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
 
 " Type declaration TClassName = Class(...) ... end;
 syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="end;" 
-      \ contains=ALLBUT,delphiBeginEndBlock,delphiUnitName keepend fold
+      \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName keepend fold
 
 " Uses unit list
 syn match delphiScopeSeparator "\." contained
