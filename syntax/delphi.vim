@@ -107,17 +107,19 @@ syn match delphiChar "\v\#\$[0-9a-f]{1,6}" display
 
 syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 
+" -----------------------------
+"  Dangerous part ...
+" -----------------------------
 
-
-
-syn match delphiIdentifier "\v<[a-z_]\w*>"  containedin=delphiBeginEndBlock contained  display
+syn match delphiIdentifier "\v\&?[a-z_]\w*"  containedin=delphiBeginEndBlock contained  display
+syn match delphiFunctionParameter "\v<_\w+>[^(]"me=e-1 display
+syn match delphiConstant "\v\C<[A-Z_]+>" display
 
 " Templates?? See c++
-syn match delphiTemplateSeparator "\v[<>]"
-syn match delphiTemplateParameter "<[,\w]+>"  contains=delphiTemplateSeparator,delphiComma display
+syn match delphiTemplateSeparator "[<>]"
+syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
 
 "syn match delphiFunctionParameter "\v<_\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained display
-syn match delphiFunctionParameter "\v<_\w*>[^(]"me=e-1 display
 "syn match delphiQualifiedIdentifier "\v\.\s*<[a-z_]\w*>"ms=s+1 contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained display
 
 
