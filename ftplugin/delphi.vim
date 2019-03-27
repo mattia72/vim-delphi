@@ -41,6 +41,8 @@ let b:did_ftplugin = 1
 let s:path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 exec "source " . s:path . "/common.vim"
 
+set commentstring=//%s
+
 "if 0 && exists("loaded_matchit")
 if exists("loaded_matchit")
   let b:match_ignorecase = 1 " (pascal is case-insensitive)
