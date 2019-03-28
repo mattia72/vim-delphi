@@ -56,13 +56,19 @@ syn keyword delphiAssert        assert
 "syn match delphiOperator "\v|\[|\]|\.|\:"
 syn match delphiComma "\v[,;]"
 
-" based on c_space_errors; to enable, use "delphi_space_errors".
 if exists("delphi_space_errors")
+  " based on c_space_errors; to enable, use "delphi_space_errors".
   if exists("delphi_trailing_space_error")
-    syn match delphiSpaceError "\s\+$"
+    syn match delphiSpaceError display excludenl "\s\+$"
   endif
+  if exists("delphi_tab_space_error")
+    syn match	delphiSpaceError	display " \+\t"me=e-1
+  endif
+
   if exists("delphi_leading_tab_error")
-    syn match delphiSpaceError " \+\t"me=e-1
+    syn match delphiSpaceError "^\t\+" display
+  elseif exists("delphi_leading_space_error")
+    syn match delphiSpaceError "^ \+" display
   endif
 endif
 
@@ -116,20 +122,18 @@ syn match delphiFunctionParameter "\v<_\w+>[^(]"me=e-1 display
 syn match delphiConstant "\v\C<[A-Z_]+>" display
 
 " Templates?? See c++
-syn match delphiTemplateSeparator "[<>]"
+syn match delphiTemplateSeparator "\v[<>]"
 syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
 
-"syn match delphiFunctionParameter "\v<_\w*>[^(]"me=e-1  containedin=delphiBeginEndBlock contained display
 "syn match delphiQualifiedIdentifier "\v\.\s*<[a-z_]\w*>"ms=s+1 contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained display
-
-
 "syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator 
 
-" Highlight all function names ...after identifier!!!
-syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>"
-syn match delphiFunction   "\v<[a-z_]\w*>\(" contains=delphiParenthesis display
+" Highlight all function names and function definitions 
+syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display
+syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>" 
 syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" keepend fold
-      \ contains=ALLBUT,delphiVarBlock
+      \ contains=ALLBUT,delphiVarBlock,delphiUnitName
+syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>" end="\."me=e-1 keepend display
 
 " -----------------------------
 " Regions...
@@ -145,13 +149,13 @@ syn region delphiBeginEndBlock matchgroup=delphiBeginEnd start="\<\%(begin\|case
       \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
 
 " Type declaration TClassName = Class(...) ... end;
-syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="end;" 
-      \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName keepend fold
+syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="\<end\>;" 
+      \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName,delphiFunctionDefinition keepend fold
 
 " Uses unit list
 syn match delphiScopeSeparator "\." contained
 syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
-syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";" 
+syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";"me=e-1 
       \ contains=delphiComment,delphiLineComment,delphiUnitName,delphiScopeSeparator,delphiComma keepend fold
 
 " Declaration
@@ -220,8 +224,11 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiStructure       Structure
   HiLink   delphiLabel           Label
   HiLink   delphiSpaceError	 Error
-  HiLink   delphiFunction      Function
+  HiLink   delphiFunctionName      Function
+
   HiLink   delphiCallableType    Keyword
+  HiLink   delphiFunctionDefSeparator delphiCallableType
+
   HiLink   delphiDeclareType     Type
   HiLink   delphiContainerType   Type
   HiLink   delphiUsesBlockSeparator Keyword
@@ -229,7 +236,9 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   DelphiUnitName        Type
   HiLink   delphiIdentifier      Normal
   HiLink   delphiFunctionParameter Identifier
+  HiLink   delphiFunctionDefinition Type
   HiLink   delphiQualifiedIdentifier Identifier
+  HiLink   delphiParenthesis Normal
   delcommand HiLink
 endif
 
