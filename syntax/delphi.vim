@@ -43,7 +43,7 @@ syn sync lines=250
 syn keyword delphiBool          true false 
 syn keyword delphiConditional   if then case else
 syn keyword delphiConstant      nil maxint
-syn keyword delphiLabel         goto label
+syn keyword delphiLabel         goto label continue break exit
 syn keyword delphiOperator      not and or xor div mod as in is shr shl 
 syn keyword delphiLoop          for to downto while repeat until do
 syn keyword delphiReservedWord  array dispinterface finalization inherited initialization of packed set type with
@@ -121,7 +121,7 @@ syn match delphiIdentifier "\v\&?[a-z_]\w*"  containedin=delphiBeginEndBlock con
 syn match delphiFunctionParameter "\v<_\w+>[^(]"me=e-1 display
 syn match delphiConstant "\v\C<[A-Z_]+>" display
 
-" Templates?? See c++
+" FIXME Templates?? See c++
 syn match delphiTemplateSeparator "\v[<>]"
 syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
 
@@ -133,7 +133,7 @@ syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis d
 syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>" 
 syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" keepend fold
       \ contains=ALLBUT,delphiVarBlock,delphiUnitName
-syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>" end="\."me=e-1 keepend display
+syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>" end="\v[.(]"me=e-1 keepend display
 
 " -----------------------------
 " Regions...
@@ -156,7 +156,7 @@ syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>
 syn match delphiScopeSeparator "\." contained
 syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
 syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";"me=e-1 
-      \ contains=delphiComment,delphiLineComment,delphiUnitName,delphiScopeSeparator,delphiComma keepend fold
+      \ contains=delphiComment,delphiLineComment,delphiRegion,delphiUnitName,delphiScopeSeparator,delphiComma keepend fold
 
 " Declaration
 syn match    delphiScopeSeparator "\:" contained
@@ -174,7 +174,9 @@ syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecial
 syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
 syn region delphiDefine start="{\$" end="}"
 
-syn region delphiRegion start="{\$region.*}" end="$endregion}" contains=ALL keepend fold
+" FIXME contains ALL highlights everything to delphiUnitName :( so it won't work
+" properly in UsesBlock
+syn region delphiRegion start="{\$region.*}" end="{\$endregion}" contains=ALLBUT,delphiUnitName keepend fold
 syn region delphiDefine start="(\*\$" end="\*)"
 
 " String
