@@ -154,7 +154,6 @@ begin
 				Result := RecWrite; // in diesem Fall ein erneutes Abspeichern erzwingen
 			end;
 		end;
-		end;
     
     while (true) do 
     begin
