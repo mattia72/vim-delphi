@@ -135,9 +135,9 @@ syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" k
 " Regions...
 " -----------------------------
 
-" Var block
+" Var block: last line before begin, const or fuction etc...
 syn match delphiTypeModifier  "\v<%(const|out|threadvar|var|property)>"
-syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs%(var|const)>" end="\v%(;%(\s*//.{-})\?\n+)\ze\s*<%(var|implementation|const|begin|function|procedure)>" skip="//.*"
+syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs%(var|const)>" end="\v%(\n+)\ze\s*<%(var|implementation|const|begin|function|procedure)>" 
       \ contains=ALLBUT,delphiTypeModifier,delphiBeginEndBlock,delphiUnitName keepend fold 
 
 " begin .. end
