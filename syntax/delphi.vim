@@ -133,7 +133,7 @@ syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis d
 syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>" 
 syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" keepend fold
       \ contains=ALLBUT,delphiVarBlock,delphiUnitName
-syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>" end="\v[.(]"me=e-1 keepend display
+syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>\ze%(\s+\w+\.)" end="\v\."me=e-1 keepend display
 
 " -----------------------------
 " Regions...
