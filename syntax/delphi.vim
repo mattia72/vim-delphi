@@ -54,7 +54,6 @@ syn keyword delphiAssert        assert
 
 "syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\.|\^" 
 "syn match delphiOperator "\v|\[|\]|\.|\:"
-syn match delphiComma "\v[,;]"
 
 if exists("delphi_space_errors")
   " based on c_space_errors; to enable, use "delphi_space_errors".
@@ -130,7 +129,9 @@ syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
 
 " Highlight all function names and function definitions 
 syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display
-syn match delphiCallableType "\v<%(constructor|destructor|function|operator|procedure)>" 
+syn match delphiCallableType "\<function\>"
+syn match delphiCallableType "\<procedure\>"
+syn match delphiCallableType "\v<%(constructor|destructor|operator)>" 
 syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" keepend fold
       \ contains=ALLBUT,delphiVarBlock,delphiUnitName
 syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>\ze%(\s+\w+\.)" end="\v\."me=e-1 keepend display
@@ -145,7 +146,19 @@ syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs
       \ contains=ALLBUT,delphiTypeModifier,delphiBeginEndBlock,delphiUnitName keepend fold 
 
 " begin .. end
-syn region delphiBeginEndBlock matchgroup=delphiBeginEnd start="\<\%(begin\|case\|record\|object\|except\|finally\)\>" end="\<end\>" 
+syn region delphiBeginEndBlock matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+
+syn region delphiTryEndBlock matchgroup=delphiBeginEnd start="\<try\>" end="\<finally\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+
+syn region delphiFinallyEndBlock matchgroup=delphiBeginEnd start="\<finally\>" end="\<end\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+
+syn region delphiExceptEndBlock matchgroup=delphiBeginEnd start="\<except\>" end="\<end\>" 
+      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+
+syn region delphiOtherEndBlock matchgroup=delphiBeginEnd start="\<\%(case\|record\|object\)\>" end="\<end\>" 
       \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
 
 " Type declaration TClassName = Class(...) ... end;
@@ -156,7 +169,7 @@ syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>
 syn match delphiScopeSeparator "\." contained
 syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
 syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";"me=e-1 
-      \ contains=delphiComment,delphiLineComment,delphiRegion,delphiUnitName,delphiScopeSeparator,delphiComma keepend fold
+      \ contains=delphiComment,delphiLineComment,delphiRegion,delphiUnitName,delphiScopeSeparator keepend fold
 
 " Declaration
 syn match    delphiScopeSeparator "\:" contained
