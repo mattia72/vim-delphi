@@ -170,7 +170,8 @@ syn region delphiRecordEndBlock matchgroup=delphiBeginEnd start="\<record\>" end
 syn region delphiObjectEndBlock matchgroup=delphiBeginEnd start="\<object\>" end="\<end\>" 
       \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
 
-" Type declaration TClassName = Class(...) ... end;
+" FIXME parenthesis after class(...)
+" Type declaration TClassName = class|record ... end;
 syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="\<end\>;" 
       \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName,delphiFunctionDefinition keepend fold
 
@@ -271,4 +272,4 @@ let b:current_syntax = "delphi"
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
-" vim: ts=8
+" vim: ts=2
