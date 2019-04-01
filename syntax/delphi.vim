@@ -60,14 +60,10 @@ if exists("delphi_space_errors")
   if exists("delphi_trailing_space_error")
     syn match delphiSpaceError display excludenl "\s\+$"
   endif
-  if exists("delphi_tab_space_error")
-    syn match	delphiSpaceError	display " \+\t"me=e-1
-  endif
-
   if exists("delphi_leading_tab_error")
-    syn match delphiSpaceError "^\t\+" display
+    syn match delphiSpaceError "^ *\zs\t\+" display
   elseif exists("delphi_leading_space_error")
-    syn match delphiSpaceError "^ \+" display
+    syn match delphiSpaceError "^\t*\zs \+" display
   endif
 endif
 

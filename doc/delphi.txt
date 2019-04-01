@@ -1,16 +1,14 @@
-*delphi.txt*   Delphi syntax plugin for Vim       Last modified: 16.03.2018
+*delphi.txt*          Delphi syntax plugin for Vim     
 
-Version:    1.0
-Maintainer: Mattia72 <mattia72@gmail.com>
-License:    Apache 2.0
-
-                    SHORT REFERENCE MANUAL FOR VIM-delphi
+                    SHORT REFERENCE MANUAL FOR VIM-DELPHI
 ==============================================================================
 CONTENTS                                                     *delphi-contents*
 
 Introduction.............................................|delphi-introduction|
 Install.......................................................|delphi-install|
+Settings.....................................................|delphi-settings|
 Folding.......................................................|delphi-folding|
+Mappings.....................................................|delphi-mappings|
 Indentation...............................................|delphi-indentation|
 Matchit support...............................................|delphi-matchit|
 Snippets.....................................................|delphi-snippets|
@@ -28,26 +26,55 @@ http://github.com/mattia72/vim-delphi
 INSTALL                                                       *delphi-install*
 
 Copy the included directories into your .vim or vimfiles directory.
-Or even better, use neobundle and simply put this line after your 
-neobundle list in your .vimrc: >
-
- NeoBundleLazy 'mattia72/vim-delphi'
+Or even better, use |vim-plug| and simply put this line after your 
+|Plug| list in your .vimrc: >
+  Plug 'mattia72/vim-delphi'
 >
-then add this line in your auto commands section: >
+The plugin will set filetype automatically to |delphi| only if you open
+a *.pas or *.dfm file. You can set it manually by typing: >
+  :set filetype=delphi
 
- autocmd FileType delphi NeoBundleSource vim-delphi
->
-So the plugin will loaded only if you open a *.dml file or call 
-:set filetype=delphi.
+That's all.
 
+==============================================================================
+SETTINGS                                                     *delphi-settings*
+
+If you like <tab> indenting, so <space> will be highlighted as error: >
+  let  delphi_space_errors = 1
+  let  delphi_leading_space_error = 1
+
+Unnecessary spaces on the end of the lines: >
+  let  delphi_space_errors = 1
+  let  delphi_trailing_space_error = 1
+
+|unlet| these variables if you don't want to use them.
 ==============================================================================
 FOLDING                                                       *delphi-folding*
 
 The delphi syntax file provides syntax folding (see |:syn-fold|) for code blocks.
-When 'foldmethod' is set to "syntax" then begin-end blocks will be folded.
+When 'foldmethod' is set to "syntax" then begin-end blocks will be folded. >
+  set foldmethod=syntax
+  set foldlevelstart=99 "so folds are closed initially
 
 Note: syntax folding might slow down syntax highlighting significantly,
 especially for large files.
+
+==============================================================================
+MAPPINGS                                                     *delphi-mappings*
+
+The plugin provides some usefull mapping definition also: 
+
+- Select a begin-end block with <vif> or <vaf> (plugin/delphi.vim) >
+
+plugin/delphi.vim: >
+  " Align selected assignes in nice columns with plugin
+  <leader>t= :<C-U>Tabularize /:=<CR>
+  <leader>t: :<C-U>Tabularize /:<CR>
+
+ftplugin/common.vim: >
+  <leader>sd :call delphi#SwitchPasOrDfm()<CR>
+  <leader>sp :call delphi#SwitchPasOrDfm()<CR>
+
 
 ==============================================================================
 MATCHIT SUPPORT                                               *delphi-matchit*
@@ -58,10 +85,15 @@ with %. More info about matchit features in |matchit.txt|.
 
 NOTE: Matchit is part of the standard Vim installation, but it must be
 activated. For instructions type: >
-      :help matchit-install 
+  :help matchit-install 
 >
+Or install the modern matchit and matchparen replacement by: >
+  Plug 'andymass/vim-matchup'
+
 ==============================================================================
 INDENTATION                                               *delphi-indentation*
+
+This part is under construction!!!
 
 ggVG=               Indents the whole file
 ==                  Indents the current line
@@ -69,6 +101,7 @@ ggVG=               Indents the whole file
 ==============================================================================
 SNIPPETS                                                     *delphi-snippets*
 
+This part is under construction!!!
 See |neosnippet.txt| and <plugin_dir>/vim-delphi/snippets directory.
 
 ------------------------------------------------------------------------------

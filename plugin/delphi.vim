@@ -28,7 +28,7 @@
 
 scriptencoding utf-8
 
-" Preprocessing {{{
+" Preprocessing
 if exists('g:loaded_delphi_vim')
   finish
 elseif v:version < 700
@@ -40,32 +40,20 @@ let g:loaded_delphi_vim = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
-" Preprocessing }}}
 
-" Global options defintion. {{{
-"
-let pascal_delphi=1
-let pascal_symbol_operator=1
-let pascal_one_line_string=1
-" tabs won't be shown as error
-if exists("pascal_no_tabs") | unlet pascal_no_tabs | endif        " let pascal_no_tabs=0 has no effect. Checked with exists() in syntax pascal.vim
+" Global options defintion.
+let  delphi_space_errors = 1
+let  delphi_leading_space_error = 1
+"let  delphi_leading_tab_error = 1
+let  delphi_trailing_space_error = 1
 
-"let g:delphi_vim_auto_open =
-      "\ get(g:, 'delphi_vim_auto_open', 1)
-" Global options defintion. }}}
-
-" Autocommands {{{
+" Autocommands
 " augroup delphi_vim_global_command_group
 "   autocmd!
 " augroup END
-" Autocommands }}}
 
 
-" Define commands to operate delphi {{{
-function! g:delphi#LineCount(...)
-  echomsg string(line('$'))
-endfunction
-
+" Define commands to operate delphi 
 function! g:delphi#SwitchPasOrDfm()
   if (expand ("%:e") == "pas")
     find %:t:r.dfm
@@ -73,18 +61,18 @@ function! g:delphi#SwitchPasOrDfm()
     find %:t:r.pas
   endif
 endfunction
-"}}}
+command! -nargs=+ -complete=command SwitchToDfm call delphi#SwitchPasOrDfm(<q-args>)
+command! -nargs=+ -complete=command SwitchToPas call delphi#SwitchPasOrDfm(<q-args>)
 
-" select inside a begin-end block:
+" select inside a begin-end block with vif or vaf
 vnoremap af :<C-U>silent! normal! [zV]z<CR>
 vnoremap if :<C-U>silent! normal! [zjV]zk<CR>
 omap af :normal Vaf<CR>
 omap if :normal Vif<CR>
 
-if exists(':Tabularize')
-  " Align selected assignes in nice columns with plugin
-  vnoremap <buffer> <silent> <leader>t= :<C-U>Tabularize /:=<CR>
-  vnoremap <buffer> <silent> <leader>t: :<C-U>Tabularize /:<CR>
+if exists(':Tabularize') " Align selected assignes in nice columns with plugin
+  vnoremap <buffer> <leader>t= :Tabularize /:=<CR>
+  vnoremap <buffer> <leader>t: :Tabularize /:<CR>
 endif
 
 let &cpo = s:save_cpo
