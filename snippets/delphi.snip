@@ -2,7 +2,7 @@
 # File:          delphi.snip
 # Author:        Mattia72 
 # Description:   Neosnippet defs for Delphi   
-# Created:       23 nov. 2015
+# Created:       01.04.2019
 # Project Repo:  https://github.com/Mattia72/vim-delphi
 #=============================================================================
 
@@ -10,118 +10,85 @@
 # After select press Ctrl+k to trigger the snippet
 
 snippet     func  
-abbr        dml function definition 
+abbr        delphi function definition 
 alias       function fun
 options     head
-  /* ${1:description} */
- ${2:port}::${3:function_name}(${4:parameter})=
+ function ${1:class_name}.${2:function_name}(${3:parameter_name}:${4:parameter_type}):${5:return_type};
  begin
    ${0:content}
- end; // end of $3
+ end; 
 
-snippet     type  
-abbr        dml type definition 
+snippet     proc  
+abbr        delphi function definition 
+alias       procedure pro
 options     head
-  type ${1:name}_t = record
+ procedure ${1:class_name}.${2:procedure_name}(${3:parameter_name}:${4:parameter_type});
+ begin
+   ${0:content}
+ end; 
+
+snippet     record  
+abbr        delphi record definition 
+alias       rec
+options     head
+  type ${1:name} = record
     ${0:content}
   end; 
 
-snippet     metadata  
-abbr        dml metadata type definition 
+snippet     class
+abbr        delphi class definition 
+alias       cla
 options     head
-  metadata type ${1:name}_t = record
+  type ${1:name} = class(${2:base})
     ${0:content}
   end; 
 
 snippet     if
 abbr        if new block
 options     word indent
-  if (${1:var}) begin
+  if (${1:var}) then begin
     ${0}
-  end
+  end;
+
+snippet     ife
+abbr        if else block
+options     word indent
+  if (${1:var}) then begin
+    ${0}
+  end else begin
+  	${1}
+  end;
 
 snippet     ifs
-abbr        if selected block
+abbr        if around selected block
 options     word indent
   if (${1:var}) begin
     ${0:TARGET}
-  end
-
-snippet     ifn
-abbr        if is_null
-options     word indent
-  if (is_null(${1:var})) begin
-    ${0}
-  end
-
-snippet     forb
-abbr        for loop in block
-alias       for
-options     word indent
-  begin block ${1:stop}
-  let int ${2:index} = 0;
-  for ( $2, $2 < length_of(${3:string}))
-  begin
-    ${0}
-    exit $1
-  end
-  end block $1
+  end;
 
 snippet     fori
 abbr        simple for loop
 alias       for
 options     word indent
-  let int ${1:index} = 0;
-  for ( $1, $1 < length_of(${2:string}))
-  begin
+  for $1 := 0 to Length(${2:array}) do begin
     ${0}
-  end
+  end;
 
-snippet     decimal  
-abbr        decimal declaration
-alias       dec deci
+snippet     while
+abbr        simple for loop
+alias       whi
 options     word indent
-  decimal('\0') ${0}
+  while ${1:expression} do begin
+    ${0}
+  end;
 
-snippet     decimaln  
-abbr        decimal declaration with length
-alias       decn decin
+snippet     case
+abbr        switch case 
+alias       cas
 options     word indent
-  decimal(${1:number}) ${0}
-
-snippet     decimald
-abbr        decimal declaration with delimiter
-alias       decd decid
-options     word indent
-  decimal("${1:delimiter}") ${0}
-
-snippet     string
-alias       str stri
-abbr        string declaration with delimiter
-options     word indent
-  string('\0') ${0}
-
-snippet     stringn
-abbr        string declaration with length
-alias       strn strin
-options     word indent
-  string(${1:number}) ${0}
-
-snippet     stringd
-abbr        string declaration with delimiter
-alias       strd strid
-options     word indent
-  string("${1:delimiter}") ${0}
-
-snippet     date
-abbr        date declaration
-alias       dat8 da8 
-options     word indent
-  date("YYYYMMDD") ${0}
-
-snippet     datetime
-abbr        datetime declaration
-alias       datet14 datetime14 
-options     word indent
-  datetime("YYYYMMDDHH24MISS") ${0}
+	case ${1:expression} of
+		${2:label}: ${3}
+	  else
+	  	${4}
+	end;
 

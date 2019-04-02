@@ -47,8 +47,7 @@ syn keyword delphiLabel         goto label continue break exit
 syn keyword delphiOperator      not and or xor div mod as in is shr shl 
 syn keyword delphiLoop          for to downto while repeat until do
 syn keyword delphiReservedWord  array dispinterface finalization inherited initialization of packed set type with
-syn keyword delphiReservedWord  unit implementation interface 
-
+syn keyword delphiReservedWord  unit implementation 
 syn keyword delphiPredef        result self
 syn keyword delphiAssert        assert
 
@@ -108,6 +107,9 @@ syn match delphiChar "\v\#\$[0-9a-f]{1,6}" display
 
 syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 
+" FIXME: It can be faster : "end\.\ze\(\(end\.\)\@!\_.\)*\%$"
+syn match delphiUnitEnd "^end\." display
+
 " -----------------------------
 "  Dangerous part ...
 " -----------------------------
@@ -130,7 +132,6 @@ syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
 syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display
 syn match delphiCallableType "\<function\>"
 syn match delphiCallableType "\<procedure\>"
-syn match delphiCallableType "\<procedure\>"
 syn match delphiCallableType "\<constructor\>"
 syn match delphiCallableType "\<destructor\>"
 syn match delphiCallableType "\<operator\>"
@@ -149,32 +150,37 @@ syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs
 syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zsconst>" end="\v%(\n+)\ze\s*<%(var|implementation|const|begin|function|procedure)>" 
         \ contains=ALLBUT,delphiTypeModifier,delphiBeginEndBlock,delphiUnitName keepend fold 
 
+syn cluster delphiInterfaceContents contains=delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType
+
 " begin .. end
 syn region delphiBeginEndBlock matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 syn region delphiTryEndBlock matchgroup=delphiBeginEnd start="\<try\>" end="\<finally\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 syn region delphiFinallyEndBlock matchgroup=delphiBeginEnd start="\<finally\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 syn region delphiExceptEndBlock matchgroup=delphiBeginEnd start="\<except\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 syn region delphiCaseEndBlock matchgroup=delphiBeginEnd start="\<case\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 syn region delphiRecordEndBlock matchgroup=delphiBeginEnd start="\<record\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 syn region delphiObjectEndBlock matchgroup=delphiBeginEnd start="\<object\>" end="\<end\>" 
-      \ contains=ALLBUT,delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType extend fold 
+      \ contains=ALLBUT,@delphiInterfaceContents extend fold 
+
 
 " FIXME parenthesis after class(...)
 " Type declaration TClassName = class|record ... end;
-syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record)>" end="\<end\>;" 
+syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record|interface)>" end="\<end\>;" 
       \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName,delphiFunctionDefinition keepend fold
+
+syn cluster delphiComments contains=delphiComment,delphiLineComment,delphiRegion
 
 " Uses unit list
 syn match delphiScopeSeparator "\." contained
 syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
 syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";"me=e-1 
-      \ contains=delphiComment,delphiLineComment,delphiRegion,delphiUnitName,delphiScopeSeparator keepend fold
+      \ contains=@delphiComments,delphiUnitName,delphiScopeSeparator keepend fold
 
 " Declaration
 syn match    delphiScopeSeparator "\:" contained
@@ -190,15 +196,16 @@ syn match delphiSpecialComment "@\w\+"
 syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment fold
 syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment fold
 syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
-syn region delphiDefine start="{\$" end="}"
+
 
 " FIXME contains ALL highlights everything to delphiUnitName :( so it won't work
 " properly in UsesBlock
 syn region delphiRegion start="{\$region.*}" end="{\$endregion}" contains=ALLBUT,delphiUnitName keepend fold
 syn region delphiDefine start="(\*\$" end="\*)"
+syn region delphiDefine start="{\$" end="}"
 
 " String
-syn region delphiString start="'" end="'" skip="''" oneline
+syn region delphiString start="'" end="'" skip="''" oneline display
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -217,6 +224,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiType            Type
   HiLink   delphiWindowsType     Type
   HiLink   delphiReservedWord    Keyword
+  HiLink   delphiUnitEnd         Keyword
   HiLink   delphiTypeModifier    Keyword
   HiLink   delphiVarBlockSeparator Keyword
   HiLink   delphiAsmBlockSeparator  PreProc
