@@ -3,6 +3,9 @@
 A VIM syntax plugin for Delphi Pascal the primary programming language of
 Delphi IDE.
 
+See also [doc/delphi.txt](http://raw.github.com/mattia72/vim-delphi/master/doc/delhi.txt)
+for detailed documentation.
+
 ##  Installation
 Copy the included directories into your .vim or vimfiles directory.
 The [tabular](http://github.com/godlygeek/tabular "Tabular") and the 
