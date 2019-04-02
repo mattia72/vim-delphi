@@ -39,8 +39,8 @@ To format lines, that assigns values (contains `:=` ), we can use the
 famous [tabular](http://github.com/godlygeek/tabular) plugin.
 [vim-delphi](http://github.com/mattia72/vim-delphi) maps the appropriate
 commands for you.
-* `<leader>t=` helps you line up assignments by aligning the `:=` on each line.
-* `<leader>t:` helps you line up assignments by aligning the `:` on each line.
+* `<leader>t=` helps you line up assignments by aligning to `:=` on each line.
+* `<leader>t:` helps you line up declarations by aligning to `:` on each line.
 
 ## Neosnippet support
 For this feature you need to install [neosnippet](http://github.com/Shougo/neosnippet.vim "Neosnippet").
