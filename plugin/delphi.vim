@@ -41,17 +41,17 @@ let g:loaded_delphi_vim = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-" Global options defintion.
-let  delphi_space_errors = 1
-let  delphi_leading_space_error = 1
+" Global options 
+let delphi_space_errors = 1
+let delphi_leading_space_error = 1
 "let  delphi_leading_tab_error = 1
-let  delphi_trailing_space_error = 1
+let delphi_trailing_space_error = 1
+let delphi_highlight_function_parameters = 1
 
 " Autocommands
 " augroup delphi_vim_global_command_group
 "   autocmd!
 " augroup END
-
 
 " Define commands to operate delphi 
 function! g:delphi#SwitchPasOrDfm()
@@ -71,8 +71,8 @@ omap af :normal Vaf<CR>
 omap if :normal Vif<CR>
 
 if exists(':Tabularize') " Align selected assignes in nice columns with plugin
-  vnoremap <buffer> <leader>t= :Tabularize /:=<CR>
-  vnoremap <buffer> <leader>t: :Tabularize /:<CR>
+  vnoremap <leader>t= :<C-U>Tabularize /:=<CR>
+  vnoremap <leader>t: :<C-U>Tabularize /:<CR>
 endif
 
 let &cpo = s:save_cpo

@@ -41,7 +41,7 @@ syn sync lines=250
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "
 syn keyword delphiBool          true false 
-syn keyword delphiConditional   if then case else
+syn keyword delphiConditional   if then else
 syn keyword delphiConstant      nil maxint
 syn keyword delphiLabel         goto label continue break exit
 syn keyword delphiOperator      not and or xor div mod as in is shr shl 
@@ -113,15 +113,14 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 " -----------------------------
 
 syn match delphiIdentifier "\v\&?[a-z_]\w*"  containedin=delphiBeginEndBlock contained  display
-syn match delphiFunctionParameter "\v<_\w+>[^(]"me=e-1 display
+
+if exists("delphi_highlight_function_parameters")
+  syn match delphiFunctionParameter "\v<_\w+>[^(]"me=e-1 display
+endif
+
 syn match delphiConstant "\v\C<[A-Z_]+>" display
 
-" FIXME Templates?? See c++
-"syn match delphiTemplateSeparator "\v[<>]"
 syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
-
-"syn match delphiQualifiedIdentifier "\v\.\s*<[a-z_]\w*>"ms=s+1 contains=delphiScopeSeparator containedin=delphiBeginEndBlock contained display
-"syn match delphiContainerType "\v<[a-z_]\w*>\."me=e-1  contains=delphiScopeSeparator 
 
 " -----------------------------
 " Regions...
@@ -216,7 +215,6 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiLineComment     Comment
   HiLink   delphiComment         Comment
   HiLink   delphiType            Type
-  HiLink   delphiClassType       Type
   HiLink   delphiWindowsType     Type
   HiLink   delphiReservedWord    Keyword
   HiLink   delphiTypeModifier    Keyword
