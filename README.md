@@ -42,7 +42,7 @@ commands for you.
 * `<leader>t=` helps you line up assignments by aligning the `:=` on each line.
 * `<leader>t:` helps you line up assignments by aligning the `:` on each line.
 
-## Neosnippet support (under construction! :construction:)
+## Neosnippet support
 For this feature you need to install [neosnippet](http://github.com/Shougo/neosnippet.vim "Neosnippet").
 
 The snippet file should loaded automatically, if not, you can load it by:
