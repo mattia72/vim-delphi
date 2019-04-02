@@ -121,8 +121,8 @@ ggVG=               Indents the whole file
 ==============================================================================
 SNIPPETS                                                     *delphi-snippets*
 
-This part is under construction!!!
-See |neosnippet.txt| and <plugin_dir>/vim-delphi/snippets directory.
+For available snippets see <plugin_dir>/vim-delphi/snippets directory.
+See also: |neosnippet.txt|
 
 ------------------------------------------------------------------------------
  vim:tw=79:ts=8:ft=help:norl:
