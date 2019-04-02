@@ -1,6 +1,4 @@
-# vim-delphi  (under construction! :construction: )
-
-:warning: **This plugin is under development! Don't use it unless you know what you do!** :warning:
+# vim-delphi  
 
 A VIM syntax plugin for Delphi Pascal the primary programming language of
 Delphi IDE.
@@ -13,32 +11,17 @@ recommended, but not necessary.
 
 ### Plugin managers
 It is recommended to use a popular plugin manager for Vim plugins.
+If you prefer [vim-plug](http://github.com/Shougo/dein.vim "vim-plug"). 
+Put this lines into your plugin list:
+```
+Plug 'Shougo/neosnippet'            
+Plug 'godlygeek/tabular',           
+Plug 'mattia72/vim-delphi' 
+```
+## Syntax highlight 
+![Screenshot](/../screenshot/screenshot.jpg?raw=true "Screenshot")
 
-#### Dein
-If you prefer [dein](http://github.com/Shougo/dein.vim "Dein"). Put this lines in your
-plugin list:
-```
-call dein#add('Shougo/neosnippet')      " Recommended  
-call dein#add('godlygeek/tabular',     
-      \{ 'on_cmd' : 'Tabularize' })     " Recommended 
-call dein#add('mattia72/vim-delphi' , 
-      \{ 'on_ft': ['delphi' ] }) 
-```
-
-#### Plug
-If you prefer [vim-plug](http://github.com/Shougo/dein.vim "vim-plug"). Put this lines in your
-plugin list:
-```
-Plug 'Shougo/neosnippet'            " Recommended  
-Plug 'godlygeek/tabular',     
-      \{ 'on' : 'Tabularize' })     " Recommended 
-call dein#add('mattia72/vim-delphi', 
-      \{ 'for': ['delphi' ] }) 
-```
-## Syntax highlight (under construction! :construction:)
-![Screenshot](/../screenshot/screenshot.png?raw=true "Screenshot")
-
-## Matchit support  (under construction! :construction:)
+## Matchit support  
 `b:match_words` contains matching words to jump between "begin" and "end" with `%`
 
 ## Indent (under construction! :construction:)
@@ -48,13 +31,13 @@ Indentation works well (in most cases :))
 1. Select the lines you wan't to indent. (eg. with `V%` on a "begin" keyword)
 2. Push `=`
 
-## Tabular (under construction! :construction:)
+## Tabular 
 To format lines, that assigns values (contains `:=` ), we can use the 
 famous [tabular](http://github.com/godlygeek/tabular) plugin.
 [vim-delphi] (http://github.com/mattia72/vim-delphi) maps the appropriate
 commands for you.
 * `<leader>t=` helps you line up assignments by aligning the `:=` on each line.
-* `<leader>t:` helps you line up assignments by aligning the `:=` on each line.
+* `<leader>t:` helps you line up assignments by aligning the `:` on each line.
 
 ## Neosnippet support (under construction! :construction:)
 For this feature you need to install [neosnippet](http://github.com/Shougo/neosnippet.vim "Neosnippet").

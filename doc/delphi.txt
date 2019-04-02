@@ -46,7 +46,7 @@ SETTINGS                                                     *delphi-settings*
 |delphi_leading_tab_error| : 
     highlight leading <tab>s, not <space>s
 |delphi_highlight_function_parameters| :  
-    highlight function parameters with leading '_'. eg: Foo(_bar:string) 
+    highlight function parameters wich has leading u'_'. eg: Foo(_bar:string) 
 
 ------------------------------------------------------------------------------
 Examples
