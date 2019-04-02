@@ -3,7 +3,7 @@
 A VIM syntax plugin for Delphi Pascal the primary programming language of
 Delphi IDE.
 
-See also [doc/delphi.txt](http://raw.github.com/mattia72/vim-delphi/master/doc/delhi.txt)
+See also [doc/delphi.txt](http://raw.github.com/mattia72/vim-delphi/master/doc/delphi.txt)
 for detailed documentation.
 
 ##  Installation
