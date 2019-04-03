@@ -171,7 +171,8 @@ syn region delphiObjectEndBlock matchgroup=delphiBeginEnd start="\<object\>" end
 
 " FIXME parenthesis after class(...)
 " Type declaration TClassName = class|record ... end;
-syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[T]\w*>\s*\=\s*<%(class|record|interface)>" end="\<end\>;" 
+syn match delphiInterfaceSection "\<interface\>"
+syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[TI]\w+>\s*\=\s*<%(class|record|interface)>" end="\<end\>;" 
       \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName,delphiFunctionDefinition keepend fold
 
 syn cluster delphiComments contains=delphiComment,delphiLineComment,delphiRegion
@@ -224,6 +225,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiType            Type
   HiLink   delphiWindowsType     Type
   HiLink   delphiReservedWord    Keyword
+  HiLink   delphiInterfaceSection Keyword
   HiLink   delphiUnitEnd         Keyword
   HiLink   delphiTypeModifier    Keyword
   HiLink   delphiVarBlockSeparator Keyword
