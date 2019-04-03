@@ -39,7 +39,6 @@ else
     let b:undo_indent = '|'
 endif
 
-
 let b:undo_indent .= '
     \ setlocal indentexpr< indentkeys<
     \'
