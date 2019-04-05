@@ -41,14 +41,15 @@ syn sync lines=250
 syn keyword dfmKeyword inherited object item end 
 syn keyword dfmBoolean true false
 
-syn match  dfmNumber		"-\?\<\d\+\>"
+syn match  dfmNumber	    "-\?\<\d\+\>" display
+syn match  dfmFloat	    "-\?\<\d\+\.\d\+\>" display
 syn region dfmString start="'" end="'" skip="''" oneline
 
-syn match    dfmCustomScope    "\."
-syn match    dfmCustomClass    "\v\w+\s*\.[^.]"me=e-1 contains=dfmCustomScope
+syn match    dfmCustomScope "\."
+syn match    dfmEmbeddedClass "\v\w+\s*\.[^.0-9]"me=e-1 contains=dfmCustomScope
 " Declaration
-syn match    dfmCustomScope    "\:"
-syn match    dfmCustomClass    "\:\s*\w\+" contains=dfmCustomScope
+syn match    dfmCustomScope "\:"
+syn match    dfmEmbeddedClass "\:\s*\w\+" contains=dfmCustomScope
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -62,9 +63,10 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink  dfmKeyword        Keyword 
   HiLink  dfmBoolean        Boolean
   HiLink  dfmCustomScope    Normal
-  HiLink  dfmCustomClass    Type
+  HiLink  dfmEmbeddedClass  Type
   HiLink  dfmNumber         Number
-  HiLink   dfmString          String
+  HiLink  dfmFloat          Number
+  HiLink  dfmString         String
   delcommand HiLink
 endif
 

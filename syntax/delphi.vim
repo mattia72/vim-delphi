@@ -114,13 +114,13 @@ syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 " FIXME: It can be faster : "end\.\ze\(\(end\.\)\@!\_.\)*\%$"
 syn match delphiUnitEnd "^end\." display
 
-syn match delphiIdentifier "\v\&?[a-z_]\w*"  containedin=delphiBeginEndBlock contained  display
+" case sensitive \C
+syn match delphiConstant "\v\C<[A-Z_][A-Z0-9_]+>" display
+syn match delphiIdentifier "\v\&?<[a-z]\w+>"  containedin=delphiBeginEndBlock contained  display
 
 if exists("delphi_highlight_function_parameters")
-  syn match delphiFunctionParameter "\v<_\w+>[^(]"me=e-1 display
+  syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"
 endif
-" case sensitive \C
-syn match delphiConstant "\v\C<[A-Z_]+>" display
 syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
 
 " -----------------------------
