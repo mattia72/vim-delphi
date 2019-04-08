@@ -21,7 +21,8 @@ Plug 'godlygeek/tabular',
 Plug 'mattia72/vim-delphi' 
 ```
 ## Syntax highlight 
-Pascal **.pas* and **.dfm* files are recognized automatically.
+**.pas*, **.dfm* and **.fmx* files are recognized automatically:
+
 ![Screenshot](/../screenshot/screenshot.jpg?raw=true "Screenshot")
 
 ## Matchit support  
