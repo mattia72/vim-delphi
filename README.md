@@ -1,7 +1,6 @@
 # vim-delphi  
 
-A VIM syntax plugin for Delphi Pascal the primary programming language of
-Delphi IDE.
+A VIM syntax plugin for Delphi Pascal and Delphi Form files.
 
 See also [doc/delphi.txt](http://raw.github.com/mattia72/vim-delphi/master/doc/delphi.txt)
 for detailed documentation.
@@ -13,15 +12,16 @@ The [tabular](http://github.com/godlygeek/tabular "Tabular") and the
 recommended, but not necessary.
 
 ### Plugin managers
-It is recommended to use a popular plugin manager for Vim plugins.
-If you prefer [vim-plug](http://github.com/Shougo/dein.vim "vim-plug"). 
-Put this lines into your plugin list:
+It is recommended to use a plugin manager for Vim plugins.
+If you prefer [vim-plug](https://github.com/junegunn/vim-plug "vim-plug") as
+well, put this lines into your plugin list:
 ```
 Plug 'Shougo/neosnippet'            
 Plug 'godlygeek/tabular',           
 Plug 'mattia72/vim-delphi' 
 ```
 ## Syntax highlight 
+Pascal **.pas* and **.dfm* files are recognized automatically.
 ![Screenshot](/../screenshot/screenshot.jpg?raw=true "Screenshot")
 
 ## Matchit support  
