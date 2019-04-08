@@ -26,7 +26,13 @@ Plug 'mattia72/vim-delphi'
 ![Screenshot](/../screenshot/screenshot.jpg?raw=true "Screenshot")
 
 ## Matchit support  
-`b:match_words` contains matching words to jump between "begin" and "end" with `%`
+`b:match_words` contains matching words to jump between words with `%`.
+Such words are eg. 
+* "begin", "end"
+* "repeat", "until"
+* "try", "finally"
+* "unit", "interface", "implementation", "end."
+and so on.
 
 ## Indent (under construction! :construction:)
 Indentation works well (in most cases :)) 
