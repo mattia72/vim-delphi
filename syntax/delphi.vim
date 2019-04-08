@@ -71,23 +71,25 @@ syn keyword delphiExcept try on raise at
 syn keyword delphiStructure class object record
 
 syn keyword delphiCallingConv cdecl pascal register safecall stdcall winapi
-syn keyword delphiDirective library package program 
-syn keyword delphiDirective absolute abstract assembler delayed deprecated dispid dynamic experimental export external final forward implements inline name message overload override packed platform readonly reintroduce static unsafe varargs virtual writeonly
-syn keyword delphiDirective helper reference sealed
-syn keyword delphiDirective "contains" requires
-syn keyword delphiDirective far near resident
+
+syn keyword delphiDirective absolute abstract assembler "contains" delayed deprecated
+syn keyword delphiDirective dispid dynamic experimental export external far final
+syn keyword delphiDirective forward helper implements inline library message name near
+syn keyword delphiDirective overload override package packed platform program readonly
+syn keyword delphiDirective reference reintroduce requires resident sealed static unsafe
+syn keyword delphiDirective varargs virtual writeonly 
 
 syn keyword delphiVisibility private protected public published strict
 
 syn keyword delphiPropDirective default index nodefault read stored write
 
 syn keyword delphiWindowsType bool dword ulong
+syn match delphiWindowsType "\v<h(dc|result|wnd)>" display
+
 syn keyword delphiType boolean
 syn keyword delphiType byte integer cardinal pointer
 syn keyword delphiType single double extended comp currency
 
-
-syn match delphiWindowsType "\v<h(dc|result|wnd)>" display
 syn match delphiType "\v<(byte|word|long)bool>" display
 syn match delphiType "\v<(short|small|long|nativeu?)int>" display
 syn match delphiType "\v<u?int(8|16|32|64|128)>" display
@@ -121,7 +123,8 @@ syn match delphiIdentifier "\v\&?<[a-z]\w+>"  containedin=delphiBeginEndBlock co
 if exists("delphi_highlight_function_parameters")
   syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"
 endif
-syn match delphiTemplateParameter "<\zs\(\w\+,\?\)\+\ze>" contained display
+syn match delphiTemplateParameter "<\zs\(\w\+\(\s*,\?\s*\w\+\)*\)\+\ze>" contained display
+"syn match delphiClassParameter "\<class\>\s*(\zs\(\w\+\(\s*,\?\s*\w\+\)*\)\+\ze)" contained display
 
 " -----------------------------
 " Regions...
