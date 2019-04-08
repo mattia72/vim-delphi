@@ -4,7 +4,7 @@
 " Description:   Vim indent file for Delphi Pascal Language.
 "                Based on builtin pascal indent by Neil Carter
 "                see also http://psy.swansea.ac.uk/staff/carter/vim/
-" Created:       24 okt. 2015
+" Created:       05 apr. 2019
 " Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
 "   Permission is hereby granted, free of charge, to any person obtaining
@@ -28,6 +28,8 @@
 " }}}
 "=============================================================================
 
+echom 'delphi.vim: start...'
+
 " Only load this indent file when no other was loaded.
 if exists("b:did_indent") | finish | endif
 let b:did_indent = 1
@@ -42,72 +44,102 @@ setlocal indentkeys+==program,==function,==procedure,==object,==private
 setlocal indentkeys+==record,==if,==else,==case
 
 if exists("*GetDelphiIndent")
-	finish
+  echom 'delphi.vim: Here should we finish'
+	"finish
 endif
 
+let s:delphi_comment = '^\s*\(\((\*\)\|\(\*\ \)\|\(\*)\)\|{\|}\)'
+let s:delphi_line_comment = '\/\/.*'
 
 function! s:GetPrevNonCommentLineNum( line_num )
-
 	" Skip lines starting with a comment
-	let SKIP_LINES = '^\s*\(\((\*\)\|\(\*\ \)\|\(\*)\)\|{\|}\)'
-
 	let nline = a:line_num
 	while nline > 0
 		let nline = prevnonblank(nline-1)
-		if getline(nline) !~? SKIP_LINES
+		if getline(nline) !~? '^\s*\%(\%('.s:delphi_comment.'\)\|\%('.s:delphi_line_comment.'\)\)'
+		"if getline(nline) !~? s:delphi_comment
 			break
 		endif
+	endwhile
+	return nline
+endfunction
+
+function! s:RemoveComment(line)
+  let prev_unc_line =  substitute(a:line, s:delphi_comment, "", "")
+  ""echom "RemCom: ".substitute(prev_unc_line, s:cpp_comment, "", "") 
+  return substitute(prev_unc_line, s:delphi_line_comment, "", "")
+endfunction
+
+" Search backwards the matching start element
+" if end_element empty, it doesn't check for nested elements
+function! s:GetMatchingElemLineNum( line_num, start_element, end_element )
+
+	let nline = prevnonblank(a:line_num - 1)
+  let skip_start_elem_num = 0
+
+	while nline > 0
+		let line = getline(nline)
+
+		if !empty(a:end_element) && line =~ a:end_element
+		  let skip_start_elem_num += 1
+		endif
+
+		if line  =~ a:start_element
+      "echom 'start elem found'
+		  if skip_start_elem_num != 0
+        "echom 'but we skipp '.skip_start_elem_num
+		    let skip_start_elem_num -= 1
+		    next
+		  else
+        "echom 'that's it :)'.nline
+		    break
+		  endif
+		endif
+
+		let nline = prevnonblank(nline-1)
 	endwhile
 
 	return nline
 endfunction
 
+" words in line after which we should indent
+let s:ind_block_words = join(['class','type','record'],'\>\|')
 
-function! s:PurifyCode( line_num )
-	" Strip any trailing comments and whitespace
-	let pureline = 'TODO'
-	return pureline
-endfunction
-
+" words after one line should be indented if not a block
+let s:ind_line_words = join([ 'if', 'then', 'else', 
+      \ 'for', 'while',
+      \ 'case','default'], '\>\|')
 
 function! GetDelphiIndent( line_num )
-
+  echom 'GetDelphiIndent start at: '.a:line_num
+	
 	" Line 0 always goes at column 0
-	if a:line_num == 0
-		return 0
-	endif
+	if a:line_num == 0 | return 0 | endif
 
-	let this_codeline = getline( a:line_num )
-
+	let this_line = getline( a:line_num )
+	let shift_val = 0
 
 	" SAME INDENT
-
-	" Middle of a three-part comment
-	if this_codeline =~ '^\s*\*'
-		return indent( a:line_num - 1)
-	endif
-
+	
+	" TODO: In the middle of a three-part comment. this check is not enough!
+	if this_line =~ '^\s*\*' | return indent( a:line_num - 1) | endif
 
 	" COLUMN 1 ALWAYS
 
 	" Last line of the program
-	if this_codeline =~ '^\s*end\.'
-		return 0
-	endif
+	if this_line =~ '^\s*end\.' | return 0 | endif
 
 	" Compiler directives, allowing "(*" and "{"
-	"if this_codeline =~ '^\s*\({\|(\*\)$\(IFDEF\|IFNDEF\|ELSE\|ENDIF\)'
-	if this_codeline =~ '^\s*\({\|(\*\)\$'
-		return 0
-	endif
+	"if this_line =~ '^\s*\({\|(\*\)$\(IFDEF\|IFNDEF\|ELSE\|ENDIF\)'
+	if this_line =~ '^\s*\({\|(\*\)\$' | return 0 | endif
 
-	" section headers
-	if this_codeline =~ '^\s*\(program\|procedure\|function\|type\)\>'
+	" section headers at start of line.
+	if this_line =~ '^\s*\(program\|interface\|type\|implementation\|uses\|unit\)\>'
 		return 0
 	endif
 
 	" Subroutine separators, lines ending with "const" or "var"
-	if this_codeline =~ '^\s*\((\*\ _\+\ \*)\|\(const\|var\)\)$'
+	if this_line =~ '^\s*\((\*\ _\+\ \*)\|\(const\|var\)\)$'
 		return 0
 	endif
 
@@ -127,7 +159,7 @@ function! GetDelphiIndent( line_num )
 	endif
 
 	if prev_codeline =~ '\<repeat$'
-		if this_codeline !~ '^\s*until\>'
+		if this_line !~ '^\s*until\>'
 			return indnt + shiftwidth()
 		else
 			return indnt
@@ -135,7 +167,7 @@ function! GetDelphiIndent( line_num )
 	endif
 
 	if prev_codeline =~ '\<\(begin\|record\)$'
-		if this_codeline !~ '^\s*end\>'
+		if this_line !~ '^\s*end\>'
 			return indnt + shiftwidth()
 		else
 			return indnt
@@ -145,7 +177,7 @@ function! GetDelphiIndent( line_num )
 	" If the PREVIOUS LINE ended with these items, indent if not
 	" followed by "begin"
 	if prev_codeline =~ '\<\(\|else\|then\|do\)$' || prev_codeline =~ ':$'
-		if this_codeline !~ '^\s*begin\>'
+		if this_line !~ '^\s*begin\>'
 			return indnt + shiftwidth()
 		else
 			" If it does start with "begin" then keep the same indent
@@ -166,7 +198,7 @@ function! GetDelphiIndent( line_num )
 
 	" Lines starting with "else", but not following line ending with
 	" "end".
-	if this_codeline =~ '^\s*else\>' && prev_codeline !~ '\<end$'
+	if this_line =~ '^\s*else\>' && prev_codeline !~ '\<end$'
 		return indnt - shiftwidth()
 	endif
 
@@ -179,7 +211,7 @@ function! GetDelphiIndent( line_num )
 		" If the next code line after a single statement branch/loop
 		" starts with "end", "except" or "finally", we need an
 		" additional unindentation.
-		if this_codeline =~ '^\s*\(end;\|except\|finally\|\)$'
+		if this_line =~ '^\s*\(end;\|except\|finally\|\)$'
 			" Note that we don't return from here.
 			return indnt - 2 * shiftwidth()
 		endif
@@ -189,7 +221,7 @@ function! GetDelphiIndent( line_num )
 	" Lines starting with "until" or "end". This rule must be overridden
 	" by the one for "end" after a single-statement branch/loop. In
 	" other words that rule should come before this one.
-	if this_codeline =~ '^\s*\(end\|until\)\>'
+	if this_line =~ '^\s*\(end\|until\)\>'
 		return indnt - shiftwidth()
 	endif
 
@@ -198,7 +230,7 @@ function! GetDelphiIndent( line_num )
 
 	" Most "begin"s will have been handled by now. Any remaining
 	" "begin"s on their own line should go in column 1.
-	if this_codeline =~ '^\s*begin$'
+	if this_line =~ '^\s*begin$'
 		return 0
 	endif
 
@@ -212,10 +244,10 @@ function! GetDelphiIndent( line_num )
 
 	" COLUMN 1 ALWAYS
 
-	" section headers at start of line.
-	if this_codeline =~ '^\s*\(interface\|implementation\|uses\|unit\)\>'
-		return 0
-	endif
+   "section headers at start of line.
+  "if this_line =~ '^\s*\(interface\|implementation\|uses\|unit\)\>'
+    "return 0
+  "endif
 
 
 	" INDENT ONCE
@@ -232,11 +264,11 @@ function! GetDelphiIndent( line_num )
 
 	" UNINDENT ONCE
 
-	if this_codeline =~ '^\s*\(except\|finally\)$'
+	if this_line =~ '^\s*\(except\|finally\)$'
 		return indnt - shiftwidth()
 	endif
 
-	if this_codeline =~ '^\s*\(private\|protected\|public\|published\)$'
+	if this_line =~ '^\s*\(private\|protected\|public\|published\)$'
 		return indnt - shiftwidth()
 	endif
 
