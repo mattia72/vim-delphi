@@ -109,16 +109,17 @@ syn match delphiChar "\v\#\$[0-9a-f]{1,6}" display
 
 syn match delphiBadChar "\v\%|\?|\\|\!|\"|\||\~" display
 
+" FIXME: It can be faster : "end\.\ze\(\(end\.\)\@!\_.\)*\%$"
+syn match delphiUnitEnd "^end\." display
+
 " -----------------------------
 "  Dangerous part ...
 " -----------------------------
 
-" FIXME: It can be faster : "end\.\ze\(\(end\.\)\@!\_.\)*\%$"
-syn match delphiUnitEnd "^end\." display
+syn match delphiIdentifier "\v\&?<[a-z]\w+>"  containedin=delphiBeginEndBlock contained  display
 
 " case sensitive \C
 syn match delphiConstant "\v\C<[A-Z_][A-Z0-9_]+>" display
-syn match delphiIdentifier "\v\&?<[a-z]\w+>"  containedin=delphiBeginEndBlock contained  display
 
 if exists("delphi_highlight_function_parameters")
   syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"

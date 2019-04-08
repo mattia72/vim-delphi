@@ -87,15 +87,16 @@ MAPPINGS                                                     *delphi-mappings*
 
 The plugin provides some useful mapping definition also. 
 
+Commands defined in ftplugin/common.vim: (common for *.dfm and *.pas files)
+<leader>sd      Switch to *.dfm  
+<leader>sp      Switch to *.pas
+
 Commands defined in plugin/delphi.vim:
 vif             Select all in a block  
 vaf             Select a whole block  
 <leader>t=      Align selected assignes in nice columns with |Tabularize| 
 <leader>t:      Align selected declarations in nice columns with |Tabularize| 
-
-Commands defined in ftplugin/common.vim:
-<leader>sd      Switch to *.dfm  
-<leader>sp      Switch to *.pas
+<F7>            Save all, searches the nearest make.cmd and calls make
 
 ==============================================================================
 MATCHIT SUPPORT                                               *delphi-matchit*
