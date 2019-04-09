@@ -166,7 +166,7 @@ function! GetDelphiIndent( line_num )
 		endif
 	endif
 
-	if prev_codeline =~ '\<\(begin\|record\)$'
+	if prev_codeline =~ '\<\(begin\|record\|class\)$'
 		if this_line !~ '^\s*end\>'
 			return indnt + shiftwidth()
 		else

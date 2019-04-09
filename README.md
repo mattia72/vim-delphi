@@ -27,11 +27,13 @@ Plug 'mattia72/vim-delphi'
 
 ## Matchit support  
 `b:match_words` contains matching words to jump between words with `%`.
-Such words are eg. 
+
+Such words are, eg. 
 * "begin", "end"
 * "repeat", "until"
 * "try", "finally"
 * "unit", "interface", "implementation", "end."
+
 and so on.
 
 ## Indent (under construction! :construction:)
@@ -42,9 +44,8 @@ Indentation works well (in most cases :))
 2. Push `=`
 
 ## Tabular 
-To format lines, that assigns values (contains `:=` ), we can use the 
-famous [tabular](http://github.com/godlygeek/tabular) plugin.
-[vim-delphi](http://github.com/mattia72/vim-delphi) maps the appropriate
+To format lines, that assigns values like this: `variable := value;`, we can use the 
+[tabular](http://github.com/godlygeek/tabular) plugin.  [vim-delphi](http://github.com/mattia72/vim-delphi) maps the appropriate
 commands for you.
 * `<leader>t=` helps you line up assignments by aligning to `:=` on each line.
 * `<leader>t:` helps you line up declarations by aligning to `:` on each line.
