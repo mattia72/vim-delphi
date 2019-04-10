@@ -102,20 +102,23 @@ omap if :normal Vif<CR>
 "FIXME read tabularize.doc for extension
 if exists(':Tabularize') " Align selected assignes in nice columns with plugin
   vnoremap <leader>t= :Tabularize /:=<CR>
-  vnoremap <leader>t: :Tabularize /:s<CR>
+  vnoremap <leader>t: :Tabularize /:\zs<CR>
 endif
 
-"FIXME find out how to extend instead of redefine
-if exists(':RainbowToggle') 
-  let rainbow_delphi_conf = {
+
+if exists(':RainbowToggle')
+  let delphi_rainbow_conf = {
 	      \	'separately': {
 	      \		'delphi': {
 	      \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/begin/ end=/end/'],
 	      \		},
 	      \	}
 	      \}
-  extend(g:rainbow_conf, rainbow_delphi_conf)
-  unlet rainbow_delphi_conf
+  if exists('g:rainbow_conf')
+	  extend(g:rainbow_conf, delphi_rainbow_conf)
+	else
+	  let g:rainbow_conf = delphi_rainbow_conf
+	endif
 endif
 
 " Find make.cmd and execute
