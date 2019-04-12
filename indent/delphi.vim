@@ -43,8 +43,9 @@ setlocal indentkeys+==end;,==const,==type,==var,==begin,==repeat,==until,==for
 setlocal indentkeys+==program,==function,==procedure,==object,==private
 setlocal indentkeys+==record,==if,==else,==case
 
+
 if exists("*GetDelphiIndent")
-  echom 'delphi.vim: Here should we finish'
+  "echom 'delphi.vim: Here should we finish'
 	"finish
 endif
 
@@ -111,7 +112,7 @@ let s:ind_line_words = join([ 'if', 'then', 'else',
       \ 'case','default'], '\>\|')
 
 function! GetDelphiIndent( line_num )
-  echom 'GetDelphiIndent start at: '.a:line_num
+  "echom 'GetDelphiIndent start at: '.a:line_num
 	
 	" Line 0 always goes at column 0
 	if a:line_num == 0 | return 0 | endif
@@ -187,8 +188,8 @@ function! GetDelphiIndent( line_num )
 	endif
 
 	" Inside a parameter list (i.e. a "(" without a ")"). ???? Considers
-	" only the line before the current one. TODO: Get it working for
-	" parameter lists longer than two lines.
+	" only the line before the current one. 
+	" FIXME: Get it working for  parameter lists longer than two lines.
 	if prev_codeline =~ '([^)]\+$'
 		return indnt + shiftwidth()
 	endif

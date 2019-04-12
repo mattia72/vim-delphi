@@ -102,7 +102,7 @@ omap if :normal Vif<CR>
 "FIXME read tabularize.doc for extension
 if exists(':Tabularize') " Align selected assignes in nice columns with plugin
   vnoremap <leader>t= :Tabularize /:=<CR>
-  vnoremap <leader>t: :Tabularize /:\zs<CR>
+  vnoremap <leader>t: :Tabularize /:<CR>
 endif
 
 
@@ -122,7 +122,7 @@ if exists(':RainbowToggle')
 endif
 
 " Find make.cmd and execute
-nnoremap <F7> :wa <bar> call delphi#FindAndMake() <CR>
+nnoremap <F7> :wa <bar> call delphi#FindAndMake() <bar> cwindow<CR>
 
 " highlight selcted word
 nnoremap <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
