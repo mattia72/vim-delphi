@@ -70,13 +70,27 @@ function! g:delphi#SwitchPasOrDfm()
   endif
 endfunction
 
-function! g:delphi#FindAndMake()
+function! g:delphi#OpenDecorateQuickFix()
+  copen  
+  syn match qfSpecial "^||.*" 
+  syn match qfErrorMsg "error \zs[EF]\d\+\ze:" 
+  syn match qfWarningMsg " \zs[WH]\d\+\ze:"
+  hi def link qfSpecial Special
+  hi def link qfErrorMsg ErrorMsg
+  hi def link qfWarningMsg  WarningMsg 
+  wincmd J       
+endfunction
+
+function! g:delphi#FindAndMake(...)
   let cwd_orig = getcwd()
   chdir %:p:h
   while getcwd() =~ '[A-Z]:\'
     if filereadable("make.cmd") 
-      echo 'Run '.getcwd().'\make.cmd'
+	    echohl WarningMsg | echo 'Run '.getcwd().'\make.cmd' | echohl None
       make  
+      if len(getqflist()) > 0
+        call delphi#OpenDecorateQuickFix()
+      endif
       break
     else  
       chdir ..  
@@ -85,9 +99,9 @@ function! g:delphi#FindAndMake()
   execute 'chdir' cwd_orig
 endfunction
 
-command! -nargs=+ -complete=command SwitchToDfm call delphi#SwitchPasOrDfm(<q-args>)
-command! -nargs=+ -complete=command SwitchToPas call delphi#SwitchPasOrDfm(<q-args>)
-command! -nargs=+ -complete=command MakeDelphi call delphi#FindAndMake(<q-args>)
+command! -nargs=0 -complete=command SwitchToDfm call delphi#SwitchPasOrDfm()
+command! -nargs=0 -complete=command SwitchToPas call delphi#SwitchPasOrDfm()
+command! -nargs=* -complete=command MakeDelphi call delphi#FindAndMake(<q-args>)
 
 " ----------------------
 " Mappings
