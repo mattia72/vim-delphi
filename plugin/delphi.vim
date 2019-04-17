@@ -75,7 +75,7 @@ function! g:delphi#OpenDecorateQuickFix()
   syn match qfSpecial "^||.*" 
   syn match qfErrorMsg "error \zs[EF]\d\+\ze:" 
   syn match qfWarningMsg " \zs[WH]\d\+\ze:"
-  hi def link qfSpecial Special
+  hi def link qfSpecial Delimiter
   hi def link qfErrorMsg ErrorMsg
   hi def link qfWarningMsg  WarningMsg 
   wincmd J       
@@ -83,20 +83,35 @@ endfunction
 
 function! g:delphi#FindAndMake(...)
   let cwd_orig = getcwd()
-  chdir %:p:h
-  while getcwd() =~ '[A-Z]:\'
-    if filereadable("make.cmd") 
-	    echohl WarningMsg | echo 'Run '.getcwd().'\make.cmd' | echohl None
-      make  
-      if len(getqflist()) > 0
-        call delphi#OpenDecorateQuickFix()
+  let active_file_dir = expand('%:p:h')
+  execute 'chdir '.active_file_dir
+
+  if a:0 != 0
+    let project_name =  a:000[0]
+    let project_file = findfile(project_name, cwd_orig)
+  else
+    let project_name = '*.dpr'
+    while getcwd() =~ '[A-Z]:\'
+      let project_file = findfile("*.dpr") 
+      if !empty(project_file) 
+        break
+      else  
+        chdir ..  
       endif
-      break
-    else  
-      chdir ..  
+    endwhile
+  endif
+
+  if !empty(project_file) 
+	  echohl WarningMsg | echo 'Make '.project_file | echohl None
+    execute 'make '.project_file 
+    if len(getqflist()) > 0
+      call delphi#OpenDecorateQuickFix()
     endif
-  endwhile
-  execute 'chdir' cwd_orig
+  else  
+	  echohl ErrorMsg | echo 'Can''t find project file "'.project_name.'" upward from '.active_file_dir | echohl None
+  endif
+
+  execute 'chdir '.cwd_orig
 endfunction
 
 command! -nargs=0 -complete=command SwitchToDfm call delphi#SwitchPasOrDfm()
