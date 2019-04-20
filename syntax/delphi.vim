@@ -54,6 +54,8 @@ syn keyword delphiAssert        assert
 "syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\.|\^" 
 "syn match delphiOperator "\v|\[|\]|\.|\:"
 
+"syn match delphiSemicolonError display "\zs[^;]\ze\s*$"
+
 if exists("delphi_space_errors")
   " based on c_space_errors; to enable, use "delphi_space_errors".
   if exists("delphi_trailing_space_error")
@@ -132,14 +134,15 @@ syn match delphiTemplateParameter "<\zs\(\w\+\(\s*,\?\s*\w\+\)*\)\+\ze>" contain
 " -----------------------------
 
 " Highlight all function names and function definitions 
-syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display
+syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display nextgroup=delphiFunctionParams 
 syn match delphiCallableType "\<function\>"
 syn match delphiCallableType "\<procedure\>"
 syn match delphiCallableType "\<constructor\>"
 syn match delphiCallableType "\<destructor\>"
 syn match delphiCallableType "\<operator\>"
-syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" keepend fold
-      \ contains=ALLBUT,delphiVarBlock,delphiUnitName
+
+syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" fold
+      \ contains=ALLBUT,delphiVarBlock,delphiUnitName,delphiSemicolonError
 syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>\s+\ze%(\w+\.)+" end="\v\.\ze\w+\("me=e-1 keepend display
 
 " Var block: last line before begin, const or fuction etc...
@@ -209,7 +212,9 @@ syn region delphiDefine start="(\*\$" end="\*)"
 syn region delphiDefine start="{\$" end="}"
 
 " String
-syn region delphiString start="'" end="'" skip="''" oneline display
+syn region delphiString start="'" end="'" skip="''" oneline display keepend
+
+
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -256,11 +261,10 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   HiLink   delphiStructure       Structure
   HiLink   delphiLabel           Label
   HiLink   delphiSpaceError	 Error
+  HiLink   delphiSemicolonError Error
   HiLink   delphiFunctionName      Function
-
   HiLink   delphiCallableType    Keyword
   HiLink   delphiFunctionDefSeparator delphiCallableType
-
   HiLink   delphiDeclareType     Type
   HiLink   delphiContainerType   Type
   HiLink   delphiUsesBlockSeparator Keyword
