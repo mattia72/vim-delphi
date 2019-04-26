@@ -53,12 +53,6 @@ let delphi_leading_space_error = 1
 let delphi_trailing_space_error = 1
 let delphi_highlight_function_parameters = 1
 
-" Autocommands
-augroup delphi_vim_global_command_group
-  autocmd!
-  autocmd FileType delphi nnoremap <buffer> <F7> :wa<bar>call delphi#MakeActual()<bar>cwindow<CR>
-augroup END
-
 " ----------------------
 " Functions
 " ----------------------
@@ -111,17 +105,17 @@ endfunction
 
 function! g:delphi#SetActualProject(...)
   if a:0 != 0 && !empty(a:1)
-    let g:delphi_actual_project = a:1
+    let g:delphi_saved_project = a:1
   else
-    let g:delphi_actual_project = ''
-    "while !empty(glob(g:delphi_actual_project))
+    let g:delphi_saved_project = ''
+    "while !empty(glob(g:delphi_saved_project))
     call inputsave()
-    let project_name = input('Set actual project (*.dproj): ') 
+    let project_name = input('Save project for later use (*.dproj): ') 
     call inputrestore()
-    let g:delphi_actual_project = findfile(project_name)
-    if empty(g:delphi_actual_project)
+    let g:delphi_saved_project = findfile(project_name)
+    if empty(g:delphi_saved_project)
 	    echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'". Set path and try again!' | echohl None
-	    unlet g:delphi_actual_project
+	    unlet g:delphi_saved_project
     endif
     "endwhile
     redraw
@@ -139,6 +133,7 @@ function! g:delphi#FindAndMake(...)
   "echom 'FindAndMake args: '.a:0.' "'.project_name.'" found: '.project_file
   if !empty(project_file) 
 	  echohl WarningMsg | echo 'Make '.project_file | echohl None
+
     execute 'make! '.project_file 
     if len(getqflist()) > 0
       call delphi#OpenAndHighlightQuickFix()
@@ -149,18 +144,31 @@ function! g:delphi#FindAndMake(...)
 endfunction
 
 function! g:delphi#MakeActual()
-  if !exists('g:delphi_actual_project') || empty(g:delphi_actual_project) 
+  if !exists('g:delphi_saved_project') || empty(g:delphi_saved_project) 
     call delphi#SetActualProject() 
   endif                    
-  if exists('g:delphi_actual_project') && !empty(glob(g:delphi_actual_project))
-    call delphi#FindAndMake(g:delphi_actual_project)
+  if exists('g:delphi_saved_project') && !empty(glob(g:delphi_saved_project))
+    call delphi#FindAndMake(g:delphi_saved_project)
   endif
 endfunction
 
-command! -nargs=0 -complete=command SwitchToDfm call delphi#SwitchPasOrDfm()
-command! -nargs=0 -complete=command SwitchToPas call delphi#SwitchPasOrDfm()
-command! -nargs=* -complete=command MakeActualDelphi call delphi#MakeActual()
-command! -nargs=* -complete=command MakeDelphi call delphi#FindAndMake(<q-args>)
+" ----------------------
+" Autocommands
+" ----------------------
+
+augroup delphi_vim_global_command_group
+  autocmd!
+  autocmd FileType delphi nnoremap <buffer> <F7> :wa<bar>call delphi#MakeActual()<bar>cwindow<CR>
+  autocmd FileType delphi command! -nargs=0 DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
+  autocmd FileType delphi command! -nargs=0 DelphiSwitchToPas call delphi#SwitchPasOrDfm()
+augroup END
+
+" ----------------------
+" Commands
+" ----------------------
+"
+command! -nargs=* -complete=file DelphiMakeSaved call delphi#MakeActual()
+command! -nargs=* -complete=file DelphiMake call delphi#FindAndMake(<q-args>)
 
 " ----------------------
 " Mappings

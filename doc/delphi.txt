@@ -13,6 +13,7 @@ Indentation...............................................|delphi-indentation|
 Matchit support...............................................|delphi-matchit|
 Tag handling.............................................|delphi-tag-handling|
 Snippets.....................................................|delphi-snippets|
+Make.............................................................|delphi-make|
 
 ==============================================================================
 INTRODUCTION                                             *delphi-introduction*
@@ -96,7 +97,7 @@ vif             Select all in a block
 vaf             Select a whole block  
 <leader>t=      Align selected assignes in nice columns with |Tabularize| 
 <leader>t:      Align selected declarations in nice columns with |Tabularize| 
-<F7>            Save all, searches the nearest make.cmd and calls make
+<F7>            Save all and make 
 
 ==============================================================================
 MATCHIT SUPPORT                                               *delphi-matchit*
@@ -143,6 +144,13 @@ SNIPPETS                                                     *delphi-snippets*
 
 For available snippets see <plugin_dir>/vim-delphi/snippets directory.
 See also: |neosnippet.txt|
+
+==============================================================================
+MAKE                                                             *delphi-make*
+
+There ar two commands for making delphi projects easily:
+:DelphiMake
+:DelphiMakeSaved
 
 ------------------------------------------------------------------------------
  vim:tw=79:ts=8:ft=help:norl:
