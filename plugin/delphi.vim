@@ -53,6 +53,8 @@ let delphi_leading_space_error = 1
 let delphi_trailing_space_error = 1
 let delphi_highlight_function_parameters = 1
 
+let g:delphi_build_config = 'Debug'
+
 " ----------------------
 " Functions
 " ----------------------
@@ -78,6 +80,13 @@ function! g:delphi#OpenAndHighlightQuickFix()
   wincmd J       
 endfunction
 
+function! g:delphi#SetProjectSearchPath()
+  if exists('g:delphi_project_path')
+    " don't worry, nothing will be added twice :)
+    execute 'set path+='.escape(g:delphi_project_path,' \|')
+  endif
+endfunction
+
 function! g:delphi#FindProject(...)
   let active_file_dir = expand('%:p:h')
   let project_file = ''
@@ -86,6 +95,7 @@ function! g:delphi#FindProject(...)
     redraw | echom 'Search '.project_name.' in path '.&path
     " find file in path 
     " set path +=...
+    call delphi#SetProjectSearchPath()
     " faster if we are in the dir
     let project_file = findfile(project_name)
   else
@@ -103,23 +113,26 @@ function! g:delphi#FindProject(...)
   if !empty(project_file) | return project_file | else | return 0 | endif
 endfunction
 
-function! g:delphi#SetActualProject(...)
+function! g:delphi#SetSavedProject(...)
+  let g:delphi_saved_project = ''
+
   if a:0 != 0 && !empty(a:1)
-    let g:delphi_saved_project = a:1
+    let project_name = a:1
   else
-    let g:delphi_saved_project = ''
-    "while !empty(glob(g:delphi_saved_project))
     call inputsave()
     let project_name = input('Save project for later use (*.dproj): ') 
     call inputrestore()
-    let g:delphi_saved_project = findfile(project_name)
-    if empty(g:delphi_saved_project)
-	    echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'". Set path and try again!' | echohl None
-	    unlet g:delphi_saved_project
-    endif
-    "endwhile
-    redraw
   endif
+
+  "while !empty(glob(g:delphi_saved_project))
+  call delphi#SetProjectSearchPath()
+  let g:delphi_saved_project = findfile(project_name)
+  if empty(g:delphi_saved_project)
+	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
+	  unlet g:delphi_saved_project
+  endif
+  "endwhile
+  redraw
 endfunction
 
 function! g:delphi#FindAndMake(...)
@@ -134,7 +147,7 @@ function! g:delphi#FindAndMake(...)
   if !empty(project_file) 
 	  echohl WarningMsg | echo 'Make '.project_file | echohl None
 
-    execute 'make! '.project_file 
+    execute 'make! /p:config='.g:delphi_build_config.' '.project_file 
     if len(getqflist()) > 0
       call delphi#OpenAndHighlightQuickFix()
     endif
@@ -143,12 +156,29 @@ function! g:delphi#FindAndMake(...)
   endif
 endfunction
 
-function! g:delphi#MakeActual()
-  if !exists('g:delphi_saved_project') || empty(g:delphi_saved_project) 
-    call delphi#SetActualProject() 
-  endif                    
+function! g:delphi#SaveProjectAndMake(...)
+
+  if a:0 != 0 && !empty(a:1)
+    "echom 'set saved '.a:1
+    call delphi#SetSavedProject(a:1) 
+  else
+    if !exists('g:delphi_saved_project') || empty(g:delphi_saved_project) 
+      " ask for project name ...
+      call delphi#SetSavedProject() 
+    endif                    
+  endif
+
   if exists('g:delphi_saved_project') && !empty(glob(g:delphi_saved_project))
     call delphi#FindAndMake(g:delphi_saved_project)
+  "else
+		"echohl ErrorMsg | redraw | echom 'g:delphi_saved_project doesn''t defined properly.' | echohl None
+  endif
+
+endfunction
+
+function! g:delphi#SetBuildConfig(config)
+  if a:0 != 0 && !empty(a:1)
+    let g:delphi_build_config = a:config
   endif
 endfunction
 
@@ -158,7 +188,7 @@ endfunction
 
 augroup delphi_vim_global_command_group
   autocmd!
-  autocmd FileType delphi nnoremap <buffer> <F7> :wa<bar>call delphi#MakeActual()<bar>cwindow<CR>
+  autocmd FileType delphi nnoremap <buffer> <F7> :wa<bar>call delphi#SaveProjectAndMake()<bar>cwindow<CR>
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToPas call delphi#SwitchPasOrDfm()
 augroup END
@@ -166,9 +196,10 @@ augroup END
 " ----------------------
 " Commands
 " ----------------------
-"
-command! -nargs=* -complete=file DelphiMakeSaved call delphi#MakeActual()
-command! -nargs=* -complete=file DelphiMake call delphi#FindAndMake(<q-args>)
+ 
+command! -nargs=* -complete=file_in_path DelphiMakeSaved call delphi#SaveProjectAndMake(<f-args>)
+command! -nargs=* -complete=file_in_path DelphiMake call delphi#FindAndMake(<q-args>)
+command! -nargs=+ DelphiSetBuildConfig call delphi#SetBuildConfig(<q-args>)
 
 " ----------------------
 " Mappings

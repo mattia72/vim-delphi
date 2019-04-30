@@ -5,3 +5,4 @@
 " Project Repository: https://github.com/mattia72/vim-delphi
 
 autocmd BufNewFile,BufRead *.dfm,*.fmx set ft=dfm
+autocmd FileType dfm compiler delphi
