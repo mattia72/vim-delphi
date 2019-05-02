@@ -1,5 +1,6 @@
 # vim swap files
 *.swp
 Session.vim
-test*.dml
 doc/tags
+test/*.pas
+!test/test.pas
