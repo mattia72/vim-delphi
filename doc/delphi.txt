@@ -4,16 +4,16 @@
 ==============================================================================
 CONTENTS                                                     *delphi-contents*
 
-Introduction.............................................|delphi-introduction|
-Install.......................................................|delphi-install|
-Settings.....................................................|delphi-settings|
-Folding.......................................................|delphi-folding|
-Mappings.....................................................|delphi-mappings|
-Indentation...............................................|delphi-indentation|
-Matchit support...............................................|delphi-matchit|
-Tag handling.............................................|delphi-tag-handling|
-Snippets.....................................................|delphi-snippets|
-Make.............................................................|delphi-make|
+INTRODUCTION.............................................|delphi-introduction|
+INSTALL.......................................................|delphi-install|
+HIGHLIGHT SETTINGS.................................|delphi-highlight_settings|
+FOLDING.......................................................|delphi-folding|
+MAPPINGS.....................................................|delphi-mappings|
+INDENTATION...............................................|delphi-indentation|
+MATCHIT SUPPORT...............................................|delphi-matchit|
+TAG HANDLING.............................................|delphi-tag-handling|
+SNIPPETS.....................................................|delphi-snippets|
+MAKE.............................................................|delphi-make|
 
 ==============================================================================
 INTRODUCTION                                             *delphi-introduction*
@@ -39,10 +39,11 @@ a *.pas or *.dfm file. You can set it manually by typing: >
 That's all.
 
 ==============================================================================
-SETTINGS                                                     *delphi-settings*
+HIGHLIGHT SETTINGS                                  *delphi-highlight-settings*
 
+Syntax highlight settings:
 |delphi_space_errors| : 
-    handle space errors
+    highlight space errors
 |delphi_leading_space_error| : 
     highlight leading <space>s, not <tab>s
 |delphi_leading_tab_error| : 
@@ -63,6 +64,9 @@ Unnecessary spaces on the end of the lines: >
 
 Note: 
 These are the default settings. |unlet| these variables if you don't like it.
+
+==============================================================================
+HIGHLIGHT SETTINGS                                  *delphi-highlight-settings*
 
 ==============================================================================
 FOLDING                                                       *delphi-folding*
@@ -88,11 +92,11 @@ MAPPINGS                                                     *delphi-mappings*
 
 The plugin provides some useful mapping definition also. 
 
-Commands defined in ftplugin/common.vim: (common for *.dfm and *.pas files)
+Mappings defined in ftplugin/common.vim: (common for *.dfm and *.pas files)
 <leader>sd      Switch to *.dfm  
 <leader>sp      Switch to *.pas
 
-Commands defined in plugin/delphi.vim:
+Mappings defined in plugin/delphi.vim:
 vif             Select all in a block  
 vaf             Select a whole block  
 <leader>t=      Align selected assignes in nice columns with |Tabularize| 
@@ -148,9 +152,23 @@ See also: |neosnippet.txt|
 ==============================================================================
 MAKE                                                             *delphi-make*
 
-There ar two commands for making delphi projects easily:
-:DelphiMake
-:DelphiMakeSaved
+There ar two commands for building delphi projects easily:
+
+:DelphiMake [{project}]       
+                              searches {project} in the path and calls 
+			      make! /p:config=|g:delphi_build_config| {project}
+:DelphiMakeRecent [{project}] 
+                              same as above, but full path of the given 
+                              {project} will be stored in variable 
+                              |g:delphi_recent_project|.
+                              Without any argument |g:delphi_recent_project|
+                              will be built.
+:DelphiBuildConfig [{config}]
+                              Sets |g:delphi_build_config| variable.
+                              Without argument simply echos the content of 
+                              this variable.
+                              The default value of |g:delphi_build_config| is
+                              "Debug"
 
 ------------------------------------------------------------------------------
  vim:tw=79:ts=8:ft=help:norl:

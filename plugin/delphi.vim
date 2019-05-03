@@ -113,25 +113,28 @@ function! g:delphi#FindProject(...)
   if !empty(project_file) | return project_file | else | return 0 | endif
 endfunction
 
-function! g:delphi#SetSavedProject(...)
-  let g:delphi_saved_project = ''
+function! g:delphi#SearchAndSaveRecentProjectFullPath(project_name)
+  let g:delphi_recent_project = fnamemodify(findfile(a:project_name),':p')
+endfunction
+
+function! g:delphi#SetRecentProject(...)
+  let g:delphi_recent_project = ''
+  let project_name = ''
 
   if a:0 != 0 && !empty(a:1)
     let project_name = a:1
   else
     call inputsave()
-    let project_name = input('Save project for later use (*.dproj): ') 
+    let project_name = input('Save project for later use (*.dproj): ', '', 'file_in_path') 
     call inputrestore()
   endif
-
-  "while !empty(glob(g:delphi_saved_project))
   call delphi#SetProjectSearchPath()
-  let g:delphi_saved_project = findfile(project_name)
-  if empty(g:delphi_saved_project)
+  call delphi#SearchAndSaveRecentProjectFullPath(project_name)
+
+  if empty(g:delphi_recent_project)
 	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
-	  unlet g:delphi_saved_project
+	  unlet g:delphi_recent_project
   endif
-  "endwhile
   redraw
 endfunction
 
@@ -145,7 +148,7 @@ function! g:delphi#FindAndMake(...)
   endif
   "echom 'FindAndMake args: '.a:0.' "'.project_name.'" found: '.project_file
   if !empty(project_file) 
-	  echohl WarningMsg | echo 'Make '.project_file | echohl None
+	  echohl ModeMsg | echo 'Make '.project_file | echohl None
 
     execute 'make! /p:config='.g:delphi_build_config.' '.project_file 
     if len(getqflist()) > 0
@@ -156,22 +159,22 @@ function! g:delphi#FindAndMake(...)
   endif
 endfunction
 
-function! g:delphi#SaveProjectAndMake(...)
+function! g:delphi#SetRecentProjectAndMake(...)
 
   if a:0 != 0 && !empty(a:1)
-    "echom 'set saved '.a:1
-    call delphi#SetSavedProject(a:1) 
+    "echom 'set recent '.a:1
+    call delphi#SetRecentProject(a:1) 
+    "echom 'recent '.g:delphi_recent_project
   else
-    if !exists('g:delphi_saved_project') || empty(g:delphi_saved_project) 
-      " ask for project name ...
-      call delphi#SetSavedProject() 
+    if !exists('g:delphi_recent_project') || empty(g:delphi_recent_project) 
+      call delphi#SetRecentProject() 
     endif                    
   endif
 
-  if exists('g:delphi_saved_project') && !empty(glob(g:delphi_saved_project))
-    call delphi#FindAndMake(g:delphi_saved_project)
-  "else
-		"echohl ErrorMsg | redraw | echom 'g:delphi_saved_project doesn''t defined properly.' | echohl None
+  if exists('g:delphi_recent_project') && !empty(glob(g:delphi_recent_project))
+    call delphi#FindAndMake(g:delphi_recent_project)
+  else
+		echohl ErrorMsg | redraw | echom 'g:delphi_recent_project doesn''t defined properly.' | echohl None
   endif
 
 endfunction
@@ -180,6 +183,7 @@ function! g:delphi#SetBuildConfig(config)
   if a:0 != 0 && !empty(a:1)
     let g:delphi_build_config = a:config
   endif
+	echohl ModeMsg | echo 'Build config: '.g:delphi_build_config | echohl None
 endfunction
 
 " ----------------------
@@ -188,7 +192,9 @@ endfunction
 
 augroup delphi_vim_global_command_group
   autocmd!
-  autocmd FileType delphi nnoremap <buffer> <F7> :wa<bar>call delphi#SaveProjectAndMake()<bar>cwindow<CR>
+  autocmd FileType delphi nnoremap <buffer> <F7> :wa <bar> call delphi#SetRecentProjectAndMake() <bar> cwindow<CR>
+  "change trailing spaces to tabsor 
+  autocmd FileType delphi vnoremap <buffer> tt :<C-U>silent! :retab!<CR>
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToPas call delphi#SwitchPasOrDfm()
 augroup END
@@ -197,9 +203,9 @@ augroup END
 " Commands
 " ----------------------
  
-command! -nargs=* -complete=file_in_path DelphiMakeSaved call delphi#SaveProjectAndMake(<f-args>)
+command! -nargs=* -complete=file_in_path DelphiMakeRecent call delphi#SetRecentProjectAndMake(<f-args>)
 command! -nargs=* -complete=file_in_path DelphiMake call delphi#FindAndMake(<q-args>)
-command! -nargs=+ DelphiSetBuildConfig call delphi#SetBuildConfig(<q-args>)
+command! -nargs=? DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
 
 " ----------------------
 " Mappings
