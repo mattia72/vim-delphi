@@ -29,14 +29,14 @@
 scriptencoding utf-8
 
 " Preprocessing
-if exists('g:loaded_delphi_vim')
-  finish
+if exists('g:loaded_vim_delphi')
+  "finish
 elseif v:version < 700
   echoerr 'vim-delphi does not work this version of Vim "' . v:version . '".'
   finish
 endif
 
-let g:loaded_delphi_vim = 1
+let g:loaded_vim_delphi = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -67,17 +67,23 @@ function! g:delphi#SwitchPasOrDfm()
   endif
 endfunction
 
-function! g:delphi#OpenAndHighlightQuickFix()
-  copen  
-  "http://docwiki.embarcadero.com/RADStudio/Rio/en/Error_and_Warning_Messages_(Delphi)
-  syn match qfInfo "^||.*" 
-  syn match qfErrorMsg " \zs\w\+ [EF]\d\{4}\ze:" 
-  syn match qfErrorMsg " \zsLinker error\ze:" 
-  syn match qfWarningMsg " \zs\w\+ [WH]\d\{4}\ze:"
-  hi def link qfInfo Delimiter
-  hi def link qfErrorMsg ErrorMsg
-  hi def link qfWarningMsg  WarningMsg 
-  wincmd J       
+function! g:delphi#HighlightMsBuildOutput()
+	let qf_cmd = getqflist({'title' : 1})['title']
+	if (qf_cmd =~ 'rsvars\" && msbuild')
+    "echom "Delphi msbuild finished. ".a:force_copen
+    "if a:force_copen == 1
+      "copen 
+    "endif
+    
+    "http://docwiki.embarcadero.com/RADStudio/Rio/en/Error_and_Warning_Messages_(Delphi)
+    syn match qfInfo "^||.*" 
+    syn match qfErrorMsg " \zs\w\+ [EF]\d\{4}\ze:" 
+    syn match qfErrorMsg " \zsLinker error\ze:" 
+    syn match qfWarningMsg " \zs\w\+ [WH]\d\{4}\ze:"
+    hi def link qfInfo Delimiter
+    hi def link qfErrorMsg ErrorMsg
+    hi def link qfWarningMsg WarningMsg 
+  endif
 endfunction
 
 function! g:delphi#SetProjectSearchPath()
@@ -151,32 +157,30 @@ function! g:delphi#FindAndMake(...)
 	  echohl ModeMsg | echo 'Make '.project_file | echohl None
 
     execute 'make! /p:config='.g:delphi_build_config.' '.project_file 
-    if len(getqflist()) > 0
-      call delphi#OpenAndHighlightQuickFix()
-    endif
+    "if len(getqflist()) > 0
+      "call delphi#HighlightMsBuildOutput(1)
+    "endif
   else  
 	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'"' | echohl None
   endif
 endfunction
 
 function! g:delphi#SetRecentProjectAndMake(...)
-
   if a:0 != 0 && !empty(a:1)
     "echom 'set recent '.a:1
     call delphi#SetRecentProject(a:1) 
     "echom 'recent '.g:delphi_recent_project
   else
-    if !exists('g:delphi_recent_project') || empty(g:delphi_recent_project) 
+    if !exists('g:delphi_recent_project') || !filereadable(g:delphi_recent_project)
       call delphi#SetRecentProject() 
     endif                    
   endif
 
-  if exists('g:delphi_recent_project') && !empty(glob(g:delphi_recent_project))
+  if exists('g:delphi_recent_project') && filereadable(g:delphi_recent_project)
     call delphi#FindAndMake(g:delphi_recent_project)
   else
-		echohl ErrorMsg | redraw | echom 'g:delphi_recent_project doesn''t defined properly.' | echohl None
+		echohl ErrorMsg | redraw | echom 'Project not found or g:delphi_recent_project is not defined properly.' | echohl None
   endif
-
 endfunction
 
 function! g:delphi#SetBuildConfig(config)
@@ -186,14 +190,36 @@ function! g:delphi#SetBuildConfig(config)
 	echohl ModeMsg | echo 'Build config: '.g:delphi_build_config | echohl None
 endfunction
 
+function! g:delphi#SetQuickFixWindowProperties()
+  set nocursorcolumn cursorline
+  " highlight errors in reopened qf window
+  call delphi#HighlightMsBuildOutput()
+endfunction
+
+"function! g:delphi#MakePostActions(force_copen)
+  "let qf_cmd = getqflist({'title' : 1})['title']
+  "if (qf_cmd =~ 'rsvars\" && msbuild')
+    "echom "Delphi make post action. copen? ".a:force_copen
+    "call delphi#HighlightMsBuildOutput(a:force_copen)
+  "endif            
+"endfunction
+
 " ----------------------
 " Autocommands
 " ----------------------
 
 augroup delphi_vim_global_command_group
   autocmd!
+  autocmd FileType qf call delphi#SetQuickFixWindowProperties() 
+  "autocmd QuickFixCmdPost make call delphi#MakePostActions(1) 
+  "autocmd QuickFixCmdPost make echom "QFPost" | call delphi#MakePostActions(1) 
+  " close with q or esc
+  autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
+  autocmd FileType qf nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
+  autocmd QuickFixCmdPost * copen 8 | wincmd J
+
   autocmd FileType delphi nnoremap <buffer> <F7> :wa <bar> call delphi#SetRecentProjectAndMake() <bar> cwindow<CR>
-  "change trailing spaces to tabsor 
+  "change trailing spaces to tabs
   autocmd FileType delphi vnoremap <buffer> tt :<C-U>silent! :retab!<CR>
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToPas call delphi#SwitchPasOrDfm()

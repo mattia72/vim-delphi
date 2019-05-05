@@ -152,7 +152,12 @@ See also: |neosnippet.txt|
 ==============================================================================
 MAKE                                                             *delphi-make*
 
-There ar two commands for building delphi projects easily:
+The plugin sets |makeprg| for building delphi projects easily: >
+  rsvars && msbuild /nologo /v:m /property:GenerateFullPaths=true
+
+It works only if *rsvars.bat* is in the path or *$BDS* environment variable is set.
+
+The defined commands:
 
 :DelphiMake [{project}]       
                               searches {project} in the path and calls 

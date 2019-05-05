@@ -25,10 +25,18 @@ CompilerSet  errorformat=%f(%l):\ %m
 "error with line number and column
 CompilerSet errorformat+=%f(%l\\,%c):\ %m
 
-let s:makeprg_cmd = '"'.expand('$BDS/bin/rsvars').'" && msbuild /nologo /v:m /property:GenerateFullPaths=true'
+let s:rsvars_path = expand('$BDS') 
+if s:rsvars_path == '$BDS'
+  let s:rsvars_path = 'rsvars'
+else
+  let s:rsvars_path .= '/bin/rsvars'
+endif
+
+let s:makeprg_cmd = '"'.s:rsvars_path.'" && msbuild /nologo /v:m /property:GenerateFullPaths=true'
 execute 'CompilerSet makeprg='.escape(s:makeprg_cmd, ' "\')
 "echom "Set makeprg? ".&makeprg 
 unlet s:makeprg_cmd
+unlet s:rsvars_path
 
 let &isfname = s:keepisfname
 unlet s:keepisfname
