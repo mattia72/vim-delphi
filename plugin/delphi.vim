@@ -76,10 +76,12 @@ function! g:delphi#HighlightMsBuildOutput()
     "endif
     
     "http://docwiki.embarcadero.com/RADStudio/Rio/en/Error_and_Warning_Messages_(Delphi)
+    syn keyword qfHead _PasCoreCompile 
     syn match qfInfo "^||.*" 
     syn match qfErrorMsg " \zs\w\+ [EF]\d\{4}\ze:" 
     syn match qfErrorMsg " \zsLinker error\ze:" 
     syn match qfWarningMsg " \zs\w\+ [WH]\d\{4}\ze:"
+    hi def link qfHead Special
     hi def link qfInfo Delimiter
     hi def link qfErrorMsg ErrorMsg
     hi def link qfWarningMsg WarningMsg 
