@@ -30,7 +30,7 @@ scriptencoding utf-8
 
 " Preprocessing
 if exists('g:loaded_vim_delphi')
-  "finish
+  finish
 elseif v:version < 700
   echoerr 'vim-delphi does not work this version of Vim "' . v:version . '".'
   finish
@@ -70,21 +70,10 @@ endfunction
 function! g:delphi#HighlightMsBuildOutput()
 	let qf_cmd = getqflist({'title' : 1})['title']
 	if (qf_cmd =~ 'rsvars\" && msbuild')
-    "echom "Delphi msbuild finished. ".a:force_copen
-    "if a:force_copen == 1
-      "copen 
-    "endif
-    
-    "http://docwiki.embarcadero.com/RADStudio/Rio/en/Error_and_Warning_Messages_(Delphi)
-    syn keyword qfHead _PasCoreCompile 
-    syn match qfInfo "^||.*" 
-    syn match qfErrorMsg " \zs\w\+ [EF]\d\{4}\ze:" 
-    syn match qfErrorMsg " \zsLinker error\ze:" 
-    syn match qfWarningMsg " \zs\w\+ [WH]\d\{4}\ze:"
-    hi def link qfHead Special
-    hi def link qfInfo Delimiter
-    hi def link qfErrorMsg ErrorMsg
-    hi def link qfWarningMsg WarningMsg 
+	  match none
+    match Special '\(_PasCoreCompile\|Delphi\)'
+    2match Error " \zs\w\+ \([EF]\d\{4}\|[Ee]rror\)\ze:" 
+    3match Warning " \zs\w\+ [WH]\d\{4}\ze:" 
   endif
 endfunction
 
@@ -118,11 +107,14 @@ function! g:delphi#FindProject(...)
     execute 'chdir '.cwd_orig
   endif
   redraw
-  if !empty(project_file) | return project_file | else | return 0 | endif
+  if !filereadable(project_file) | return project_file | else | return '' | endif
 endfunction
 
 function! g:delphi#SearchAndSaveRecentProjectFullPath(project_name)
-  let g:delphi_recent_project = fnamemodify(findfile(a:project_name),':p')
+  let project_path = findfile(a:project_name)
+  if filereadable(project_path)
+    let g:delphi_recent_project = fnamemodify(project_path,':p')
+  endif
 endfunction
 
 function! g:delphi#SetRecentProject(...)
@@ -133,7 +125,7 @@ function! g:delphi#SetRecentProject(...)
     let project_name = a:1
   else
     call inputsave()
-    let project_name = input('Save project for later use (*.dproj): ', '', 'file_in_path') 
+    let project_name = input('Enter project name (*.dproj, *.groupproj): ', '', 'file_in_path') 
     call inputrestore()
   endif
   call delphi#SetProjectSearchPath()
@@ -141,7 +133,7 @@ function! g:delphi#SetRecentProject(...)
 
   if empty(g:delphi_recent_project)
 	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
-	  unlet g:delphi_recent_project
+		"unlet g:delphi_recent_project
   endif
   redraw
 endfunction
@@ -157,17 +149,13 @@ function! g:delphi#FindAndMake(...)
   "echom 'FindAndMake args: '.a:0.' "'.project_name.'" found: '.project_file
   if !empty(project_file) 
 	  echohl ModeMsg | echo 'Make '.project_file | echohl None
-
     execute 'make! /p:config='.g:delphi_build_config.' '.project_file 
-    "if len(getqflist()) > 0
-      "call delphi#HighlightMsBuildOutput(1)
-    "endif
   else  
 	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'"' | echohl None
   endif
 endfunction
 
-function! g:delphi#SetRecentProjectAndMake(...)
+function! g:delphi#HandleRecentProject(...)
   if a:0 != 0 && !empty(a:1)
     "echom 'set recent '.a:1
     call delphi#SetRecentProject(a:1) 
@@ -177,7 +165,10 @@ function! g:delphi#SetRecentProjectAndMake(...)
       call delphi#SetRecentProject() 
     endif                    
   endif
+endfunction
 
+function! g:delphi#SetRecentProjectAndMake(...)
+  call delphi#HandleRecentProject(a:000)
   if exists('g:delphi_recent_project') && filereadable(g:delphi_recent_project)
     call delphi#FindAndMake(g:delphi_recent_project)
   else
@@ -193,18 +184,11 @@ function! g:delphi#SetBuildConfig(config)
 endfunction
 
 function! g:delphi#SetQuickFixWindowProperties()
+  echom 'Set properties'
   set nocursorcolumn cursorline
   " highlight errors in reopened qf window
   call delphi#HighlightMsBuildOutput()
 endfunction
-
-"function! g:delphi#MakePostActions(force_copen)
-  "let qf_cmd = getqflist({'title' : 1})['title']
-  "if (qf_cmd =~ 'rsvars\" && msbuild')
-    "echom "Delphi make post action. copen? ".a:force_copen
-    "call delphi#HighlightMsBuildOutput(a:force_copen)
-  "endif            
-"endfunction
 
 " ----------------------
 " Autocommands
@@ -212,15 +196,14 @@ endfunction
 
 augroup delphi_vim_global_command_group
   autocmd!
-  autocmd FileType qf call delphi#SetQuickFixWindowProperties() 
-  "autocmd QuickFixCmdPost make call delphi#MakePostActions(1) 
-  "autocmd QuickFixCmdPost make echom "QFPost" | call delphi#MakePostActions(1) 
+  "autocmd FileType qf call delphi#SetQuickFixWindowProperties() 
+  "autocmd QuickFixCmdPre make call delphi#HighlightMsBuildOutput()
+  autocmd QuickFixCmdPost make copen 8 | wincmd J | call delphi#SetQuickFixWindowProperties() 
   " close with q or esc
   autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
   autocmd FileType qf nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
-  autocmd QuickFixCmdPost * copen 8 | wincmd J
 
-  autocmd FileType delphi nnoremap <buffer> <F7> :wa <bar> call delphi#SetRecentProjectAndMake() <bar> cwindow<CR>
+  autocmd FileType delphi nnoremap <buffer> <F7> :wa <bar> DelphiMakeRecentAsync <CR>
   "change trailing spaces to tabs
   autocmd FileType delphi vnoremap <buffer> tt :<C-U>silent! :retab!<CR>
   autocmd FileType delphi command! -nargs=0 DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
@@ -231,8 +214,15 @@ augroup END
 " Commands
 " ----------------------
  
-command! -nargs=* -complete=file_in_path DelphiMakeRecent call delphi#SetRecentProjectAndMake(<f-args>)
-command! -nargs=* -complete=file_in_path DelphiMake call delphi#FindAndMake(<q-args>)
+if (exists(':AsyncRun'))
+  command! -bang -nargs=? -complete=file_in_path DelphiMakeRecentAsync
+	      \ call delphi#HandleRecentProject(<f-args>) | execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
+endif
+
+command! -nargs=* -complete=file_in_path DelphiMakeRecent 
+      \ call delphi#SetRecentProjectAndMake(<f-args>)
+command! -nargs=? -complete=file_in_path DelphiMake 
+      \ call delphi#FindAndMake(<q-args>)
 command! -nargs=? DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
 
 " ----------------------

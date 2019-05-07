@@ -29,7 +29,7 @@ let s:rsvars_path = expand('$BDS')
 if s:rsvars_path == '$BDS'
   let s:rsvars_path = 'rsvars'
 else
-  let s:rsvars_path .= '/bin/rsvars'
+  let s:rsvars_path .= 'bin\rsvars'
 endif
 
 let s:makeprg_cmd = '"'.s:rsvars_path.'" && msbuild /nologo /v:m /property:GenerateFullPaths=true'
