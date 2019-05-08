@@ -162,12 +162,18 @@ The defined commands:
 :DelphiMake [{project}]       
                               searches {project} in the path and calls 
 			      make! /p:config=|g:delphi_build_config| {project}
+			      without argument, it tries to find a *.dproj
+			      file in the current directory and then upwards
+:DelphiMakeAsync [{project}] 
+                              same as above, but async
 :DelphiMakeRecent [{project}] 
-                              same as above, but full path of the given 
+                              same as DelphiMake, but full path of the given 
                               {project} will be stored in variable 
                               |g:delphi_recent_project|.
                               Without any argument |g:delphi_recent_project|
                               will be built.
+:DelphiMakeRecentAsync [{project}] 
+                              same as above, but async
 :DelphiBuildConfig [{config}]
                               Sets |g:delphi_build_config| variable.
                               Without argument simply echos the content of 

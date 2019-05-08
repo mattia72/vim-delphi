@@ -87,27 +87,38 @@ endfunction
 function! g:delphi#FindProject(...)
   let active_file_dir = expand('%:p:h')
   let project_file = ''
+  let project_name = '*.dproj'
+
   if a:0 != 0 && !empty(a:1)
-    let project_name =  a:1
-    redraw | echom 'Search '.project_name.' in path '.&path
-    " find file in path 
-    " set path +=...
+    let project_name = a:1
+  endif
+
+  "echom ''.project_name
+  "
+  if project_name =~ '^*'
+    " let project_name = '*.dproj'
+    let cwd_orig = getcwd()
+    while getcwd() !~ '^[A-Z]:\\$'
+      echom 'Search upwards in '.getcwd()
+      let project_file = globpath('.', project_name)
+      if !empty(project_file) 
+        let project_file = fnamemodify(project_file,':p' )
+        break 
+      else 
+        chdir .. 
+      endif
+    endwhile
+    execute 'chdir '.cwd_orig
+  else
+    "echom 'Search '.project_name.' in path '.&path
+    " find file in set path +=...
     call delphi#SetProjectSearchPath()
     " faster if we are in the dir
     let project_file = findfile(project_name)
-  else
-    let cwd_orig = getcwd()
-    let project_name = '*.dproj'
-    while getcwd() =~ '^\[A-Z\]:\\\\$'
-      redraw | echom 'Search downwards in '.getcwd()
-      " find downwards 
-      let project_file = globpath('.', "*.dproj") 
-      if !empty(project_file) | break | else | chdir .. | endif
-    endwhile
-    execute 'chdir '.cwd_orig
   endif
   redraw
-  if !filereadable(project_file) | return project_file | else | return '' | endif
+	echohl ModeMsg | echo 'Project found: '.project_file | echohl None
+  if filereadable(project_file) | return project_file | else | return '' | endif
 endfunction
 
 function! g:delphi#SearchAndSaveRecentProjectFullPath(project_name)
@@ -132,7 +143,8 @@ function! g:delphi#SetRecentProject(...)
   call delphi#SearchAndSaveRecentProjectFullPath(project_name)
 
   if empty(g:delphi_recent_project)
-	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
+    redraw
+	  echohl ErrorMsg |  echom 'Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
 		"unlet g:delphi_recent_project
   endif
   redraw
@@ -141,11 +153,12 @@ endfunction
 function! g:delphi#FindAndMake(...)
   if a:0 != 0 && !empty(a:1)
     let project_name =  a:1
-    let project_file = delphi#FindProject(project_name)
   else
     let project_name = '*.dproj'
-    let project_file = delphi#FindProject()
   endif
+
+  let project_file = delphi#FindProject(project_name)
+
   "echom 'FindAndMake args: '.a:0.' "'.project_name.'" found: '.project_file
   if !empty(project_file) 
 	  echohl ModeMsg | echo 'Make '.project_file | echohl None
@@ -172,7 +185,8 @@ function! g:delphi#SetRecentProjectAndMake(...)
   if exists('g:delphi_recent_project') && filereadable(g:delphi_recent_project)
     call delphi#FindAndMake(g:delphi_recent_project)
   else
-		echohl ErrorMsg | redraw | echom 'Project not found or g:delphi_recent_project is not defined properly.' | echohl None
+    redraw
+		echohl ErrorMsg | echom 'Project not found or g:delphi_recent_project is not defined properly.' | echohl None
   endif
 endfunction
 
@@ -184,7 +198,7 @@ function! g:delphi#SetBuildConfig(config)
 endfunction
 
 function! g:delphi#SetQuickFixWindowProperties()
-  echom 'Set properties'
+  " echom 'Set properties'
   set nocursorcolumn cursorline
   " highlight errors in reopened qf window
   call delphi#HighlightMsBuildOutput()
@@ -216,7 +230,11 @@ augroup END
  
 if (exists(':AsyncRun'))
   command! -bang -nargs=? -complete=file_in_path DelphiMakeRecentAsync
-	      \ call delphi#HandleRecentProject(<f-args>) | execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
+	      \ call delphi#HandleRecentProject(<f-args>) 
+	      \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
+
+  command! -bang -nargs=? -complete=file_in_path DelphiMakeAsync
+	      \ execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
 endif
 
 command! -nargs=* -complete=file_in_path DelphiMakeRecent 
