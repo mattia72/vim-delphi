@@ -146,7 +146,9 @@ The following command generates the ctags db: >
 ==============================================================================
 SNIPPETS                                                     *delphi-snippets*
 
-For available snippets see <plugin_dir>/vim-delphi/snippets directory.
+Snippets are handled by |Shougo/neosnipet| plugin.
+
+For available snippets for Delphi see <plugin_dir>/vim-delphi/snippets directory.
 See also: |neosnippet.txt|
 
 ==============================================================================
@@ -165,7 +167,8 @@ The defined commands:
 			      without argument, it tries to find a *.dproj
 			      file in the current directory and then upwards
 :DelphiMakeAsync [{project}] 
-                              same as above, but async
+                              same as above, but async if |skywind3000/asyncrun.vim|
+                              is installed.
 :DelphiMakeRecent [{project}] 
                               same as DelphiMake, but full path of the given 
                               {project} will be stored in variable 
@@ -173,7 +176,8 @@ The defined commands:
                               Without any argument |g:delphi_recent_project|
                               will be built.
 :DelphiMakeRecentAsync [{project}] 
-                              same as above, but async
+                              same as above, but async if |skywind3000/asyncrun.vim|
+                              is installed.
 :DelphiBuildConfig [{config}]
                               Sets |g:delphi_build_config| variable.
                               Without argument simply echos the content of 

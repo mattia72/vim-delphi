@@ -6,24 +6,28 @@ See also [doc/delphi.txt](http://raw.github.com/mattia72/vim-delphi/master/doc/d
 for detailed documentation.
 
 ##  Installation
-Copy the included directories into your .vim or vimfiles directory.
-The [tabular](http://github.com/godlygeek/tabular "Tabular") and the 
-[neosnippet](http://github.com/Shougo/neosnippet.vim "Neosnippet") plugin is also
-recommended, but not necessary.
-
-### Plugin managers
 It is recommended to use a plugin manager for Vim plugins.
 If you prefer [vim-plug](https://github.com/junegunn/vim-plug "vim-plug") as
 well, put this lines into your plugin list:
 ```
-Plug 'Shougo/neosnippet'            
-Plug 'godlygeek/tabular',           
+Plug 'skywind3000/asyncrun.vim'  " For async make 
+Plug 'Shougo/neosnippet'         " For snippet support   
+Plug 'godlygeek/tabular',        " For aligning    
 Plug 'mattia72/vim-delphi' 
 ```
 ## Syntax highlight 
 **.pas*, **.dfm* and **.fmx* files are recognized automatically:
 
 ![Screenshot](/../screenshot/screenshot.jpg?raw=true "Screenshot")
+
+## Make
+
+The following commands are defined:
+* :DelphiMake [{project}]       
+* :DelphiMakeAsync [{project}] 
+* :DelphiMakeRecent [{project}] 
+* :DelphiMakeRecentAsync [{project}] 
+* :DelphiBuildConfig [{config}]
 
 ## Matchit support  
 `b:match_words` contains matching words to jump between words with `%`.
