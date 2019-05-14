@@ -32,7 +32,7 @@ else
   let s:rsvars_path .= 'bin\rsvars'
 endif
 
-let s:makeprg_cmd = '"'.s:rsvars_path.'" && msbuild /nologo /v:m /property:GenerateFullPaths=true'
+let s:makeprg_cmd = '"'.s:rsvars_path.'" && msbuild /nologo /verbosity:minimal /property:GenerateFullPaths=true'
 execute 'CompilerSet makeprg='.escape(s:makeprg_cmd, ' "\')
 "echom "Set makeprg? ".&makeprg 
 unlet s:makeprg_cmd

@@ -71,7 +71,7 @@ function! g:delphi#HighlightMsBuildOutput()
 	let qf_cmd = getqflist({'title' : 1})['title']
 	if (qf_cmd =~ 'rsvars\" && msbuild')
 	  match none
-    match Special '\(_PasCoreCompile\|Delphi\)'
+    match Special '\<\(_PasCoreCompile\|Delphi\)\>'
     2match Error " \zs\w\+ \([EF]\d\{4}\|[Ee]rror\)\ze:" 
     3match Warning " \zs\w\+ [WH]\d\{4}\ze:" 
   endif
@@ -122,7 +122,14 @@ function! g:delphi#FindProject(...)
 endfunction
 
 function! g:delphi#SearchAndSaveRecentProjectFullPath(project_name)
-  let project_path = findfile(a:project_name)
+  "echom a:project_name
+
+  if filereadable(a:project_name)
+    let project_path = a:project_name
+  else
+    let project_path = findfile(a:project_name)
+  endif
+
   if filereadable(project_path)
     let g:delphi_recent_project = fnamemodify(project_path,':p')
   endif
@@ -139,6 +146,7 @@ function! g:delphi#SetRecentProject(...)
     let project_name = input('Enter project name (*.dproj, *.groupproj): ', '', 'file_in_path') 
     call inputrestore()
   endif
+  "echom project_name
   call delphi#SetProjectSearchPath()
   call delphi#SearchAndSaveRecentProjectFullPath(project_name)
 
@@ -181,7 +189,10 @@ function! g:delphi#HandleRecentProject(...)
 endfunction
 
 function! g:delphi#SetRecentProjectAndMake(...)
-  call delphi#HandleRecentProject(a:000)
+  if a:0 != 0 && !empty(a:1)
+    call delphi#HandleRecentProject(a:1)
+  endif                    
+
   if exists('g:delphi_recent_project') && filereadable(g:delphi_recent_project)
     call delphi#FindAndMake(g:delphi_recent_project)
   else
@@ -198,7 +209,7 @@ function! g:delphi#SetBuildConfig(config)
 endfunction
 
 function! g:delphi#SetQuickFixWindowProperties()
-  " echom 'Set properties'
+  "echom 'Set properties'
   set nocursorcolumn cursorline
   " highlight errors in reopened qf window
   call delphi#HighlightMsBuildOutput()
@@ -237,7 +248,7 @@ if (exists(':AsyncRun'))
 	      \ execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
 endif
 
-command! -nargs=* -complete=file_in_path DelphiMakeRecent 
+command! -nargs=? -complete=file_in_path DelphiMakeRecent 
       \ call delphi#SetRecentProjectAndMake(<f-args>)
 command! -nargs=? -complete=file_in_path DelphiMake 
       \ call delphi#FindAndMake(<q-args>)
