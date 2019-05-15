@@ -6,7 +6,8 @@ CONTENTS                                                     *delphi-contents*
 
 INTRODUCTION.............................................|delphi-introduction|
 INSTALL.......................................................|delphi-install|
-HIGHLIGHT SETTINGS.................................|delphi-highlight_settings|
+SETTINGS.....................................................|delphi-settings|
+  HIGHLIGHT SETTINGS...............................|delphi-highlight-settings|
 FOLDING.......................................................|delphi-folding|
 MAPPINGS.....................................................|delphi-mappings|
 INDENTATION...............................................|delphi-indentation|
@@ -16,32 +17,60 @@ SNIPPETS.....................................................|delphi-snippets|
 MAKE.............................................................|delphi-make|
 
 ==============================================================================
-INTRODUCTION                                             *delphi-introduction*
+INTRODUCTION                                              *delphi-introduction*
 
-This plugin provides Vim syntax, indent and filetype detection for 
+This plugin provides Vim compile, syntax, indent and filetype detection for 
 Delphi Pascal Language (aka. delphi) files.
 
 Grab the latest version or report a bug on GitHub:
 http://github.com/mattia72/vim-delphi
 
 ==============================================================================
-INSTALL                                                       *delphi-install*
+INSTALL                                                        *delphi-install*
 
 Copy the included directories into your .vim or vimfiles directory.
 Or even better, use |vim-plug| and simply put this line after your 
 |Plug| list in your .vimrc: >
   Plug 'mattia72/vim-delphi'
->
-The plugin will set filetype automatically to |delphi| only if you open
-a *.pas or *.dfm file. You can set it manually by typing: >
+
+If you want to enjoy asynchron behaviour of Vim 8, then you should
+install |asyncrun| also >
+  Plug 'skywind3000/asyncrun.vim'
+
+So you will have some additional commands. See |delphi-make| for more info.
+
+Snippets are handled by |Shougo/neosnipet| plugin >
+  Plug 'Shougo/neosnipet'
+
+|make| works only if *rsvars.bat* is in the path or *$BDS* environment variable is set.
+
+Delphi plugin will be loaded automatically if you open a **.pas* or **.dfm* file. 
+You can load it manually by typing: >
   :set filetype=delphi
 
 That's all.
 
 ==============================================================================
+SETTINGS                                                      *delphi-settings*
+
+The used build configuration can be given by setting |g:delphi_build_config|
+variable. Or |:DelphiBuildConfig| command. The default is: >
+  let g:delphi_build_config = 'Debug'
+
+Note: It is recommended to set |path| within vim to search files and 
+      |make| projects easily.  
+------------------------------------------------------------------------------
+Adding a directory >
+ set path+=$SRC\\DelphiProject1
+
+So an entire directory tree will be searched. (See *starstar* for more info) >
+ set path+=$SRC\\DelphiProject2\\**
+
+==============================================================================
 HIGHLIGHT SETTINGS                                  *delphi-highlight-settings*
 
-Syntax highlight settings:
+Syntax highlight settings are:
+
 |delphi_space_errors| : 
     highlight space errors
 |delphi_leading_space_error| : 
@@ -49,11 +78,9 @@ Syntax highlight settings:
 |delphi_leading_tab_error| : 
     highlight leading <tab>s, not <space>s
 |delphi_highlight_function_parameters| :  
-    highlight function parameters wich has leading u'_'. eg: Foo(_bar:string) 
+    highlight function parameters wich has leading '_'. eg: Foo(_bar:string) 
 
 ------------------------------------------------------------------------------
-Examples
-
 If you like <tab> indenting, <space> can be highlighted as error: >
     let  delphi_space_errors = 1
     let  delphi_leading_space_error = 1
@@ -66,10 +93,7 @@ Note:
 These are the default settings. |unlet| these variables if you don't like it.
 
 ==============================================================================
-HIGHLIGHT SETTINGS                                  *delphi-highlight-settings*
-
-==============================================================================
-FOLDING                                                       *delphi-folding*
+FOLDING                                                        *delphi-folding*
 
 The delphi syntax file provides syntax folding (see |:syn-fold|) for code blocks.
 When 'foldmethod' is set to 'syntax' then begin-end blocks will be folded. >
@@ -88,7 +112,7 @@ Syntax folding might slow down syntax highlighting significantly,
 especially for large files.
 
 ==============================================================================
-MAPPINGS                                                     *delphi-mappings*
+MAPPINGS                                                      *delphi-mappings*
 
 The plugin provides some useful mapping definition also. 
 
@@ -97,14 +121,17 @@ Mappings defined in ftplugin/common.vim: (common for *.dfm and *.pas files)
 <leader>sp      Switch to *.pas
 
 Mappings defined in plugin/delphi.vim:
+
 vif             Select all in a block  
 vaf             Select a whole block  
+
 <leader>t=      Align selected assignes in nice columns with |Tabularize| 
 <leader>t:      Align selected declarations in nice columns with |Tabularize| 
+
 <F7>            Save all and make 
 
 ==============================================================================
-MATCHIT SUPPORT                                               *delphi-matchit*
+MATCHIT SUPPORT                                                *delphi-matchit*
 
 Matchit plugin is supported by defining |b:match_words| variable. The user can 
 switch between 'begin'/'record'/'union' etc. and the corresponding 'end' 
@@ -113,12 +140,12 @@ with %. More info about matchit features in |matchit.txt|.
 NOTE: Matchit is part of the standard Vim installation, but it must be
 activated. For instructions type: >
   :help matchit-install 
->
+
 It's easier to install the modern matchit and matchparen replacement by: >
   Plug 'andymass/vim-matchup'
 
 ==============================================================================
-INDENTATION                                               *delphi-indentation*
+INDENTATION                                                *delphi-indentation*
 
 This part is under construction!!!
 
@@ -126,7 +153,7 @@ ggVG=               Indents the whole file
 ==                  Indents the current line
 
 ==============================================================================
-TAG HANDLING                                             *delphi-tag-handling*
+TAG HANDLING                                              *delphi-tag-handling*
 
 I'm using Exuberant Ctags http://ctags.sourceforge.net and |gen_tags.vim| 
 for tag generation. 
@@ -144,15 +171,15 @@ The following command generates the ctags db: >
   :GenCtags
 
 ==============================================================================
-SNIPPETS                                                     *delphi-snippets*
-
+SNIPPETS                                                      *delphi-snippets*
+                                                   
 Snippets are handled by |Shougo/neosnipet| plugin.
 
 For available snippets for Delphi see <plugin_dir>/vim-delphi/snippets directory.
 See also: |neosnippet.txt|
 
 ==============================================================================
-MAKE                                                             *delphi-make*
+MAKE                                                              *delphi-make*
 
 The plugin sets |makeprg| for building delphi projects easily: >
   rsvars && msbuild /nologo /v:m /property:GenerateFullPaths=true
@@ -163,7 +190,7 @@ The defined commands:
 
 :DelphiMake [{project}]       
                               searches {project} in the path and calls 
-			      make! /p:config=|g:delphi_build_config| {project}
+			      :make! /p:config=|g:delphi_build_config| {project}
 			      without argument, it tries to find a *.dproj
 			      file in the current directory and then upwards
 :DelphiMakeAsync [{project}] 
@@ -171,10 +198,11 @@ The defined commands:
                               is installed.
 :DelphiMakeRecent [{project}] 
                               same as DelphiMake, but full path of the given 
-                              {project} will be stored in variable 
+                              {project} will be stored in the variable 
                               |g:delphi_recent_project|.
                               Without any argument |g:delphi_recent_project|
-                              will be built.
+                              will be built. On first run the project name will
+                              be asked, then searched in the |path|.
 :DelphiMakeRecentAsync [{project}] 
                               same as above, but async if |skywind3000/asyncrun.vim|
                               is installed.

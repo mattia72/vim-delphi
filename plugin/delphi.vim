@@ -77,13 +77,6 @@ function! g:delphi#HighlightMsBuildOutput()
   endif
 endfunction
 
-function! g:delphi#SetProjectSearchPath()
-  if exists('g:delphi_project_path')
-    " don't worry, nothing will be added twice :)
-    execute 'set path+='.escape(g:delphi_project_path,' \|')
-  endif
-endfunction
-
 function! g:delphi#FindProject(...)
   let active_file_dir = expand('%:p:h')
   let project_file = ''
@@ -112,7 +105,6 @@ function! g:delphi#FindProject(...)
   else
     "echom 'Search '.project_name.' in path '.&path
     " find file in set path +=...
-    call delphi#SetProjectSearchPath()
     " faster if we are in the dir
     let project_file = findfile(project_name)
   endif
@@ -147,7 +139,6 @@ function! g:delphi#SetRecentProject(...)
     call inputrestore()
   endif
   "echom project_name
-  call delphi#SetProjectSearchPath()
   call delphi#SearchAndSaveRecentProjectFullPath(project_name)
 
   if empty(g:delphi_recent_project)
