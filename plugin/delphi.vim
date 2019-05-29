@@ -219,6 +219,9 @@ augroup delphi_vim_global_command_group
   autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
   autocmd FileType qf nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
 
+  " highlight selcted word
+  autocmd FileType delphi nnoremap <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
+  " Save & Build
   autocmd FileType delphi nnoremap <buffer> <F7> :wa <bar> DelphiMakeRecentAsync <CR>
   "change trailing spaces to tabs
   autocmd FileType delphi vnoremap <buffer> tt :<C-U>silent! :retab!<CR>
@@ -249,11 +252,13 @@ command! -nargs=? DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
 " Mappings
 " ----------------------
 
-" select inside a begin-end block with vif or vaf
-vnoremap af :<C-U>silent! normal! [zV]z<CR>
-vnoremap if :<C-U>silent! normal! [zjV]zk<CR>
-omap af :normal Vaf<CR>
-omap if :normal Vif<CR>
+if &foldmethod=='syntax'
+  " select inside a begin-end block with vif or vaf
+  vnoremap af :<C-U>silent! normal! [zV]z<CR>
+  vnoremap if :<C-U>silent! normal! [zjV]zk<CR>
+  omap af :normal Vaf<CR>
+  omap if :normal Vif<CR>
+endif
 
 "FIXME read tabularize.doc for extension
 if exists(':Tabularize') " Align selected assignes in nice columns with plugin
@@ -276,8 +281,57 @@ if exists(':RainbowToggle')
 	endif
 endif
 
-" highlight selcted word
-nnoremap <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
+" ----------------------
+" Menus
+" ----------------------
+
+function! s:CreateMenu(mode, desc, map, cmd)
+  let menu_root = "&Plugin.&Delphi"
+  let menu_command = a:mode . 'menu <silent> ' . menu_root . '.' . escape(a:desc, ' ')
+  if strlen(a:map)
+    let menu_command .= '<Tab>'
+    if(a:map =~ '^<leader>')
+      let leader = exists('g:mapleader') ? g:mapleader : '\'
+      let menu_command .= escape( substitute(a:map, '<leader>', leader, ''),'\' )
+    else
+      let menu_command .= a:map
+    endif
+  endif
+  let menu_command .= ' ' . a:cmd
+  execute menu_command
+endfunction
+
+if exists(':DelphiSwitchToDfm')
+  call s:CreateMenu('a', "Switch between pas/dfm"   , ""          , ":DelphiSwitchToDfm")
+  call s:CreateMenu('a', "-Separator2-"             , ""          , ":")
+endif
+"let b:browsefilter = "Delphi projects\t*.dproj\nDelphi group projects\t*.groupproj\n"
+if exists(':Tabularize') " Align selected assignes in nice columns with plugin
+  call s:CreateMenu('v', "Align &assignments" , "<leader>t="       , ":Tabularize /:=<CR>")
+  call s:CreateMenu('v', "Align &declarations" , "<leader>t:"      , ":Tabularize /:<CR>")
+  call s:CreateMenu('v', "Change trailing sapces"  , "tt"          , "tt")
+  call s:CreateMenu('a', "-Separator1-"             , ""           , ":")
+endif
+
+if exists(':RainbowToggle')
+  call s:CreateMenu('a', "Highlight parentheses"     , ""          , ":RainbowToggle")
+  call s:CreateMenu('a', "-Separator2-"             , ""           , ":")
+endif
+
+if &foldmethod=='syntax'
+  call s:CreateMenu('a', "Select all in &block" , ":vif"     , "vif")
+  call s:CreateMenu('a', "Select whole block" , ":vaf"       , "vaf")
+  call s:CreateMenu('a', "-Separator3-"             , ""           , ":")
+endif
+
+call s:CreateMenu('a', "Make a &project (Async)" , ":DelphiMakeAsync"       , ":DelphiMakeAsync<CR>")
+call s:CreateMenu('a', "Make &recent project"    , ":DelphiMakeRecentAsync" , ":DelphiMakeRecentAsync<CR>")
+call s:CreateMenu('a', "-Separator4-"             , ""                       , ":")
+call s:CreateMenu('a', "Make a &project"         , ":DelphiMake"            , ":DelphiMake<CR>")
+call s:CreateMenu('a', "Make recent pro&ject"    , ":DelphiMakeRecent"      , ":DelphiMakeRecent<CR>")
+call s:CreateMenu('a', "&View build config"      , ":DelphiBuildConfig"     , ":DelphiBuildConfig<CR>")
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
