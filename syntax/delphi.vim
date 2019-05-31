@@ -64,7 +64,8 @@ if exists("delphi_space_errors")
   if exists("delphi_leading_tab_error")
     syn match delphiSpaceError "^ *\zs\t\+" display
   elseif exists("delphi_leading_space_error")
-    syn match delphiSpaceError "^\t*\zs \+" display
+    syn match delphiSpaceError '^\(\t*\zs \+\)\+' display
+    syn match delphiSpaceError '^\t*\zs \+' display
   endif
 endif
 
