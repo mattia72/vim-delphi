@@ -254,7 +254,7 @@ augroup delphi_vim_global_command_group
   autocmd QuickFixCmdPost make copen 8 | wincmd J | call delphi#SetQuickFixWindowProperties() 
   " close with q or esc
   autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
-  autocmd FileType qf nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
+  autocmd FileType qf if mapcheck('q', 'n') ==# '' | nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
 
   autocmd FileType delphi call DefineCommands()
   autocmd FileType delphi call DefineMappings()
@@ -273,18 +273,19 @@ function! DefineCommands()
   command! -nargs=0 -bar DelphiSwitchToPas call delphi#SwitchPasOrDfm()
 
   if (exists(':AsyncRun'))
-    command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecentAsync
+    command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
 	        \ call delphi#HandleRecentProject(<f-args>) 
 	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
 
-    command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeAsync
+    command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
 	        \ execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
+  else
+    command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
+          \ call delphi#SetRecentProjectAndMake(<f-args>)
+    command! -nargs=? -bar -complete=file_in_path DelphiMake 
+          \ call delphi#FindAndMake(<q-args>)
   endif
 
-  command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
-        \ call delphi#SetRecentProjectAndMake(<f-args>)
-  command! -nargs=? -bar -complete=file_in_path DelphiMake 
-        \ call delphi#FindAndMake(<q-args>)
   command! -nargs=? DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
 endfunction
 
@@ -295,9 +296,9 @@ endfunction
 function! DefineMappings()
 
   " highlight selcted word
-  nnoremap <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
+  nnoremap <buffer> <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
   " Save & Build
-  nnoremap <buffer> <F7> :wa <bar> DelphiMakeRecentAsync <CR>
+  nnoremap <buffer> <F7> :wa <bar> DelphiMakeRecent<CR>
   nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
   "change trailing spaces to tabs
   vnoremap <buffer> <leader>tt :RetabIndent<CR>
@@ -305,16 +306,16 @@ function! DefineMappings()
 
   if &foldmethod=='syntax'
     " select inside a begin-end block with vif or vaf
-    vnoremap af :<C-U>silent! normal! [zV]z<CR>
-    vnoremap if :<C-U>silent! normal! [zjV]zk<CR>
-    omap af :normal Vaf<CR>
-    omap if :normal Vif<CR>
+    vnoremap <buffer> af :<C-U>silent! normal! [zV]z<CR>
+    vnoremap <buffer> if :<C-U>silent! normal! [zjV]zk<CR>
+    omap <buffer> af :normal Vaf<CR>
+    omap <buffer> if :normal Vif<CR>
   endif
 
   "FIXME read tabularize.doc for extension
   if exists(':Tabularize') " Align selected assignes in nice columns with plugin
-    vnoremap <leader>t= :Tabularize /:=<CR>
-    vnoremap <leader>t: :Tabularize /:<CR>
+    vnoremap <buffer> <leader>t= :Tabularize /:=<CR>
+    vnoremap <buffer> <leader>t: :Tabularize /:<CR>
   endif
 
   if exists(':RainbowToggle')
@@ -377,17 +378,18 @@ function! BuildPluginMenus()
     call s:CreateMenu('a', "-Separator3-"        , ""   , ":")
   endif
 
-  call s:CreateMenu('a', "Make a &project (Async)"     , ":DelphiMakeAsync"      , ":DelphiMakeAsync<CR>")
-  call s:CreateMenu('a', "Make &recent project (Async)", ":DelphiMakeRecentAsync", ":DelphiMakeRecentAsync<CR>")
+  if (exists(':AsyncRun'))
+    call s:CreateMenu('a', "Make &project (Async)"     , ":DelphiMake"      , ":DelphiMake<CR>")
+    call s:CreateMenu('a', "Make &recent project (Async)", ":DelphiMakeRecent", ":DelphiMakeRecent<CR>")
+  else
+    call s:CreateMenu('a', "Make &project"             , ":DelphiMake"           , ":DelphiMake<CR>")
+    call s:CreateMenu('a', "Make recent pro&ject"      , ":DelphiMakeRecent"     , ":DelphiMakeRecent<CR>")
+  endif
   call s:CreateMenu('a', "-Separator4-"                , ""                      , ":")
 
-  call s:CreateMenu('a', "Make a &project"             , ":DelphiMake"           , ":DelphiMake<CR>")
-  call s:CreateMenu('a', "Make recent pro&ject"        , ":DelphiMakeRecent"     , ":DelphiMakeRecent<CR>")
-  call s:CreateMenu('a', "-Separator5-"                , ""                      , ":")
-
   call s:CreateMenu('a', "&View build config"          , ":DelphiBuildConfig"     , ":DelphiBuildConfig<CR>")
-  call s:CreateMenu('a', "&Save all && Build"          , "F7"                     , ":wa <bar> DelphiMakeRecentAsync <CR>")
-  call s:CreateMenu('a', "-Separator6-"                , ""                       , ":")
+  call s:CreateMenu('a', "&Save all && Build"          , "F7"                     , ":wa <bar> DelphiMakeRecent<CR>")
+  call s:CreateMenu('a', "-Separator5-"                , ""                       , ":")
   call s:CreateMenu('a', "Switch between pas/dfm"      , "F12"                    , ":DelphiSwitchToDfm<CR>")
 endfunc
 

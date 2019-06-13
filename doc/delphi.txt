@@ -190,11 +190,10 @@ The defined commands:
 
 :DelphiMake [{project}]       
                               searches {project} in the path and calls 
-			      :make! /p:config=|g:delphi_build_config| {project}
-			      without argument, it tries to find a *.dproj
-			      file in the current directory and then upwards
-:DelphiMakeAsync [{project}] 
-                              same as above, but async if |skywind3000/asyncrun.vim|
+                              :make! /p:config=|g:delphi_build_config| {project}
+                              without argument, it tries to find a *.dproj
+                              file in the current directory and then upwards
+                              It works async if |skywind3000/asyncrun.vim|
                               is installed.
 :DelphiMakeRecent [{project}] 
                               same as DelphiMake, but full path of the given 
@@ -203,8 +202,7 @@ The defined commands:
                               Without any argument |g:delphi_recent_project|
                               will be built. On first run the project name will
                               be asked, then searched in the |path|.
-:DelphiMakeRecentAsync [{project}] 
-                              same as above, but async if |skywind3000/asyncrun.vim|
+                              It works async if |skywind3000/asyncrun.vim|
                               is installed.
 :DelphiBuildConfig [{config}]
                               Sets |g:delphi_build_config| variable.
