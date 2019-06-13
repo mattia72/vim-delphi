@@ -258,7 +258,9 @@ augroup delphi_vim_global_command_group
 
   autocmd FileType delphi call DefineCommands()
   autocmd FileType delphi call DefineMappings()
-  autocmd FileType delphi call BuildPluginMenus()
+  autocmd FileType dfm nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
+  autocmd FileType delphi call SetPlugins()
+  autocmd FileType delphi call BuildGuiMenus()
 augroup END
 
 " ----------------------
@@ -318,6 +320,13 @@ function! DefineMappings()
     vnoremap <buffer> <leader>t: :Tabularize /:<CR>
   endif
 
+endfunction
+
+" ----------------------
+" Other Plugins
+" ----------------------
+ 
+function! s:SetPlugins()
   if exists(':RainbowToggle')
     let delphi_rainbow_conf = {
 	        \	'separately': {
@@ -358,7 +367,7 @@ function! s:CreateMenu(mode, title, map, cmd)
   execute menu_command
 endfunction
 
-function! BuildPluginMenus()
+function! BuildGuiMenus()
   "let b:browsefilter = "Delphi projects\t*.dproj\nDelphi group projects\t*.groupproj\n"
   if exists(':Tabularize') " Align selected assignes in nice columns with plugin
     call s:CreateMenu('v', "Align &assignments" , "<leader>t=", ":Tabularize /:=<CR>")
