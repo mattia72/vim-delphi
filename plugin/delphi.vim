@@ -301,10 +301,23 @@ function! DefineMappings()
   nnoremap <buffer> <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
   " Save & Build
   nnoremap <buffer> <F7> :wa <bar> DelphiMakeRecent<CR>
+  inoremap <buffer> <F7> <esc>:wa <bar> DelphiMakeRecent<CR>
+  " switch to dfm
   nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
-  "change trailing spaces to tabs
-  vnoremap <buffer> <leader>tt :RetabIndent<CR>
-  nnoremap <buffer> <leader>tt :RetabIndent<CR>
+  "change trailing spaces to tabs or vice versa
+  vnoremap <buffer> <leader>dt :RetabIndent<CR>
+  nnoremap <buffer> <leader>dt :RetabIndent<CR>
+  " put ; to the end of line
+  nnoremap <buffer> <leader>d; :s/$/;/<CR>:noh<CR>
+
+  " jumpings
+  nnoremap <buffer> <leader>dU gg:/^\s*\<uses\><CR>:noh<CR>
+  nnoremap <buffer> <leader>du gg:/^\s*\<uses\><CR>n:noh<CR>
+  nnoremap <buffer> <leader>di gg:/^\s*\<implementation\><CR>:noh<CR>
+  nnoremap <buffer> <leader>df gg:/^\s*\<interfaces\><CR>:noh<CR>
+  nnoremap <buffer> <leader>dv ?^\s*\<var\><CR>:noh<CR>
+  nnoremap <buffer> <leader>db ?^\s*\<begin\><CR>:noh<CR>
+  nnoremap <buffer> <leader>de /^\s*\<end\><CR>:noh<CR>
 
   if &foldmethod=='syntax'
     " select inside a begin-end block with vif or vaf
@@ -326,7 +339,7 @@ endfunction
 " Other Plugins
 " ----------------------
  
-function! s:SetPlugins()
+function! SetPlugins()
   if exists(':RainbowToggle')
     let delphi_rainbow_conf = {
 	        \	'separately': {
