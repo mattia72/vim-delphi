@@ -116,19 +116,34 @@ MAPPINGS                                                      *delphi-mappings*
 
 The plugin provides some useful mapping definition also. 
 
-Mappings defined in ftplugin/common.vim: (common for *.dfm and *.pas files)
+Common mappings for *.dfm and *.pas files (defined in ftplugin/common.vim):
+------------------------------------------------------------------------------
 <leader>sd      Switch to *.dfm  
 <leader>sp      Switch to *.pas
+<F12>           Switch between *dfm and *.pas
 
-Mappings defined in plugin/delphi.vim:
+Mappings for *.pas files only (defined in plugin/delphi.vim):
+------------------------------------------------------------------------------
+vif             Select all in a block (works only if *foldmethod* is 'syntax')   
+vaf             Select a whole block  (works only if *foldmethod* is 'syntax')
+<F7>            Save all and make 
 
-vif             Select all in a block  
-vaf             Select a whole block  
-
+Edit helpers for *.pas files
+------------------------------------------------------------------------------
 <leader>t=      Align selected assignes in nice columns with |Tabularize| 
 <leader>t:      Align selected declarations in nice columns with |Tabularize| 
+<leader>dt      Retab current line or selection
+<leader>d;      Put ';' to the end of line
 
-<F7>            Save all and make 
+Jumpings in *.pas files
+------------------------------------------------------------------------------
+<leader>dU      Jump to the first 'uses' clause in file
+<leader>du      Jump to the second 'uses' clause in file
+<leader>di      Jump to the 'implementation' section
+<leader>df      Jump to the 'interface' section 
+<leader>dv      Jump to the previous 'var' section 
+<leader>db      Jump to the previous 'begin' 
+<leader>de      Jump to the next 'end' 
 
 ==============================================================================
 MATCHIT SUPPORT                                                *delphi-matchit*
