@@ -74,23 +74,35 @@ Syntax highlight settings are:
 |delphi_space_errors| : 
     highlight space errors
 |delphi_leading_space_error| : 
-    highlight leading <space>s, not <tab>s
+    highlight leading <space>s, but not <tab>s
 |delphi_leading_tab_error| : 
-    highlight leading <tab>s, not <space>s
+    highlight leading <tab>s, but not <space>s
+|delphi_trailing_space_error| :
+    highlight trailing <space>s
+
+    Eg: if you like <tab> indenting, <space> can be highlighted as error: 
+        let  delphi_space_errors = 1
+        let  delphi_leading_space_error = 1
+
+    Unnecessary spaces on the end of the lines can be highlighted as follows: 
+        let  delphi_space_errors = 1
+        let  delphi_trailing_space_error = 1
+
+    Note: 
+    These are the default settings. |unlet| these variables if you don't like it.
+
 |delphi_highlight_function_parameters| :  
     highlight function parameters wich has leading '_'. eg: Foo(_bar:string) 
 
-------------------------------------------------------------------------------
-If you like <tab> indenting, <space> can be highlighted as error: >
-    let  delphi_space_errors = 1
-    let  delphi_leading_space_error = 1
-
-Unnecessary spaces on the end of the lines: >
-    let  delphi_space_errors = 1
-    let  delphi_trailing_space_error = 1
-
-Note: 
-These are the default settings. |unlet| these variables if you don't like it.
+Note:
+1. Function and procedure names will be highlighted correctly only if they 
+   are followed by parenthesis '()'
+2. Consts are highlighted if they are written in uppercase
+3. Somtimes in very large files ( > 1000 lines) highlighting fails and from
+   some point, everything will be highlighted as comment. In this case the
+   following commands could help: >
+     :e! 
+     :syn off | syn on 
 
 ==============================================================================
 FOLDING                                                        *delphi-folding*
