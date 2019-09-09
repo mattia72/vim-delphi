@@ -9,23 +9,44 @@
 # Ctrl+k jumps to the next field in the snippet
 # After select press Ctrl+k to trigger the snippet
 
+snippet     fileheader  
+abbr        delphi unit header
+alias       header header unitheader
+options     head
+  {**-----------------------------------------------------------------------------
+ 
+    @file    `bufname('%') ==#'[Command Line]' ? expand('#:t') : expand('%:t')`${1}
+ 
+    ${2:TODO: -- Add description --}
+ 
+    (c) `strftime("%Y")`, ${3:company}
+ 
+    @date    `strftime("%d.%m.%Y")`${4}
+    @author  ${5:author}
+ 
+  --------------------------------------------------------------------------------}
+  {
+  History:
+  ---------
+  }
+
 snippet     func  
 abbr        delphi function definition 
 alias       function fun
 options     head
- function ${1:class_name}.${2:function_name}(${3:parameter_name}:${4:parameter_type}):${5:return_type};
- begin
-   ${0:content}
- end; 
+  function ${1:class_name}.${2:function_name}(${3:parameter_name}:${4:parameter_type}):${5:return_type};
+  begin
+    ${0:content}
+  end; 
 
 snippet     proc  
 abbr        delphi function definition 
 alias       procedure pro
 options     head
- procedure ${1:class_name}.${2:procedure_name}(${3:parameter_name}:${4:parameter_type});
- begin
-   ${0:content}
- end; 
+  procedure ${1:class_name}.${2:procedure_name}(${3:parameter_name}:${4:parameter_type});
+  begin
+    ${0:content}
+  end; 
 
 snippet     record  
 abbr        delphi record definition 

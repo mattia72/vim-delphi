@@ -181,6 +181,7 @@ syn region delphiObjectEndBlock matchgroup=delphiBeginEnd start="\<object\>" end
 syn match delphiInterfaceSection "\<interface\>"
 syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[TI]\w+>\s*\=\s*<%(class|record|interface)>" end="\<end\>;" 
       \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName,delphiFunctionDefinition extend fold
+" FIXME another Type block: TSingleton = class sealed(TSingleton<TMyClass>);
 
 syn cluster delphiComments contains=delphiComment,delphiLineComment,delphiRegion
 

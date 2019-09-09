@@ -53,18 +53,21 @@ if exists("loaded_matchit")
 	"" start of line or ;
   let s:sol              = '\%(^\|;\)\s*'
   let s:not_func_or_proc = '\%(\s\+\%(function\|procedure\)\)\@<!'
-  let s:begin_words      = '\<\%(begin\|case\|record\|object\|except\|finally\)\>'
+  let s:begin_words      = '\<\%(begin\|record\|object\|except\|finally\)\>'
   let s:middle_words     = '\<\%(except\|finally\)\>'
   let s:end_word         = '\<end\>'
 
   let b:match_words     = s:begin_words.':'.s:end_word
+  let b:match_words     .= ',\<case\>:\<of\>:\<end\>' 
   let b:match_words     .= ',\<try\>:'.s:middle_words " .':'.s:end_word   !!!! :( not begin end !!!!
   let b:match_words     .= ',\<unit\>:\<interface\>:\<implementation\>:\<end\.'
   let b:match_words     .= ',\%(= \s*\)\zsclass\>:'.s:end_word
   let b:match_words     .= ',\<uses\>:;'
   let b:match_words     .= ',\<repeat\>:\<until\>'
   let b:match_words     .= ',\<while\>:\<do\>'
+  "let b:match_words     .= ',\<\$region\>:\<\$endregion\>'
   let b:match_words     .= ',\<if\>:\<then\>:\<else\>' " it works only if 'else' exists
+  let b:match_words     .= ',\<case\>:\<else\>:\<end\>' " it works only if 'else' exists
   "let b:match_words     .= ',\<\%(procedure\|function\)\>:\<const\>:\<var\>:\<begin\>:\<end\>' " 
 endif
 

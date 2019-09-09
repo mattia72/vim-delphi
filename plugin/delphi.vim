@@ -60,14 +60,30 @@ let g:delphi_build_config = 'Debug'
 " ----------------------
 
 function! g:delphi#SwitchPasOrDfm()
+  let file_name_without_extension = expand('%:t:r')
   if (expand ("%:e") == "pas")
-    find %:t:r.dfm
+    let switch_file = file_name_without_extension.'.dfm'
   else
-    find %:t:r.pas
+    let switch_file = file_name_without_extension.'.pas'
+  endif
+
+  if filereadable(switch_file)
+    execute 'silent! find '.switch_file
+  else
+	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find "'.switch_file.'" in path' | echohl None
   endif
 endfunction
 
-function! g:delphi#HighlightMsBuildOutput()
+function! g:delphi#CDProjectDir()
+  if exists('g:delphi_recent_project') && filereadable(g:delphi_recent_project)
+    let cmd = 'chdir '.fnamemodify(g:delphi_recent_project,':p:h')  
+    echom cmd
+    execute cmd
+  endif
+endfunction
+
+function! g:delphi#PostBuildSteps()
+  " highlight errors
 	let qf_cmd = getqflist({'title' : 1})['title']
 	if (qf_cmd =~ 'rsvars\" && msbuild')
 	  match none
@@ -75,6 +91,46 @@ function! g:delphi#HighlightMsBuildOutput()
     2match Error " \zs\w\+ \([EF]\d\{4}\|[Ee]rror\)\ze:" 
     3match Warning " \zs\w\+ [WH]\d\{4}\ze:" 
   endif
+
+  call delphi#GoToFirstValidErrorLineInQuickfix()
+endfunction
+
+" Not used yet, but sometimes it may be usefull...
+function! g:delphi#CorrectQfDirectory()
+  let qf_valid_entries = filter(getqflist(), 'v:val.valid')
+  if (len(qf_valid_entries) > 0 )
+    echom 'qf first bufnr: '.qf_valid_entries[0].bufnr
+    if qf_valid_entries[0].bufnr && !filereadable(bufname(qf_valid_entries[0].bufnr))
+      echom 'Valid but not readable: '.qf_valid_entries[0].bufnr
+      call delphi#CDProjectDir()
+    endif
+  endif
+endfunction
+
+function! g:delphi#GoToFirstValidErrorLineInQuickfix()
+  let first_valid_line_nr = 1
+  let valid_found = 0
+  for item in getqflist() 
+    if (item.valid == 1)
+      let valid_found = 1
+      if item.bufnr && !filereadable(bufname(item.bufnr))
+        echom 'Valid but not readable: '. item.bufnr
+        call delphi#CDProjectDir()
+      endif
+      break
+    endif
+    let first_valid_line_nr += 1
+  endfor
+  let msg = 'vim-delphi: '
+  " go to the first valid line or last line
+  if (valid_found == 1)
+    let msg .= 'Build failed.'
+    execute 'copen | '.first_valid_line_nr
+  else
+    let msg .= 'Build succeeded.'
+    execute 'copen | normal! G'
+  endif
+	echohl ModeMsg | echo msg | echohl None
 endfunction
 
 function! g:delphi#FindProject(...)
@@ -92,7 +148,7 @@ function! g:delphi#FindProject(...)
     " let project_name = '*.dproj'
     let cwd_orig = getcwd()
     while getcwd() !~ '^[A-Z]:\\$'
-      echom 'Search upwards in '.getcwd()
+      "echom 'Search upwards in '.getcwd()
       let project_file = globpath('.', project_name)
       if !empty(project_file) 
         let project_file = fnamemodify(project_file,':p' )
@@ -109,7 +165,7 @@ function! g:delphi#FindProject(...)
     let project_file = findfile(project_name)
   endif
   redraw
-	echohl ModeMsg | echo 'Project found: '.project_file | echohl None
+	echohl ModeMsg | echo 'vim-delphi: Project found: '.project_file | echohl None
   if filereadable(project_file) | return project_file | else | return '' | endif
 endfunction
 
@@ -143,7 +199,7 @@ function! g:delphi#SetRecentProject(...)
 
   if empty(g:delphi_recent_project)
     redraw
-	  echohl ErrorMsg |  echom 'Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
+	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
 		"unlet g:delphi_recent_project
   endif
   redraw
@@ -160,10 +216,10 @@ function! g:delphi#FindAndMake(...)
 
   "echom 'FindAndMake args: '.a:0.' "'.project_name.'" found: '.project_file
   if !empty(project_file) 
-	  echohl ModeMsg | echo 'Make '.project_file | echohl None
+	  echohl ModeMsg | echo 'vim-delphi: Make '.project_file | echohl None
     execute 'make! /p:config='.g:delphi_build_config.' '.project_file 
   else  
-	  echohl ErrorMsg | redraw | echom 'Can''t find project "'.project_name.'"' | echohl None
+	  echohl ErrorMsg | redraw | echom 'vim-delphi: Can''t find project "'.project_name.'"' | echohl None
   endif
 endfunction
 
@@ -188,7 +244,7 @@ function! g:delphi#SetRecentProjectAndMake(...)
     call delphi#FindAndMake(g:delphi_recent_project)
   else
     redraw
-		echohl ErrorMsg | echom 'Project not found or g:delphi_recent_project is not defined properly.' | echohl None
+		echohl ErrorMsg | echom 'vim-delphi: Project not found or g:delphi_recent_project is not defined properly.' | echohl None
   endif
 endfunction
 
@@ -196,14 +252,14 @@ function! g:delphi#SetBuildConfig(config)
   if a:0 != 0 && !empty(a:1)
     let g:delphi_build_config = a:config
   endif
-	echohl ModeMsg | echo 'Build config: '.g:delphi_build_config | echohl None
+	echohl ModeMsg | echo 'vim-delphi: Build config: '.g:delphi_build_config | echohl None
 endfunction
 
-function! g:delphi#SetQuickFixWindowProperties()
+function! g:delphi#PostOpenQuickfix()
   "echom 'Set properties'
   set nocursorcolumn cursorline
   " highlight errors in reopened qf window
-  call delphi#HighlightMsBuildOutput()
+  call delphi#PostBuildSteps()
 endfunction
 
 " Retab the indent of a file - ie only the first nonspace.
@@ -249,9 +305,7 @@ endfun
 
 augroup delphi_vim_global_command_group
   autocmd!
-  "autocmd FileType qf call delphi#SetQuickFixWindowProperties() 
-  "autocmd QuickFixCmdPre make call delphi#HighlightMsBuildOutput()
-  autocmd QuickFixCmdPost make copen 8 | wincmd J | call delphi#SetQuickFixWindowProperties() 
+  autocmd QuickFixCmdPost make copen 8 | wincmd J | call delphi#PostOpenQuickfix() 
   " close with q or esc
   autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
   autocmd FileType qf if mapcheck('q', 'n') ==# '' | nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
@@ -277,10 +331,10 @@ function! DefineCommands()
   if (exists(':AsyncRun'))
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
 	        \ call delphi#HandleRecentProject(<f-args>) 
-	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
+	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
 
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
-	        \ execute 'AsyncRun'.<bang>.' -post=call\ delphi\#HighlightMsBuildOutput() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
+	        \ execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
   else
     command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
           \ call delphi#SetRecentProjectAndMake(<f-args>)

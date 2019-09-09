@@ -92,13 +92,13 @@ Syntax highlight settings are:
     These are the default settings. |unlet| these variables if you don't like it.
 
 |delphi_highlight_function_parameters| :  
-    highlight function parameters wich has leading '_'. eg: Foo(_bar:string) 
+    highlight function parameters which has leading '_'. eg: Foo(_bar:string) 
 
 Note:
 1. Function and procedure names will be highlighted correctly only if they 
    are followed by parenthesis '()'
-2. Consts are highlighted if they are written in uppercase
-3. Somtimes in very large files ( > 1000 lines) highlighting fails and from
+2. Const variable names are highlighted if they are written in uppercase
+3. Sometimes in very large files ( > 1000 lines) highlighting fails and from
    some point, everything will be highlighted as comment. In this case the
    following commands could help: >
      :e! 
