@@ -127,6 +127,15 @@ syn match delphiConstant "\v\C<[A-Z_][A-Z0-9_]+>" display
 if exists("delphi_highlight_function_parameters")
   syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"
 endif
+
+if exists("delphi_highlight_field_names")
+  syn match delphiClassField "\v\C<F\u\w+>\ze[^(]"
+endif
+
+if exists("delphi_highlight_hungarian_notated_variables")
+  syn match delphiHungarianNotatedVariables "\v\C<\(\([bdfilnsw]\)\|\(str\)\)\u\w+>\ze[^(]"
+endif
+
 syn match delphiTemplateParameter "<\zs\(\w\+\(\s*,\?\s*\w\+\)*\)\+\ze>" contained display
 "syn match delphiClassParameter "\<class\>\s*(\zs\(\w\+\(\s*,\?\s*\w\+\)*\)\+\ze)" contained display
 
@@ -227,56 +236,57 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   else
     command -nargs=+ HiLink hi def link <args>
   endif
-  HiLink   delphiTodo            Todo         
-  HiLink   delphiSpecialComment  SpecialComment         
-  HiLink   delphiBeginEnd        Keyword 
-  HiLink   delphiLineComment     Comment
-  HiLink   delphiComment         Comment
-  HiLink   delphiType            Type
-  HiLink   delphiWindowsType     Type
-  HiLink   delphiReservedWord    Keyword
-  HiLink   delphiInterfaceSection Keyword
-  HiLink   delphiUnitEnd         Keyword
-  HiLink   delphiTypeModifier    Keyword
-  HiLink   delphiVarBlockSeparator Keyword
-  HiLink   delphiAsmBlockSeparator  PreProc
-  HiLink   delphiNumber          Number
-  HiLink   delphiHexNumber       Number
-  HiLink   delphiFloat           Float
-  HiLink   delphiDefine          Macro
-  HiLink   delphiString          String
-  HiLink   delphiChar            Character
-  HiLink   delphiOperator        Operator
-  HiLink   delphiConstant        Constant
-  HiLink   delphiBool            Boolean
-  HiLink   delphiPredef          Constant
-  HiLink   delphiAssert          Debug
-  HiLink   delphiLoop            Repeat
-  HiLink   delphiConditional     Conditional
-  HiLink   delphiExcept          Exception
-  HiLink   delphiBadChar         Error
-  HiLink   delphiVisibility      StorageClass
-  HiLink   delphiCallingConv     StorageClass
-  HiLink   delphiDirective       StorageClass
-  HiLink   delphiTemplateParameter StorageClass
-  HiLink   delphiPropDirective   Function
-  HiLink   delphiStructure       Structure
-  HiLink   delphiLabel           Label
-  HiLink   delphiSpaceError	 Error
-  HiLink   delphiSemicolonError Error
-  HiLink   delphiFunctionName      Function
-  HiLink   delphiCallableType    Keyword
-  HiLink   delphiFunctionDefSeparator delphiCallableType
-  HiLink   delphiDeclareType     Type
-  HiLink   delphiContainerType   Type
-  HiLink   delphiUsesBlockSeparator Keyword
-  HiLink   delphiTypeBlockSeparator Type
-  HiLink   DelphiUnitName        Type
-  HiLink   delphiIdentifier      Normal
-  HiLink   delphiFunctionParameter Identifier
-  HiLink   delphiFunctionDefinition Type
-  HiLink   delphiQualifiedIdentifier Identifier
-  HiLink   delphiParenthesis Normal
+   HiLink delphiTodo                 Todo
+   HiLink delphiSpecialComment       SpecialComment
+   HiLink delphiBeginEnd             Keyword
+   HiLink delphiLineComment          Comment
+   HiLink delphiComment              Comment
+   HiLink delphiType                 Type
+   HiLink delphiWindowsType          Type
+   HiLink delphiReservedWord         Keyword
+   HiLink delphiInterfaceSection     Keyword
+   HiLink delphiUnitEnd              Keyword
+   HiLink delphiTypeModifier         Keyword
+   HiLink delphiVarBlockSeparator    Keyword
+   HiLink delphiAsmBlockSeparator    PreProc
+   HiLink delphiNumber               Number
+   HiLink delphiHexNumber            Number
+   HiLink delphiFloat                Float
+   HiLink delphiDefine               Macro
+   HiLink delphiString               String
+   HiLink delphiChar                 Character
+   HiLink delphiOperator             Operator
+   HiLink delphiConstant             Constant
+   HiLink delphiBool                 Boolean
+   HiLink delphiPredef               Constant
+   HiLink delphiAssert               Debug
+   HiLink delphiLoop                 Repeat
+   HiLink delphiConditional          Conditional
+   HiLink delphiExcept               Exception
+   HiLink delphiBadChar              Error
+   HiLink delphiVisibility           StorageClass
+   HiLink delphiCallingConv          StorageClass
+   HiLink delphiDirective            StorageClass
+   HiLink delphiTemplateParameter    StorageClass
+   HiLink delphiPropDirective        Function
+   HiLink delphiStructure            Structure
+   HiLink delphiLabel                Label
+   HiLink delphiSpaceError           Error
+   HiLink delphiSemicolonError       Error
+   HiLink delphiFunctionName         Function
+   HiLink delphiCallableType         Keyword
+   HiLink delphiFunctionDefSeparator delphiCallableType
+   HiLink delphiDeclareType          Type
+   HiLink delphiContainerType        Type
+   HiLink delphiUsesBlockSeparator   Keyword
+   HiLink delphiTypeBlockSeparator   Type
+   HiLink DelphiUnitName             Type
+   HiLink delphiIdentifier           Normal
+   HiLink delphiFunctionParameter    Identifier
+   HiLink delphiFunctionDefinition   Type
+   HiLink delphiParenthesis          Normal
+   HiLink delphiClassField           delphiTodo
+   HiLink delphiHungarianNotatedVariables Identifier
   delcommand HiLink
 endif
 

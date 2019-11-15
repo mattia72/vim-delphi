@@ -94,6 +94,10 @@ Syntax highlight settings are:
 |delphi_highlight_function_parameters| :  
     highlight function parameters which has leading '_'. eg: Foo(_bar:string) 
 
+|delphi_highlight_field_names| :  
+    highlight field names which has leading 'F' and continues with uppercase
+    letter. eg: FMyField 
+
 Note:
 1. Function and procedure names will be highlighted correctly only if they 
    are followed by parenthesis '()'

@@ -52,6 +52,8 @@ let delphi_leading_space_error = 1
 "let  delphi_leading_tab_error = 1
 let delphi_trailing_space_error = 1
 let delphi_highlight_function_parameters = 1
+let delphi_highlight_field_names = 1
+let delphi_highlight_hungarian_notated_variables = 1
 
 let g:delphi_build_config = 'Debug'
 
@@ -67,7 +69,7 @@ function! g:delphi#SwitchPasOrDfm()
     let switch_file = file_name_without_extension.'.pas'
   endif
 
-  if filereadable(switch_file)
+  if (findfile(switch_file) != '')
     execute 'silent! find '.switch_file
   else
 	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find "'.switch_file.'" in path' | echohl None
