@@ -92,7 +92,8 @@ Syntax highlight settings are:
     These are the default settings. |unlet| these variables if you don't like it.
 
 |delphi_highlight_function_parameters| :  
-    highlight function parameters which has leading '_'. eg: Foo(_bar:string) 
+    highlight function parameters which has leading '_' or 'A' or equals 'Sender'. 
+    eg: Foo(_bar:string) or Bar(Sender: TObject; ACanvas: TCanvas)
 
 |delphi_highlight_field_names| :  
     highlight field names which has leading 'F' and continues with uppercase
