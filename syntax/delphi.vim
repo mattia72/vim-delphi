@@ -126,7 +126,7 @@ syn match delphiConstant "\v\C<[A-Z_][A-Z0-9_]+>" display
 
 if exists("delphi_highlight_function_parameters")
   syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"
-  syn match delphiFunctionParameter "\vA[A-Z]\w+>\ze[^(]"
+  syn match delphiFunctionParameter "\v\CA[A-Z]\w+>\ze[^(]"
   syn keyword delphiFunctionParameter Sender
 endif
 
