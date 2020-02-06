@@ -126,10 +126,12 @@ syn match delphiConstant "\v\C<[A-Z_][A-Z0-9_]+>" display
 
 if exists("delphi_highlight_function_parameters")
   syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"
+  syn match delphiFunctionParameter "\vA[A-Z]\w+>\ze[^(]"
+  syn keyword delphiFunctionParameter Sender
 endif
 
 if exists("delphi_highlight_field_names")
-  syn match delphiClassField "\v\C<F\u\w+>\ze[^(]"
+  syn match delphiClassField "\v\C<F\u\l\w+>\ze[^(]"
 endif
 
 if exists("delphi_highlight_hungarian_notated_variables")
