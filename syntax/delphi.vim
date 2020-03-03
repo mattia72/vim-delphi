@@ -131,7 +131,7 @@ if exists("delphi_highlight_function_parameters")
 endif
 
 if exists("delphi_highlight_field_names")
-  syn match delphiClassField "\v\C<F\u\l\w+>\ze[^(]"
+  syn match delphiClassField "\v\C<F\u+\l\w+>\ze[^(]"
 endif
 
 if exists("delphi_highlight_hungarian_notated_variables")
