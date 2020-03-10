@@ -314,9 +314,11 @@ augroup delphi_vim_global_command_group
 
   autocmd FileType delphi call DefineCommands()
   autocmd FileType delphi call DefineMappings()
-  autocmd FileType dfm nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
   autocmd FileType delphi call SetPlugins()
   autocmd FileType delphi call BuildGuiMenus()
+
+  autocmd FileType dfm call DefineCommands()
+  autocmd FileType dfm nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
 augroup END
 
 " ----------------------
