@@ -52,6 +52,7 @@ let delphi_leading_space_error = 1
 "let  delphi_leading_tab_error = 1
 let delphi_trailing_space_error = 1
 let delphi_highlight_function_parameters = 1
+let delphi_highlight_uppercase_consts = 1
 let delphi_highlight_field_names = 1
 let delphi_highlight_hungarian_notated_variables = 1
 

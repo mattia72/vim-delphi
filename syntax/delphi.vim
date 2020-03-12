@@ -121,13 +121,16 @@ syn match delphiUnitEnd "^end\." display
 
 syn match delphiIdentifier "\v\&?<[a-z]\w+>"  containedin=delphiBeginEndBlock contained  display
 
-" case sensitive \C
-syn match delphiConstant "\v\C<[A-Z_][A-Z0-9_]+>" display
+if exists("delphi_highlight_uppercase_consts")
+  " consts are written in UPPERCASE, case sensitivity switch is \C
+  syn match delphiConstant "\v\C<[A-Z0-9_]+>" display
+endif
 
 if exists("delphi_highlight_function_parameters")
-  syn match delphiFunctionParameter "\v<_\w+>\ze[^(]"
-  syn match delphiFunctionParameter "\v\CA[A-Z]\w+>\ze[^(]"
-  syn keyword delphiFunctionParameter Sender
+  syn match delphiFunctionParameter "\v<_\w+>\ze[^(]" containedin=delphiParenthesis,delphiBeginEndBlock contained display
+  " function parameters like AForm, should contain lowercase letters, otherwise they will be consts
+  syn match delphiFunctionParameter "\v\CA[A-Z]\w+\l+\w+>\ze[^(]" containedin=delphiParenthesis,delphiBeginEndBlock contained display
+  syn keyword delphiFunctionParameter Sender containedin=delphiParenthesis,delphiBeginEndBlock contained display
 endif
 
 if exists("delphi_highlight_field_names")
@@ -146,7 +149,8 @@ syn match delphiTemplateParameter "<\zs\(\w\+\(\s*,\?\s*\w\+\)*\)\+\ze>" contain
 " -----------------------------
 
 " Highlight all function names and function definitions 
-syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display nextgroup=delphiFunctionParams 
+" Function names should followed by "(" else we can't distinguish from a variable
+syn match delphiFunctionName   "\v<[a-z_]\w*>\ze\(" contains=delphiParenthesis display nextgroup=delphiFunctionParams  
 syn match delphiCallableType "\<function\>"
 syn match delphiCallableType "\<procedure\>"
 syn match delphiCallableType "\<constructor\>"
@@ -155,7 +159,7 @@ syn match delphiCallableType "\<operator\>"
 
 syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" fold
       \ contains=ALLBUT,delphiVarBlock,delphiUnitName,delphiSemicolonError
-syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>\s+\ze%(\w+\.)+" end="\v\.\ze\w+\("me=e-1 keepend display
+syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>\s+\ze%(\w+\.)+" end="\v\.\ze\w+\s*[\(;:]"me=e-1 keepend display
 
 " Var block: last line before begin, const or fuction etc...
 syn match delphiTypeModifier  "\<const\>"

@@ -91,6 +91,9 @@ Syntax highlight settings are:
     Note: 
     These are the default settings. |unlet| these variables if you don't like it.
 
+|delphi_highlight_uppercase_consts| :  
+    highlight consts written all with capital letters. eg: UPPERCASE_CONST
+
 |delphi_highlight_function_parameters| :  
     highlight function parameters which has leading '_' or 'A' or equals 'Sender'. 
     eg: Foo(_bar:string) or Bar(Sender: TObject; ACanvas: TCanvas)
