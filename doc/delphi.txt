@@ -8,8 +8,9 @@ INTRODUCTION.............................................|delphi-introduction|
 INSTALL.......................................................|delphi-install|
 SETTINGS.....................................................|delphi-settings|
   HIGHLIGHT SETTINGS...............................|delphi-highlight-settings|
-FOLDING.......................................................|delphi-folding|
+COMMANDS.....................................................|delphi-commands|
 MAPPINGS.....................................................|delphi-mappings|
+FOLDING.......................................................|delphi-folding|
 INDENTATION...............................................|delphi-indentation|
 MATCHIT SUPPORT...............................................|delphi-matchit|
 TAG HANDLING.............................................|delphi-tag-handling|
@@ -113,6 +114,53 @@ Note:
      :syn off | syn on 
 
 ==============================================================================
+COMMANDS                                                      *delphi-commands*
+
+:DelphiOpenInDevEnv [{file}]  Opens a file in the default external pascal editor. 
+                              It is usually the Delphi Develpment Environment.
+                              Without argument, the current file is used.
+
+:DelphiSwitchToDfm or
+:DelphiSwitchToPas            Switch between dfm and pas files. 
+                              Note: Both command works with dfm and pas files too.
+
+Note: Make helper commands are described in |delphi-make| section.
+
+==============================================================================
+MAPPINGS                                                      *delphi-mappings*
+
+The plugin provides some useful mapping definition also. 
+
+Common mappings for *.dfm and *.pas files (defined in ftplugin/common.vim):
+------------------------------------------------------------------------------
+    <leader>sd      Switch to *.dfm  
+    <leader>sp      Switch to *.pas
+    <F12>           Switch between *dfm and *.pas
+
+Mappings for *.pas files only (defined in plugin/delphi.vim):
+------------------------------------------------------------------------------
+    vif             Select all in a block (works only if *foldmethod* is 'syntax')   
+    vaf             Select a whole block  (works only if *foldmethod* is 'syntax')
+    <F7>            Save all and make 
+
+Edit helpers for *.pas files
+------------------------------------------------------------------------------
+    <leader>t=      Align selected assignes in nice columns with |Tabularize| 
+    <leader>t:      Align selected declarations in nice columns with |Tabularize| 
+    <leader>dt      Retab current line or selection
+    <leader>d;      Put ';' to the end of line
+
+Jumpings in *.pas files
+------------------------------------------------------------------------------
+    <leader>dU      Jump to the first 'uses' clause in file
+    <leader>du      Jump to the second 'uses' clause in file
+    <leader>di      Jump to the 'implementation' section
+    <leader>df      Jump to the 'interface' section 
+    <leader>dv      Jump to the previous 'var' section 
+    <leader>db      Jump to the previous 'begin' 
+    <leader>de      Jump to the next 'end' 
+
+==============================================================================
 FOLDING                                                        *delphi-folding*
 
 The delphi syntax file provides syntax folding (see |:syn-fold|) for code blocks.
@@ -132,40 +180,6 @@ Syntax folding might slow down syntax highlighting significantly,
 especially for large files.
 
 ==============================================================================
-MAPPINGS                                                      *delphi-mappings*
-
-The plugin provides some useful mapping definition also. 
-
-Common mappings for *.dfm and *.pas files (defined in ftplugin/common.vim):
-------------------------------------------------------------------------------
-<leader>sd      Switch to *.dfm  
-<leader>sp      Switch to *.pas
-<F12>           Switch between *dfm and *.pas
-
-Mappings for *.pas files only (defined in plugin/delphi.vim):
-------------------------------------------------------------------------------
-vif             Select all in a block (works only if *foldmethod* is 'syntax')   
-vaf             Select a whole block  (works only if *foldmethod* is 'syntax')
-<F7>            Save all and make 
-
-Edit helpers for *.pas files
-------------------------------------------------------------------------------
-<leader>t=      Align selected assignes in nice columns with |Tabularize| 
-<leader>t:      Align selected declarations in nice columns with |Tabularize| 
-<leader>dt      Retab current line or selection
-<leader>d;      Put ';' to the end of line
-
-Jumpings in *.pas files
-------------------------------------------------------------------------------
-<leader>dU      Jump to the first 'uses' clause in file
-<leader>du      Jump to the second 'uses' clause in file
-<leader>di      Jump to the 'implementation' section
-<leader>df      Jump to the 'interface' section 
-<leader>dv      Jump to the previous 'var' section 
-<leader>db      Jump to the previous 'begin' 
-<leader>de      Jump to the next 'end' 
-
-==============================================================================
 MATCHIT SUPPORT                                                *delphi-matchit*
 
 Matchit plugin is supported by defining |b:match_words| variable. The user can 
@@ -182,7 +196,7 @@ It's easier to install the modern matchit and matchparen replacement by: >
 ==============================================================================
 INDENTATION                                                *delphi-indentation*
 
-This part is under construction!!!
+This function is under development !!!
 
 ggVG=               Indents the whole file
 ==                  Indents the current line

@@ -62,6 +62,21 @@ let g:delphi_build_config = 'Debug'
 " Functions
 " ----------------------
 
+function delphi#OpenInDevEnv(...)
+  if a:0 != 0 && !empty(a:1)
+    let filepath = a:1
+  else
+    let filepath = expand("%")
+  endif                    
+
+  let file_extension = fnamemodify(filepath,":e") 
+  let extension_supported = file_extension =~? '\v(pas|dfm|dproj)'
+  if (extension_supported)
+    call system(filepath)
+	  echohl ModeMsg |  echom 'vim-delphi: Current file opened in external editor.' | echohl None
+  endif
+endfunction
+
 function! g:delphi#SwitchPasOrDfm()
   let file_name_without_extension = expand('%:t:r')
   if (expand ("%:e") == "pas")
@@ -332,6 +347,8 @@ function! DefineCommands()
 
   command! -nargs=0 -bar DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
   command! -nargs=0 -bar DelphiSwitchToPas call delphi#SwitchPasOrDfm()
+  command! -nargs=? -bar -complete=file_in_path DelphiOpenInDevEnv 
+        \ call delphi#OpenInDevEnv(<f-args>)
 
   if (exists(':AsyncRun'))
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
@@ -363,6 +380,7 @@ function! DefineMappings()
   inoremap <buffer> <F7> <esc>:wa <bar> DelphiMakeRecent<CR>
   " switch to dfm
   nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
+  nnoremap <buffer> <F2>  :DelphiOpenInDevEnv <CR>
   "change trailing spaces to tabs or vice versa
   vnoremap <buffer> <leader>dt :RetabIndent<CR>
   nnoremap <buffer> <leader>dt :RetabIndent<CR>
@@ -472,6 +490,7 @@ function! BuildGuiMenus()
   call s:CreateMenu('a', "&Save all && Build"          , "F7"                     , ":wa <bar> DelphiMakeRecent<CR>")
   call s:CreateMenu('a', "-Separator5-"                , ""                       , ":")
   call s:CreateMenu('a', "Switch between pas/dfm"      , "F12"                    , ":DelphiSwitchToDfm<CR>")
+  call s:CreateMenu('a', "Open in Delphi Dev Env"      , "F2"                     , ":DelphiOpenInDevEnv<CR>")
 endfunc
 
 let &cpo = s:save_cpo
