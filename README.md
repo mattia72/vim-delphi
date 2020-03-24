@@ -23,14 +23,14 @@ Plug 'mattia72/vim-delphi'
 ## Commands
 
 The following commands are defined:
-* :DelphiMake [{project}] <br>
+* :**DelphiMake** [{project}] <br>
                               searches {project} in the path and calls 
                               :make! /p:config=|g:delphi_build_config| {project}
                               without argument, it tries to find a *.dproj
                               file in the current directory and then upwards
                               It works async if |skywind3000/asyncrun.vim|
                               is installed.
-* :DelphiMakeRecent [{project}] <br>
+* :**DelphiMakeRecent** [{project}] <br>
                               same as DelphiMake, but full path of the given 
                               {project} will be stored in the variable 
                               |g:delphi_recent_project|.
@@ -39,10 +39,10 @@ The following commands are defined:
                               be asked, then searched in the |path|.
                               It works async if |skywind3000/asyncrun.vim|
                               is installed.
-* :DelphiBuildConfig [{config}] <br>Debug or Release
-* :DelphiOpenInDevEnv [{file}]  <br>
+* :**DelphiBuildConfig** [{config}] <br>Debug or Release
+* :**DelphiOpenInDevEnv** [{file}]  <br>
                               Opens a file in the default external pascal editor. It is usually the Delphi Develpment Environment. Without argument, the current file is used.
-* :DelphiSwitchToDfm or :DelphiSwitchToPas <br>
+* :**DelphiSwitchToDfm** or :**DelphiSwitchToPas** <br>
                               Switch between dfm and pas files. 
                               Note: Both command works with dfm and pas files too.
 
@@ -89,6 +89,9 @@ Such words are, eg.
 * "unit", "interface", "implementation", "end."
 
 and so on.
+
+## Menu
+![Screenshot](/../screenshot/vim-delphi-menu.jpg?raw=true "Aligning")
 
 ## Indent (under construction! :construction:)
 Indentation works well (in most cases :)) 
