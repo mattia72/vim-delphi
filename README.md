@@ -91,7 +91,7 @@ Such words are, eg.
 and so on.
 
 ## Menu
-![Screenshot](/../screenshot/vim-delphi-menu.png?raw=true "Aligning")
+![Screenshot](/../screenshot/vim-delphi-menu.png "Menu")
 
 ## Indent (under construction! :construction:)
 Indentation works well (in most cases :)) 
