@@ -20,7 +20,7 @@ Plug 'mattia72/vim-delphi'
 
 ![Screenshot](/../screenshot/screenshot.jpg?raw=true "Screenshot")
 
-## Make
+## Commands
 
 The following commands are defined:
 * :DelphiMake [{project}] <br>
@@ -46,7 +46,7 @@ The following commands are defined:
                               Switch between dfm and pas files. 
                               Note: Both command works with dfm and pas files too.
 
-## MAPPINGS
+## Mappings
 
 The plugin provides some useful mapping definition also. 
 
