@@ -23,11 +23,61 @@ Plug 'mattia72/vim-delphi'
 ## Make
 
 The following commands are defined:
-* :DelphiMake [{project}]       
-* :DelphiMakeAsync [{project}] 
-* :DelphiMakeRecent [{project}] 
-* :DelphiMakeRecentAsync [{project}] 
-* :DelphiBuildConfig [{config}]
+* :DelphiMake [{project}] <br>
+                              searches {project} in the path and calls 
+                              :make! /p:config=|g:delphi_build_config| {project}
+                              without argument, it tries to find a *.dproj
+                              file in the current directory and then upwards
+                              It works async if |skywind3000/asyncrun.vim|
+                              is installed.
+* :DelphiMakeRecent [{project}] <br>
+                              same as DelphiMake, but full path of the given 
+                              {project} will be stored in the variable 
+                              |g:delphi_recent_project|.
+                              Without any argument |g:delphi_recent_project|
+                              will be built. On first run the project name will
+                              be asked, then searched in the |path|.
+                              It works async if |skywind3000/asyncrun.vim|
+                              is installed.
+* :DelphiBuildConfig [{config}] <br>Debug or Release
+* :DelphiOpenInDevEnv [{file}]  <br>
+                              Opens a file in the default external pascal editor. It is usually the Delphi Develpment Environment. Without argument, the current file is used.
+* :DelphiSwitchToDfm or :DelphiSwitchToPas <br>
+                              Switch between dfm and pas files. 
+                              Note: Both command works with dfm and pas files too.
+
+## MAPPINGS
+
+The plugin provides some useful mapping definition also. 
+
+Common mappings for *.dfm and *.pas files (defined in ftplugin/common.vim):
+                                                                               
+    <leader>sd      Switch to *.dfm  
+    <leader>sp      Switch to *.pas
+    <F12>           Switch between *dfm and *.pas
+
+Mappings for *.pas files only (defined in plugin/delphi.vim):
+                                                                               
+    vif             Select all in a block (works only if *foldmethod* is 'syntax')   
+    vaf             Select a whole block  (works only if *foldmethod* is 'syntax')
+    <F7>            Save all and make 
+
+Edit helpers for *.pas files
+                                                                               
+    <leader>t=      Align selected assignes in nice columns with Tabularize 
+    <leader>t:      Align selected declarations in nice columns with Tabularize 
+    <leader>dt      Retab current line or selection
+    <leader>d;      Put ';' to the end of line
+
+Jumpings in *.pas files
+                                                                               
+    <leader>dU      Jump to the first 'uses' clause in file
+    <leader>du      Jump to the second 'uses' clause in file
+    <leader>di      Jump to the 'implementation' section
+    <leader>df      Jump to the 'interface' section 
+    <leader>dv      Jump to the previous 'var' section 
+    <leader>db      Jump to the previous 'begin' 
+    <leader>de      Jump to the next 'end' 
 
 ## Matchit support  
 `b:match_words` contains matching words to jump between words with `%`.
