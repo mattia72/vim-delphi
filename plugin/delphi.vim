@@ -335,6 +335,7 @@ augroup delphi_vim_global_command_group
 
   autocmd FileType dfm call DefineCommands()
   autocmd FileType dfm nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
+  autocmd FileType dfm nnoremap <buffer> <F2>  :DelphiOpenInDevEnv <CR>
 augroup END
 
 " ----------------------
