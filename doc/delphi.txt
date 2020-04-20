@@ -119,10 +119,12 @@ COMMANDS                                                      *delphi-commands*
 :DelphiOpenInDevEnv [{file}]  Opens a file in the default external pascal editor. 
                               It is usually the Delphi Develpment Environment.
                               Without argument, the current file is used.
+                              By default it is mapped to <F2>
 
 :DelphiSwitchToDfm or
 :DelphiSwitchToPas            Switch between dfm and pas files. 
                               Note: Both command works with dfm and pas files too.
+                              By default it is mapped to <F12>
 
 Note: Make helper commands are described in |delphi-make| section.
 
@@ -136,6 +138,7 @@ Common mappings for *.dfm and *.pas files (defined in ftplugin/common.vim):
     <leader>sd      Switch to *.dfm  
     <leader>sp      Switch to *.pas
     <F12>           Switch between *dfm and *.pas
+    <F2>            Open the file in the default external pascal editor. 
 
 Mappings for *.pas files only (defined in plugin/delphi.vim):
 ------------------------------------------------------------------------------
