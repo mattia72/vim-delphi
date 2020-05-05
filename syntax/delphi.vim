@@ -36,7 +36,7 @@ elseif exists("b:current_syntax")
 endif
 
 syn case ignore
-syn sync lines=250
+syn sync lines=500 ccomment delphiComments
 
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "
@@ -174,27 +174,29 @@ syn region delphiVarBlock matchgroup=delphiVarBlockSeparator start="\v%(^\s*)\zs
 
 syn cluster delphiInterfaceContents contains=delphiUsesBlock,delphiVarBlock,delphiUnitName,delphiContainerType,delphiDeclareType
 
+let s:no_comment   = '\%(\/\/.*\)\@<!'
+
 " begin .. end
-syn region delphiBeginEndBlock matchgroup=delphiBeginEnd start="\<begin\>" end="\<end\>" 
+syn region delphiBeginEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<begin\>" end="\%(\/\/.*\)\@<!\<end\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
-syn region delphiTryEndBlock matchgroup=delphiBeginEnd start="\<try\>" end="\<finally\>" 
+syn region delphiTryEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<try\>" end="\%(\/\/.*\)\@<!\<finally\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
-syn region delphiFinallyEndBlock matchgroup=delphiBeginEnd start="\<finally\>" end="\<end\>" 
+syn region delphiFinallyEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<finally\>" end="\%(\/\/.*\)\@<!\<end\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
-syn region delphiExceptEndBlock matchgroup=delphiBeginEnd start="\<except\>" end="\<end\>" 
+syn region delphiExceptEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<except\>" end="\%(\/\/.*\)\@<!\<end\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
-syn region delphiCaseEndBlock matchgroup=delphiBeginEnd start="\<case\>" end="\<end\>" 
+syn region delphiCaseEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<case\>" end="\%(\/\/.*\)\@<!\<end\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
-syn region delphiRecordEndBlock matchgroup=delphiBeginEnd start="\<record\>" end="\<end\>" 
+syn region delphiRecordEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<record\>" end="\%(\/\/.*\)\@<!\<end\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
-syn region delphiObjectEndBlock matchgroup=delphiBeginEnd start="\<object\>" end="\<end\>" 
+syn region delphiObjectEndBlock matchgroup=delphiBeginEnd start="\%(\/\/.*\)\@<!\<object\>" end="\%(\/\/.*\)\@<!\<end\>" 
       \ contains=ALLBUT,@delphiInterfaceContents extend fold 
 
 
 " FIXME parenthesis after class(...)
 " Type declaration TClassName = class|record ... end;
 syn match delphiInterfaceSection "\<interface\>"
-syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[TI]\w+>\s*\=\s*<%(class|record|interface)>" end="\<end\>;" 
+syn region delphiTypeBlock matchgroup=delphiTypeBlockSeparator start="\v<[TI]\w+>\s*\=\s*<%(class|record|interface)>" end="\%(\/\/.*\)\@<!\<end\>;" 
       \ contains=ALLBUT,delphiVarBlock,delphiBeginEndBlock,delphiUnitName,delphiFunctionDefinition extend fold
 " FIXME another Type block: TSingleton = class sealed(TSingleton<TMyClass>);
 
@@ -203,7 +205,7 @@ syn cluster delphiComments contains=delphiComment,delphiLineComment,delphiRegion
 " Uses unit list
 syn match delphiScopeSeparator "\." contained
 syn match delphiUnitName "\v<[a-z_]\w*>" containedin=delphiUsesBlock contained
-syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end=";"me=e-1 
+syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" end="\%(\/\/.*\)\@<!;"me=e-1 
       \ contains=@delphiComments,delphiUnitName,delphiScopeSeparator keepend fold
 
 " Declaration

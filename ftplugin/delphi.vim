@@ -31,7 +31,7 @@ set cpo&vim
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin") 
-  finish  
+	finish  
 endif
 
 " Don't load another plug-in for this buffer
@@ -50,25 +50,27 @@ if exists("loaded_matchit")
   "let s:not_if   = '\%(\<if\s\+\)\@<!'
 	"let s:notbegin = '\%(\<begin\s\+\)\@<!'
 	"let s:notend   = '\%(\<end\s\+\)\@<!'
-	"" start of line or ;
-  let s:sol              = '\%(^\|;\)\s*'
-  let s:not_func_or_proc = '\%(\s\+\%(function\|procedure\)\)\@<!'
+	" no // comment line
+	let s:nc   = '\%(\/\/.*\)\@<!'
+	" start of line or ;
+  " let s:sol              = '\%(^\|;\)\s*'
+  " let s:not_func_or_proc = '\%(\s\+\%(function\|procedure\)\)\@<!'
   let s:begin_words      = '\<\%(begin\|record\|object\|except\|finally\)\>'
   let s:middle_words     = '\<\%(except\|finally\)\>'
   let s:end_word         = '\<end\>'
 
-  let b:match_words     = s:begin_words.':'.s:end_word
-  let b:match_words     .= ',\<case\>:\<of\>:\<end\>' 
-  let b:match_words     .= ',\<try\>:'.s:middle_words " .':'.s:end_word   !!!! :( not begin end !!!!
-  let b:match_words     .= ',\<unit\>:\<interface\>:\<implementation\>:\<end\.'
-  let b:match_words     .= ',\%(= \s*\)\zsclass\>:'.s:end_word
-  let b:match_words     .= ',\<uses\>:;'
-  let b:match_words     .= ',\<repeat\>:\<until\>'
-  let b:match_words     .= ',\<while\>:\<do\>'
+  let b:match_words     = s:nc.s:begin_words.':'.s:nc.s:end_word
+  let b:match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<of\>:'.s:nc.'\<end\>' 
+  let b:match_words     .= ','.s:nc.'\<try\>:'.s:nc.s:middle_words " .':'.s:end_word   !!!! :( but not begin end !!!!
+  let b:match_words     .= ','.s:nc.'\<unit\>:'.s:nc.'\<interface\>:'.s:nc.'\<implementation\>:'.s:nc.'\<end\.'
+  let b:match_words     .= ','.s:nc.'\%(= \s*\)\zsclass\>:'.s:nc.s:end_word
+  let b:match_words     .= ','.s:nc.'\<uses\>:;'
+  let b:match_words     .= ','.s:nc.'\<repeat\>:'.s:nc.'\<until\>'
+  let b:match_words     .= ','.s:nc.'\<while\>:'.s:nc.'\<do\>'
+  "let b:match_words     .= ','.s:nc.'\<if\>:'.s:nc.'\<then\>'
+  let b:match_words     .= ','.s:nc.'\<if\>:'.s:nc.'\<then\>:'.s:nc.'\<else\>'  " it works only if 'else' exists
+  let b:match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<else\>:'.s:nc.'\<end\>' " it works only if 'else' exists
   "let b:match_words     .= ',\<\$region\>:\<\$endregion\>'
-  let b:match_words     .= ',\<if\>:\<then\>:\<else\>' " it works only if 'else' exists
-  let b:match_words     .= ',\<case\>:\<else\>:\<end\>' " it works only if 'else' exists
-  "let b:match_words     .= ',\<\%(procedure\|function\)\>:\<const\>:\<var\>:\<begin\>:\<end\>' " 
 endif
 
 " Set path for neosnippets
