@@ -52,6 +52,8 @@ if exists("loaded_matchit")
 	"let s:notend   = '\%(\<end\s\+\)\@<!'
 	" no // comment line
 	let s:nc   = '\%(\/\/.*\)\@<!'
+	" startline
+	let s:sl = '^\s*'
 	" start of line or ;
   " let s:sol              = '\%(^\|;\)\s*'
   " let s:not_func_or_proc = '\%(\s\+\%(function\|procedure\)\)\@<!'
@@ -62,7 +64,7 @@ if exists("loaded_matchit")
   let b:match_words     = s:nc.s:begin_words.':'.s:nc.s:end_word
   let b:match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<of\>:'.s:nc.'\<end\>' 
   let b:match_words     .= ','.s:nc.'\<try\>:'.s:nc.s:middle_words " .':'.s:end_word   !!!! :( but not begin end !!!!
-  let b:match_words     .= ','.s:nc.'\<unit\>:'.s:nc.'\<interface\>:'.s:nc.'\<implementation\>:'.s:nc.'\<end\.'
+  let b:match_words     .= ','.s:sl.'\<unit\>'.':'.s:sl.'\<interface\>'.':'.s:sl.'\<implementation\>'.':'.s:sl.'\<end\.'
   let b:match_words     .= ','.s:nc.'\%(= \s*\)\zsclass\>:'.s:nc.s:end_word
   let b:match_words     .= ','.s:nc.'\<uses\>:;'
   let b:match_words     .= ','.s:nc.'\<repeat\>:'.s:nc.'\<until\>'
