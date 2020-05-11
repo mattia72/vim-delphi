@@ -227,7 +227,11 @@ SNIPPETS                                                      *delphi-snippets*
                                                    
 Snippets are handled by |Shougo/neosnipet| plugin.
 
-For available snippets for Delphi see <plugin_dir>/vim-delphi/snippets directory.
+1. In |insertmode|, type a snippet trigger (eg. `proc` for a procedure)
+2. Press <C-k> to insert the snippet
+3. <C-k> jumps to the next field in the snippet
+
+For available snippets in |vim-delphi| see <plugin_dir>/vim-delphi/snippets directory.
 See also: |neosnippet.txt|
 
 ==============================================================================

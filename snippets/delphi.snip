@@ -6,8 +6,24 @@
 # Project Repo:  https://github.com/Mattia72/vim-delphi
 #=============================================================================
 
-# Ctrl+k jumps to the next field in the snippet
 # After select press Ctrl+k to trigger the snippet
+# Ctrl+k jumps to the next field in the snippet
+
+snippet     classunit  
+abbr        new delphi unit 
+alias       clsunit 
+options     head
+  unit `bufname('%') ==#'[Command Line]' ? expand('#:r') : expand('%:r')`${1}
+
+  interface
+
+  type ${2:name} = class(${3:base})
+    ${0:content}
+  end; 
+
+  implementation
+
+  end.
 
 snippet     fileheader  
 abbr        delphi unit header
@@ -25,10 +41,6 @@ options     head
     @author  ${5:author}
  
   --------------------------------------------------------------------------------}
-  {
-  History:
-  ---------
-  }
 
 snippet     func  
 abbr        delphi function definition 
