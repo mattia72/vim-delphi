@@ -73,7 +73,7 @@ function delphi#OpenInDevEnv(...)
   let extension_supported = file_extension =~? '\v(pas|dfm|dproj)'
   if (extension_supported)
     call system(filepath)
-	  echohl ModeMsg |  echom 'vim-delphi: Current file opened in external editor.' | echohl None
+	  echohl ModeMsg |  echom 'vim-delphi: '.fnamemodify(filepath,":t").' opened in external editor.' | echohl None
   endif
 endfunction
 
