@@ -396,8 +396,8 @@ function! DefineMappings()
   nnoremap <buffer> <leader>dv ?^\s*\<var\><CR>:noh<CR>
   nnoremap <buffer> <leader>db ?^\s*\<begin\><CR>:noh<CR>
   nnoremap <buffer> <leader>de /^\s*\<end\><CR>:noh<CR>
-  nnoremap <buffer> <leader>dP ?^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\|function\)\>\)\ze.*;<CR>
-  nnoremap <buffer> <leader>dp /^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\|function\)\>\)\ze.*;<CR>
+  nnoremap <buffer> <leader>dP ?^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\\|function\)\>\)\ze.*;<CR>
+  nnoremap <buffer> <leader>dp /^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\\|function\)\>\)\ze.*;<CR>
 
   if &foldmethod=='syntax'
     " select inside a begin-end block with vif or vaf
