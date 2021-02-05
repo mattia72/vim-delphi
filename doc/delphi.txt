@@ -162,6 +162,10 @@ Jumpings in *.pas files
     <leader>dv      Jump to the previous 'var' section 
     <leader>db      Jump to the previous 'begin' 
     <leader>de      Jump to the next 'end' 
+    <leader>dP      Search the previous 'procedure' or 'function'
+		    the next/prev match can be found with |n| or |N|
+    <leader>dp      Search the next 'procedure' or 'function'
+		    the next/prev match can be found with |n| or |N|
 
 ==============================================================================
 FOLDING                                                        *delphi-folding*

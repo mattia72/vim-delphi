@@ -391,11 +391,13 @@ function! DefineMappings()
   " jumpings
   nnoremap <buffer> <leader>dU gg:/^\s*\<uses\><CR>:noh<CR>
   nnoremap <buffer> <leader>du gg:/^\s*\<uses\><CR>n:noh<CR>
-  nnoremap <buffer> <leader>di gg:/^\s*\<implementation\><CR>:noh<CR>
   nnoremap <buffer> <leader>df gg:/^\s*\<interfaces\><CR>:noh<CR>
+  nnoremap <buffer> <leader>di gg:/^\s*\<implementation\><CR>:noh<CR>
   nnoremap <buffer> <leader>dv ?^\s*\<var\><CR>:noh<CR>
   nnoremap <buffer> <leader>db ?^\s*\<begin\><CR>:noh<CR>
   nnoremap <buffer> <leader>de /^\s*\<end\><CR>:noh<CR>
+  nnoremap <buffer> <leader>dP ?^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\|function\)\>\)\ze.*;<CR>
+  nnoremap <buffer> <leader>dp /^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\|function\)\>\)\ze.*;<CR>
 
   if &foldmethod=='syntax'
     " select inside a begin-end block with vif or vaf
