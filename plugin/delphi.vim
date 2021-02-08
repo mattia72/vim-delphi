@@ -388,6 +388,7 @@ function! DefineMappings()
   " put ; to the end of line
   nnoremap <buffer> <leader>d; :s/$/;/<CR>:noh<CR>
 
+
   " jumpings
   nnoremap <buffer> <leader>dU gg:/^\s*\<uses\><CR>:noh<CR>
   nnoremap <buffer> <leader>du gg:/^\s*\<uses\><CR>n:noh<CR>
@@ -396,8 +397,13 @@ function! DefineMappings()
   nnoremap <buffer> <leader>dv ?^\s*\<var\><CR>:noh<CR>
   nnoremap <buffer> <leader>db ?^\s*\<begin\><CR>:noh<CR>
   nnoremap <buffer> <leader>de /^\s*\<end\><CR>:noh<CR>
-  nnoremap <buffer> <leader>dP ?^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\\|function\)\>\)\ze.*;<CR>
-  nnoremap <buffer> <leader>dp /^\s*\(\<class\>\s*\)\?\zs\(\<\(procedure\\|function\)\>\)\ze.*;<CR>
+
+  let l:jump_regex =  '^\s*\(\<class\>\s*\)\?\zs\(\<\(constructor\\|destructor\\|property\\|procedure\\|function\)\>\)\ze.*[(;]'
+
+  execute 'nnoremap <buffer> <leader>dP ?'.jump_regex.'<CR>zt'
+  execute 'nnoremap <buffer> <leader>dp /'.jump_regex.'<CR>zt'
+  nnoremap <buffer> <leader>n nzt
+  nnoremap <buffer> <leader>N Nzt
 
   if &foldmethod=='syntax'
     " select inside a begin-end block with vif or vaf

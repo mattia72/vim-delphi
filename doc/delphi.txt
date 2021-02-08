@@ -166,6 +166,10 @@ Jumpings in *.pas files
 		    the next/prev match can be found with |n| or |N|
     <leader>dp      Search the next 'procedure' or 'function'
 		    the next/prev match can be found with |n| or |N|
+    <leader>N       Jump to the previous match 
+                    and set cursor at the top of window
+    <leader>n       Jump to the next match 
+                    and set cursor at the top of window
 
 ==============================================================================
 FOLDING                                                        *delphi-folding*

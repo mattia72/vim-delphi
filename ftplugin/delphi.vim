@@ -59,20 +59,32 @@ if exists("loaded_matchit")
   " let s:not_func_or_proc = '\%(\s\+\%(function\|procedure\)\)\@<!'
   let s:begin_words      = '\<\%(begin\|record\|object\|except\|finally\)\>'
   let s:middle_words     = '\<\%(except\|finally\)\>'
+  let s:after_impl = '\('.s:sl.'implementation\)\@<='
+  let s:proc_or_func_words = '\<\%(constructor\|destructor\|procedure\|function\)\>'
   let s:end_word         = '\<end\>'
 
-  let b:match_words     = s:nc.s:begin_words.':'.s:nc.s:end_word
-  let b:match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<of\>:'.s:nc.'\<end\>' 
-  let b:match_words     .= ','.s:nc.'\<try\>:'.s:nc.s:middle_words " .':'.s:end_word   !!!! :( but not begin end !!!!
-  let b:match_words     .= ','.s:sl.'\<unit\>'.':'.s:sl.'\<interface\>'.':'.s:sl.'\<implementation\>'.':'.s:sl.'\<end\.'
-  let b:match_words     .= ','.s:nc.'\%(= \s*\)\zsclass\>:'.s:nc.s:end_word
-  let b:match_words     .= ','.s:nc.'\<uses\>:;'
-  let b:match_words     .= ','.s:nc.'\<repeat\>:'.s:nc.'\<until\>'
-  let b:match_words     .= ','.s:nc.'\<while\>:'.s:nc.'\<do\>'
-  "let b:match_words     .= ','.s:nc.'\<if\>:'.s:nc.'\<then\>'
-  let b:match_words     .= ','.s:nc.'\<if\>:'.s:nc.'\<then\>:'.s:nc.'\<else\>'  " it works only if 'else' exists
-  let b:match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<else\>:'.s:nc.'\<end\>' " it works only if 'else' exists
-  "let b:match_words     .= ',\<\$region\>:\<\$endregion\>'
+  let b:delphi_match_words     = ''
+  "it doesn't work in interface
+  "let b:delphi_match_words     .= s:after_impl.s:nc.s:proc_or_func_words.':'.s:nc.'\<begin\>:'.s:nc.s:end_word
+  let b:delphi_match_words     .= s:nc.s:begin_words.':'.s:nc.s:end_word
+  let b:delphi_match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<of\>:'.s:nc.'\<end\>' 
+  let b:delphi_match_words     .= ','.s:nc.'\<try\>:'.s:nc.s:middle_words " .':'.s:end_word   !!!! :( but not begin end !!!!
+  let b:delphi_match_words     .= ','.s:sl.'\<unit\>'.':'.s:sl.'\<interface\>'.':'.s:sl.'\<implementation\>'.':'.s:sl.'\<end\.'
+  let b:delphi_match_words     .= ','.s:nc.'\%(= \s*\)\zsclass\>:'.s:nc.s:end_word
+  let b:delphi_match_words     .= ','.s:nc.'\<uses\>:;'
+  let b:delphi_match_words     .= ','.s:nc.'\<repeat\>:'.s:nc.'\<until\>'
+  let b:delphi_match_words     .= ','.s:nc.'\<while\>:'.s:nc.'\<do\>'
+  "let b:delphi_match_words     .= ','.s:nc.'\<if\>:'.s:nc.'\<then\>'
+  let b:delphi_match_words     .= ','.s:nc.'\<if\>:'.s:nc.'\<then\>:'.s:nc.'\<else\>'  " it works only if 'else' exists
+  let b:delphi_match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<else\>:'.s:nc.'\<end\>' " it works only if 'else' exists
+  "let b:delphi_match_words     .= ',\<\$region\>:\<\$endregion\>'
+
+  if exists("g:matchup_matchparen_enabled")
+    call matchup#util#append_match_words(b:delphi_match_words)
+  else
+    b:match_words = b:delphi_match_words
+  endif
+
 endif
 
 " Set path for neosnippets
@@ -100,7 +112,7 @@ else
 endif
 
 let b:undo_ftplugin .= "
-      \ unlet! b:browsefilter b:match_words b:begin_words b:middle_words 
+      \ unlet! b:browsefilter b:match_words, b:delphi_match_words b:begin_words b:middle_words 
       \ " 
 
 let &cpo = s:save_cpo
