@@ -398,10 +398,11 @@ function! DefineMappings()
   nnoremap <buffer> <leader>db ?^\s*\<begin\><CR>:noh<CR>
   nnoremap <buffer> <leader>de /^\s*\<end\><CR>:noh<CR>
 
-  let l:jump_regex =  '^\s*\(\<class\>\s*\)\?\zs\(\<\(constructor\\|destructor\\|property\\|procedure\\|function\)\>\)\ze.*[(;]'
+  let l:class_regex =  '^\s*\(\<class\>\s*\)'
+  let l:func_regex ='\zs\(\<\(constructor\\|destructor\\|property\\|procedure\\|function\)\>\)\ze.*[(;]'
 
-  execute 'nnoremap <buffer> <leader>dP ?'.jump_regex.'<CR>zt'
-  execute 'nnoremap <buffer> <leader>dp /'.jump_regex.'<CR>zt'
+  execute 'nnoremap <buffer> <leader>dP ?'.class_regex.'\='.func_regex.'<CR>zt'
+  execute 'nnoremap <buffer> <leader>dp /'.class_regex.'\?'.func_regex.'<CR>zt'
   nnoremap <buffer> <leader>n nzt
   nnoremap <buffer> <leader>N Nzt
 
