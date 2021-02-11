@@ -36,7 +36,7 @@ elseif exists("b:current_syntax")
 endif
 
 syn case ignore
-syn sync lines=500 ccomment delphiComments
+syn sync lines=900 ccomment delphiComments
 
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "
@@ -50,9 +50,6 @@ syn keyword delphiReservedWord  array dispinterface finalization inherited initi
 syn keyword delphiReservedWord  unit implementation 
 syn keyword delphiPredef        result self
 syn keyword delphiAssert        assert
-
-"syn match delphiOperator "\v\+|-|\*|/|\@|\=|:\=|\<|\<\=|\>|\>\=|<>|\.\.|\^" 
-"syn match delphiOperator "\v|\[|\]|\.|\:"
 
 "syn match delphiSemicolonError display "\zs[^;]\ze\s*$"
 
@@ -123,7 +120,7 @@ syn match delphiIdentifier "\v\&?<[a-z]\w+>"  containedin=delphiBeginEndBlock co
 
 if exists("delphi_highlight_uppercase_consts")
   " consts are written in UPPERCASE, case sensitivity switch is \C
-  syn match delphiConstant "\v\C<[A-Z0-9_]+>" display
+  syn match delphiConstant "\v\C<[A-Z]+[A-Z0-9_]+>" display
 endif
 
 if exists("delphi_highlight_function_parameters")
@@ -159,6 +156,7 @@ syn match delphiCallableType "\<operator\>"
 
 syn region delphiFunctionParams matchgroup=delphiParenthesis start="(" end=")" fold
       \ contains=ALLBUT,delphiVarBlock,delphiUnitName,delphiSemicolonError
+
 syn region delphiFunctionDefinition matchgroup=delphiFunctionDefSeparator start="\v<%(constructor|destructor|function|operator|procedure)>\s+\ze%(\w+\.)+" end="\v\.\ze\w+\s*[\(;:]"me=e-1 keepend display
 
 " Var block: last line before begin, const or fuction etc...
@@ -212,6 +210,10 @@ syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" 
 syn match    delphiScopeSeparator "\:" contained
 syn match    delphiDeclareType    "\v\:\s*<[a-z_]\w*>" contains=delphiScopeSeparator
 
+
+syn match delphiOperator  '\(@\|\^\|+\|-\|\*\|/\)' display
+syn match delphiOperator  '\(>=\|<=\|<>\|:=\|>\|<\|=\)' display
+
 " Asm syntax
 syn include @asm syntax/tasm.vim
 syn region delphiAsmBlock matchgroup=delphiAsmBlockSeparator start="\v<asm>" end="\v<end>" contains=@asm fold
@@ -232,8 +234,6 @@ syn region delphiDefine start="{\$" end="}"
 
 " String
 syn region delphiString start="'" end="'" skip="''" oneline display keepend
-
-
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -264,6 +264,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiString               String
    HiLink delphiChar                 Character
    HiLink delphiOperator             Operator
+   HiLink delphiScopeSeparator       Delimiter
    HiLink delphiConstant             Constant
    HiLink delphiBool                 Boolean
    HiLink delphiPredef               Constant
