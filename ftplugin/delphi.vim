@@ -1,7 +1,7 @@
 "=============================================================================
 " File:          delphi.vim
-" Author:        Mattia72 
-" Description:   File type plugin file for Delphi Pascal Language    
+" Author:        Mattia72
+" Description:   File type plugin file for Delphi Pascal Language
 " Created:       22 okt. 2015
 " Project Repo:  https://github.com/Mattia72/vim-delphi
 " License:       MIT license  {{{
@@ -30,8 +30,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Only do this when not done yet for this buffer
-if exists("b:did_ftplugin") 
-	finish  
+if exists("b:did_ftplugin")
+	finish
 endif
 
 " Don't load another plug-in for this buffer
@@ -67,7 +67,7 @@ if exists("loaded_matchit")
   "it doesn't work in interface
   "let b:delphi_match_words     .= s:after_impl.s:nc.s:proc_or_func_words.':'.s:nc.'\<begin\>:'.s:nc.s:end_word
   let b:delphi_match_words     .= s:nc.s:begin_words.':'.s:nc.s:end_word
-  let b:delphi_match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<of\>:'.s:nc.'\<end\>' 
+  let b:delphi_match_words     .= ','.s:nc.'\<case\>:'.s:nc.'\<of\>:'.s:nc.'\<end\>'
   let b:delphi_match_words     .= ','.s:nc.'\<try\>:'.s:nc.s:middle_words " .':'.s:end_word   !!!! :( but not begin end !!!!
   let b:delphi_match_words     .= ','.s:sl.'\<unit\>'.':'.s:sl.'\<interface\>'.':'.s:sl.'\<implementation\>'.':'.s:sl.'\<end\.'
   let b:delphi_match_words     .= ','.s:nc.'\%(= \s*\)\zsclass\>:'.s:nc.s:end_word
@@ -112,8 +112,8 @@ else
 endif
 
 let b:undo_ftplugin .= "
-      \ unlet! b:browsefilter b:match_words, b:delphi_match_words b:begin_words b:middle_words 
-      \ " 
+      \ unlet! b:browsefilter b:match_words, b:delphi_match_words b:begin_words b:middle_words
+      \ "
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
