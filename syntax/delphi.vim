@@ -66,7 +66,7 @@ if exists("delphi_space_errors")
   endif
 endif
 
-" TODO handle `of` conditionally: "case..of" is conditional; "array of" isn't
+" TODO handle `of` conditionally: "case..of" is conditional "array of" isn't
 syn keyword delphiExcept try on raise at
 syn keyword delphiStructure class object record
 
@@ -210,9 +210,11 @@ syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" 
 syn match    delphiScopeSeparator "\:" contained
 syn match    delphiDeclareType    "\v\:\s*<[a-z_]\w*>" contains=delphiScopeSeparator
 
+"TODO semicolon breaks many other
+"syn match delphiSemicolon ';' transparent contained contains=NONE
 
-syn match delphiOperator  '\(@\|\^\|+\|-\|\*\|/\)' display
-syn match delphiOperator  '\(>=\|<=\|<>\|:=\|>\|<\|=\)' display
+syn match delphiOperator '\%(>=\|<=\|<>\|:=\)' transparent contained contains=NONE
+syn match delphiOperator '[><=+\-\^@*/]' display contained
 
 " Asm syntax
 syn include @asm syntax/tasm.vim
