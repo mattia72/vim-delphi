@@ -105,15 +105,13 @@ if has("gui_win32")
 endif
 
 " Undo the stuff we changed
-if !exists('b:undo_ftplugin')
-  let b:undo_ftplugin = ''
+if exists('b:undo_ftplugin') && !empty(b:undo_ftplugin)
+  let b:undo_ftplugin .= ' | '
 else
-  let b:undo_ftplugin = '|'
+  let b:undo_ftplugin = ''
 endif
 
-let b:undo_ftplugin .= "
-      \ unlet! b:browsefilter b:match_words, b:delphi_match_words b:begin_words b:middle_words
-      \ "
+let b:undo_ftplugin .= "unlet! b:browsefilter b:match_words b:delphi_match_words"
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
