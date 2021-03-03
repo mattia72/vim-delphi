@@ -36,7 +36,8 @@ elseif exists("b:current_syntax")
 endif
 
 syn case ignore
-syn sync lines=250
+syn sync fromstart ccomment delphiComments
+"syn sync lines=250
 
 syn keyword dfmKeyword inherited object item end 
 syn keyword dfmBoolean true false

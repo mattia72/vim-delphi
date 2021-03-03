@@ -36,7 +36,7 @@ elseif exists("b:current_syntax")
 endif
 
 syn case ignore
-syn sync lines=900 ccomment delphiComments
+syn sync fromstart ccomment delphiComments
 
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "

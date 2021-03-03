@@ -61,6 +61,16 @@ let g:delphi_build_config = 'Debug'
 " ----------------------
 " Functions
 " ----------------------
+function! g:delphi#echod(msg)
+  if exists('g:delphi_dbg') && g:delphi_dbg == 1
+    let curr_work_dir = getcwd()
+    if exists(':Decho')
+      call Decho('['.curr_work_dir.'] '.a:msg)
+    else
+      echom a:msg
+    endif
+  endif
+endfunction
 
 function delphi#OpenInDevEnv(...)
   if a:0 != 0 && !empty(a:1)
@@ -72,7 +82,8 @@ function delphi#OpenInDevEnv(...)
   let file_extension = fnamemodify(filepath,":e") 
   let extension_supported = file_extension =~? '\v(pas|dfm|dproj)'
   if (extension_supported)
-    call system(filepath)
+    let output = system(shellescape(filepath,'-'))
+    call delphi#echod('OpenInDevEnv: '.filepath.' sysout:'.output)
 	  echohl ModeMsg |  echom 'vim-delphi: '.fnamemodify(filepath,":t").' opened in external editor.' | echohl None
   endif
 endfunction
@@ -86,6 +97,7 @@ function! g:delphi#SwitchPasOrDfm()
   endif
 
   if (findfile(switch_file) != '')
+    call delphi#echod('SwitchPasOrDfm:'.switch_file)
     execute 'silent! find '.switch_file
   else
 	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find "'.switch_file.'" in path' | echohl None
