@@ -221,11 +221,11 @@ syn include @asm syntax/tasm.vim
 syn region delphiAsmBlock matchgroup=delphiAsmBlockSeparator start="\v<asm>" end="\v<end>" contains=@asm fold
 
 " Comments
-syn keyword delphiTodo contained TODO FIXME NOTE
-syn match delphiSpecialComment "@\w\+" 
-syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment fold
-syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment fold
-syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
+syn keyword delphiCommentTodo contained TODO FIXME NOTE
+syn match delphiCommentSpecial "@\w\+" 
+syn region delphiComment start="{" end="}" contains=delphiComment.* fold
+syn region delphiComment start="(\*" end="\*)" contains=delphiComment.* fold
+syn region delphiLineComment start="//" end="$" oneline contains=delphiCommentTodo
 
 
 " FIXME contains ALL highlights everything to delphiUnitName :( so it won't work
@@ -235,7 +235,7 @@ syn region delphiDefine start="(\*\$" end="\*)"
 syn region delphiDefine start="{\$" end="}"
 
 " String
-syn region delphiString start="'" end="'" skip="''" oneline display keepend
+syn region delphiString contained start="'" end="'" skip="''" oneline display keepend
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -246,8 +246,8 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   else
     command -nargs=+ HiLink hi def link <args>
   endif
-   HiLink delphiTodo                 Todo
-   HiLink delphiSpecialComment       SpecialComment
+   HiLink delphiCommentTodo          Todo
+   HiLink delphiCommentSpecial       SpecialComment
    HiLink delphiBeginEnd             Keyword
    HiLink delphiLineComment          Comment
    HiLink delphiComment              Comment
@@ -296,7 +296,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiFunctionParameter    Identifier
    HiLink delphiFunctionDefinition   Type
    HiLink delphiParenthesis          Normal
-   HiLink delphiClassField           delphiTodo
+   HiLink delphiClassField           delphiCommentTodo
    HiLink delphiHungarianNotatedVariables Identifier
   delcommand HiLink
 endif
