@@ -101,7 +101,7 @@ syn match delphiType "\v<(ole)?variant>" display
 
 syn match  delphiNumber		"-\?\<\d\+\>" display
 syn match  delphiFloat		"-\?\<\d\+\.\d\+\>" display
-syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE]-\=\d\+\>"   display
+syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE][-+]\=\d\+\>"   display
 syn match  delphiHexNumber	"\$[0-9a-fA-F]\+\>" display
 
 syn match delphiChar "\v\#\d+" display
@@ -213,8 +213,9 @@ syn match    delphiDeclareType    "\v\:\s*<[a-z_]\w*>" contains=delphiScopeSepar
 "TODO semicolon breaks many other
 "syn match delphiSemicolon ';' transparent contained contains=NONE
 
-syn match delphiOperator '\%(>=\|<=\|<>\|:=\)' transparent contained contains=NONE
-syn match delphiOperator '[><=+\-\^@*/]' display contained
+syn match delphiAssignment '\%(:=\)' display contained contains=NONE
+syn match delphiOperator '\%(>=\|<=\|<>\)' display contained contains=NONE
+syn match delphiOperator '[><=+\-\^@*/]' display contained 
 
 " Asm syntax
 syn include @asm syntax/tasm.vim
@@ -235,7 +236,7 @@ syn region delphiDefine start="(\*\$" end="\*)"
 syn region delphiDefine start="{\$" end="}"
 
 " String
-syn region delphiString contained start="'" end="'" skip="''" oneline display keepend
+syn region delphiString start="'" end="'" skip="''" oneline display keepend
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
@@ -265,6 +266,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiDefine               Macro
    HiLink delphiString               String
    HiLink delphiChar                 Character
+   HiLink delphiAssignment           Delimiter
    HiLink delphiOperator             Operator
    HiLink delphiScopeSeparator       Delimiter
    HiLink delphiConstant             Constant
@@ -296,7 +298,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiFunctionParameter    Identifier
    HiLink delphiFunctionDefinition   Type
    HiLink delphiParenthesis          Normal
-   HiLink delphiClassField           delphiCommentTodo
+   HiLink delphiClassField           Character
    HiLink delphiHungarianNotatedVariables Identifier
   delcommand HiLink
 endif

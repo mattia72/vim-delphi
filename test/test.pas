@@ -1,6 +1,6 @@
 {
 
- Test delphi code
+ Test code for syntax highlight check 
 
  @project: vim-delphi
  @date   : 25.03.2019
@@ -16,161 +16,105 @@ asm
   MOV     EAX, e
   MOV     ESI, DMTINDEX TExample.DynamicMethod
   CALL    System.@CallDynaInst
-  POP ESI
+  POP     ESI
 end;
 
+interface
+
 uses
-  SysUtils, 
-  Forms, //FIXME comment
-  Dialogs
-  ;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Generics.Collections, StdCtrls;
 
 type
-  // Define the classes in this Unit at the very start for clarity
-  TForm1 = Class;          // This is a forward class definition
 
-  TFruit = Class(TObject)  // This is an actual class definition :
-    // Internal class field definitions - only accessible in this unit
-  private
-    isRound  : Boolean;
-    length   : single;
-    width    : single;
-    diameter : single;
-    // Fields and methods only accessible by this class and descendants
-  protected
-    // Externally accessible fields and methods
-  public
-    // 2 constructors - one for round fruit, the other long fruit
-    constructor Create(_diameter : single);               overload;
-    constructor Create(length : single; width : single); overload;
-    // Externally accessible and inspectable fields and methods
-  published
-    // Note that properties must use different names to local defs
-    property round : Boolean read   isRound;
-    property len   : single read   length;
-    property wide  : single read   width;
-    property diam  : single read   diameter;
-  end;                    // End of the TFruit class definition
+	const
+		CRLF                     = #13#10             // special char
+		UPPERCASE_HEX_CONSTANT   = $1af12             //hex
+		UPPERCASE_FLOAT_CONSTANT = 3.14               //float
+		UPPERCASE_FLOAT_CONSTANT2= 3.14e-12           //float
+		UPPERCASE_STR_CONSTANT   = 'This is a string' //string
 
-  // The actual TForm1 class is now defined
-  TForm1 = Class(TForm)
-procedure FormCreate(Sender: TObject);
-procedure ShowFruit(fruit : TFruit);
-  private
-    // No local data
-  public
-    // Uses just the TForm ancestor class public definitions
-  end;
+	TPerson = class
+	private
+
+		// NOTE: Field names begins with F and an UPPERCASE letter
+		FFirstname: string; 
+		FLastname: string;
+		FAge: Integer;
+	public
+		function ToString: string; override;
+		property FirstName: string read FFirstname write FFirstname;
+		property LastName: string read FLastname write FLastname;
+		property Age: Integer read FAge write FAge;
+
+		// NOTE: Function parameters begins with underscore character 
+		constructor Create(const _sFirstName, _sLastName : string; _iAge : Integer); virtual;
+
+	end;
+
+	TForm1 = class(TForm)
+		Button1: TButton;
+		ListBox1: TListBox;
+
+		// NOTE: Common function parameters are recognized
+		procedure FormCreate(Sender: TObject);
+		procedure FormDestroy(Sender: TObject);
+		procedure Button1Click(Sender: TObject);
+	private
+		{ Private declarations }
+		// FIXME : template parameters should get delphiTemplateParameter 
+		FPersonList : TObjectList<TPerson>;
+	public
+		{ Public declarations }
+	end;
 
 var
-  Form1: TForm1;
+	Form1: TForm1;
 
 implementation
 
 {$R *.dfm}
 
-// TODO Create a round fruit object
-constructor TFruit.Create(_diameter: single);
-begin
-  // Indicate that we have a round fruit, and set its size
-  goto label1;
-  isRound       := true;
-  self._diameter := _diameter;
-  label label1;
-
-end;
-
-// Create a long fruit object
-constructor TFruit.Create(length, width: single);
-begin
-  // TODO: Indicate that we have a long fruit, and set its size
-  isRound     := false;
-  self.length := length;
-  self.width  := width;
-end;
-
-// Form object - action taken when the form is created
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.Button1Click(Sender: TObject);
 var
-  apple, banana : TFruit;
+	Person: TPerson;
 begin
-  // Let us create our fruit objects
-  apple  := TFruit.Create(3.5);
-  banana := TFruit.Create(7.0, 1.75);
+	ListBox1.Clear;
 
-  // Show details about our fruits
-  ShowFruit(apple);
-  ShowFruit(banana);
+	for Person in FPersonList do
+		ListBox1.Items.Add(Person.ToString);
 end;
 
-{*DEFINE ???}
-{ Comment
-TODO: more than one line
-}
-// Show what the characteristics of our fruit are
-procedure TForm1.ShowFruit(fruit: TFruit);
+procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if fruit.round then 
-    ShowMessage('We have a round fruit, with diam = ');
-  else
-    ShowMessage('We have a round fruit, with diam = ');
+	FPersonList := TObjectList<TPerson>.Create(True);
 
-  if fruit.round then begin
-    ShowMessage('We have a round fruit, with diam = ');
-      FloatToStr(fruit.diam))
-    end else if (fruit.length > 10) then begin
-      ShowMessage('We have a long fruit');
-      ShowMessage('    it has length = '+FloatToStr(fruit.len));
-      ShowMessage('    it has width  = '+FloatToStr(fruit.wide));
-    end;
+	FPersonList.Add(TPerson.Create('Fred', 'Flintstone', 40));
+	FPersonList.Add(TPerson.Create('Wilma', 'Flintstone', 38));
+	FPersonList.Add(TPerson.Create('Pebbles', 'Flintstone', 1));
+end;
 
-  	while (true) do 
-		if RecModified then begin
-			iRes := AShowJaNeinAbbrechenAbfrage('Sollen die Daten gespeichert werden?'); // FST 28.09.05 jetzt mit Möglichkeit zum Abbruch
-			case iRes of
-				mrYes: Result := RecWrite;
-				mrCancel: Result := False;
-				mrNo:
-				begin
-					Result := True;
-					SetModified(False);
 
-					// FST 12.09.18 wenn bei Neuanlage nicht gespeichert wird, dann werden evtl. vorhandene Sätze in AL_P_SchwerBH mit dieser Personalnummer gelöscht
-					if bNewRec and gbSchwerbehinderung.Visible then begin
-						TboPersSchwerbh.LoeschenSchwerBH(edP_Nr.Text);
-					end;
-				end;
-			end;
-		end else begin  // FST 18.04.05
-			DecodeDate(boMain.FieldByName('P_Eintritt').AsDateTime, Jahr, Monat, Tag);
-		end;
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+	FPersonList.Free;
+end;
 
-		if (Jahr = rLohnParams.iLohnJahr) and (Monat = rLohnParams.iLohnMonatZahl) then begin
-			if (boMain.FieldByName('P_PersNr_2Te').AsString <> '') and
-				(boMain.FieldByName('P_Kz_2Te').AsString = 'A') and
-				bBuchungenErfassung then begin
-				bBuchungenErfassung := False;
-				bModified := True;
-				Result := RecWrite; // in diesem Fall ein erneutes Abspeichern erzwingen
-			end;
-		end;
-    
-    while (true) do 
-    begin
-      ShowMessage('    it has width  = '+FloatToStr(fruit.wide));
-    end;
+{ TPerson }
 
-    Repeat
-      // Show the square of num
-      ShowMessage(IntToStr(num)+' squared = '+IntToStr(sqrNum));
+constructor TPerson.Create(const _sFirstName, _sLastName : string; _iAge : Integer);
+begin
+	self.LastName := _sLastName;
+	self.FirstName := _sFirstName;
+	self.Age := _iAge;
+end;
 
-      // Increment the number
-      Inc(num);
-
-      // Square the number
-      sqrNum := num * num;
-    until sqrNum > 100;
-
+function TPerson.ToString: string;
+begin
+	Result := Format('%s %s : Age %d', [FirstName, LastName, Age]);
+	if Age < 18 then begin
+		Result := Result + ' is a child';
+	end;
 end;
 
 end.
