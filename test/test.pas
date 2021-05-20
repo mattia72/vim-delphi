@@ -28,11 +28,13 @@ uses
 type
 
 	const
-		CRLF                     = #13#10             // special char
-		UPPERCASE_HEX_CONSTANT   = $1af12             //hex
-		UPPERCASE_FLOAT_CONSTANT = 3.14               //float
-		UPPERCASE_FLOAT_CONSTANT2= 3.14e-12           //float
-		UPPERCASE_STR_CONSTANT   = 'This is a string' //string
+		CRLF                     = #13#10;             // special char
+		UPPERCASE_HEX_CONSTANT   = $1af12;             //hex
+		UPPERCASE_FLOAT_CONSTANT = 18.5  ;             //float
+		UPPERCASE_FLOAT_CONSTANT2= 3.14e-12;           //float
+		UPPERCASE_STR_CONSTANT   = 'This is a string'; //string
+
+		CHILD_AGE_MAX = 18;
 
 	TPerson = class
 	private
@@ -82,9 +84,10 @@ begin
 	ListBox1.Clear;
 
 	for Person in FPersonList do
-		ListBox1.Items.Add(Person.ToString);
+		ListBox1.Items.Add(Person.ToString() + UPPERCASE_STR_CONSTANT);
 end;
 
+// NOTE: Common function parameters are recognized
 procedure TForm1.FormCreate(Sender: TObject);
 begin
 	FPersonList := TObjectList<TPerson>.Create(True);
@@ -102,6 +105,7 @@ end;
 
 { TPerson }
 
+// NOTE: Common function parameters are recognized
 constructor TPerson.Create(const _sFirstName, _sLastName : string; _iAge : Integer);
 begin
 	self.LastName := _sLastName;
@@ -112,7 +116,7 @@ end;
 function TPerson.ToString: string;
 begin
 	Result := Format('%s %s : Age %d', [FirstName, LastName, Age]);
-	if Age < 18 then begin
+	if Age < CHILD_AGE_MAX then begin
 		Result := Result + ' is a child';
 	end;
 end;
