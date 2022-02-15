@@ -38,6 +38,9 @@ endif
 syn case ignore
 syn sync fromstart ccomment delphiComments
 
+"colors can be chacked by: 
+":h syntax<CR>/group-name
+
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "
 syn keyword delphiBool          true false 
@@ -130,7 +133,7 @@ if exists("delphi_highlight_function_parameters")
   syn keyword delphiFunctionParameter Sender containedin=delphiParenthesis,delphiBeginEndBlock contained display
 endif
 
-if exists("delphi_highlight_field_names")
+if exists("delphi_highlight_field_names")     " FMyField, FsStringField
   syn match delphiClassField "\v\C<F\u+\l\w*>\ze[^(]"
 endif
 
@@ -298,7 +301,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiFunctionParameter    Identifier
    HiLink delphiFunctionDefinition   Type
    HiLink delphiParenthesis          Normal
-   HiLink delphiClassField           Character
+   HiLink delphiClassField           Tag
    HiLink delphiHungarianNotatedVariables Identifier
   delcommand HiLink
 endif
