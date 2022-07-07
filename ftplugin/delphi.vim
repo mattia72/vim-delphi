@@ -82,7 +82,7 @@ if exists("loaded_matchit")
   if exists("g:matchup_matchparen_enabled")
     call matchup#util#append_match_words(b:delphi_match_words)
   else
-    b:match_words = b:delphi_match_words
+    let b:match_words .= b:delphi_match_words
   endif
 
 endif
