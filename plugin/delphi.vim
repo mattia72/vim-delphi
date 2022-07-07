@@ -45,7 +45,7 @@ set cpo&vim
 " Global options 
 " ----------------------
 
-set mouse=a     "Enables mouse click
+setlocal mouse=a     "Enables mouse click
 
 let delphi_space_errors = 1
 let delphi_leading_space_error = 1
@@ -61,6 +61,16 @@ let g:delphi_build_config = 'Debug'
 " ----------------------
 " Functions
 " ----------------------
+function! g:delphi#echod(msg)
+  if exists('g:delphi_dbg') && g:delphi_dbg == 1
+    let curr_work_dir = getcwd()
+    if exists(':Decho')
+      call Decho('['.curr_work_dir.'] '.a:msg)
+    else
+      echom a:msg
+    endif
+  endif
+endfunction
 
 function delphi#OpenInDevEnv(...)
   if a:0 != 0 && !empty(a:1)
@@ -72,7 +82,8 @@ function delphi#OpenInDevEnv(...)
   let file_extension = fnamemodify(filepath,":e") 
   let extension_supported = file_extension =~? '\v(pas|dfm|dproj)'
   if (extension_supported)
-    call system(filepath)
+    let output = system(shellescape(filepath,'-'))
+    call delphi#echod('OpenInDevEnv: '.filepath.' sysout:'.output)
 	  echohl ModeMsg |  echom 'vim-delphi: '.fnamemodify(filepath,":t").' opened in external editor.' | echohl None
   endif
 endfunction
@@ -86,6 +97,7 @@ function! g:delphi#SwitchPasOrDfm()
   endif
 
   if (findfile(switch_file) != '')
+    call delphi#echod('SwitchPasOrDfm:'.switch_file)
     execute 'silent! find '.switch_file
   else
 	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find "'.switch_file.'" in path' | echohl None
@@ -321,28 +333,47 @@ endfun
 " Autocommands
 " ----------------------
 
-augroup delphi_vim_global_command_group
-  autocmd!
-  autocmd QuickFixCmdPost make copen 8 | wincmd J | call delphi#PostOpenQuickfix() 
-  " close with q or esc
-  autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
-  autocmd FileType qf if mapcheck('q', 'n') ==# '' | nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
+function! delphi#SetAutoCommands()
+  augroup delphi_vim_global_command_group
+    autocmd!
+    autocmd QuickFixCmdPost make copen 8 | wincmd J | call delphi#PostOpenQuickfix()
+    " close with q or esc
+    autocmd FileType qf if mapcheck('<esc>', 'n') ==# '' | nnoremap <buffer><silent> <esc> :cclose<bar>lclose<CR> | endif
+    autocmd FileType qf if mapcheck('q', 'n') ==# '' | nnoremap <buffer><silent> q :cclose<bar>lclose<CR>
 
-  autocmd FileType delphi call DefineCommands()
-  autocmd FileType delphi call DefineMappings()
-  autocmd FileType delphi call SetPlugins()
-  autocmd FileType delphi call BuildGuiMenus()
+    autocmd FileType delphi call delphi#DefineCommands()
+    autocmd FileType delphi call delphi#DefineMappings()
+    autocmd FileType delphi call delphi#SetPlugins()
+    autocmd FileType delphi call delphi#BuildGuiMenus()
 
-  autocmd FileType dfm call DefineCommands()
-  autocmd FileType dfm nnoremap <buffer> <F12> :DelphiSwitchToDfm <CR>
-  autocmd FileType dfm nnoremap <buffer> <F2>  :DelphiOpenInDevEnv <CR>
-augroup END
+    autocmd FileType dfm call delphi#DefineCommands()
+    autocmd FileType dfm nnoremap <buffer> <F12> :DelphiSwitchToDfm<CR>
+    autocmd FileType dfm nnoremap <buffer> <F2>  :DelphiOpenInDevEnv<CR>
+  augroup END
+endfunction
+
+call delphi#SetAutoCommands()
 
 " ----------------------
 " Commands
 " ----------------------
+function! delphi#SetDefaultShell()
+  let g:default_shell_options =[&shell, &shellquote, &shellpipe, &shellxquote, &shellcmdflag, &shellredir]
+	set shellquote& | set shellpipe& | set shellxquote& | set shellcmdflag& | set shellredir& | set shell&
+  "echohl ModeMsg | echo 'Default shell has been set. (You can restore orig with :RestoreOrigShell)' | echohl None
+endfunction
+
+function! delphi#RestoreOrigShell()
+  let &shell        = g:default_shell_options[0]
+  let &shellquote   = g:default_shell_options[1]
+  let &shellpipe    = g:default_shell_options[2]
+  let &shellxquote  = g:default_shell_options[3]
+  let &shellcmdflag = g:default_shell_options[4]
+  let &shellredir   = g:default_shell_options[5]
+  "echohl ModeMsg | echo 'Orig shell has been restored.' | echohl None
+endfunction
  
-function! DefineCommands()
+function! delphi#DefineCommands()
   " Retab spaced range, but only indentation
   command! -range -nargs=? -bang -bar RetabIndent call delphi#RetabIndent(<q-bang>, <line1>, <line2>, <q-args>)
 
@@ -353,16 +384,24 @@ function! DefineCommands()
 
   if (exists(':AsyncRun'))
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
-	        \ call delphi#HandleRecentProject(<f-args>) 
+          \  call delphi#SetDefaultShell()
+	        \| call delphi#HandleRecentProject(<f-args>) 
 	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
+          \| call delphi#RestoreOrigShell()
 
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
-	        \ execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
+          \  call delphi#SetDefaultShell()
+	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
+          \| call delphi#RestoreOrigShell()
   else
     command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
-          \ call delphi#SetRecentProjectAndMake(<f-args>)
+          \  call delphi#SetDefaultShell()
+          \| call delphi#SetRecentProjectAndMake(<f-args>)
+          \| call delphi#RestoreOrigShell()
     command! -nargs=? -bar -complete=file_in_path DelphiMake 
-          \ call delphi#FindAndMake(<q-args>)
+          \  call delphi#SetDefaultShell()
+          \| call delphi#FindAndMake(<q-args>)
+          \| call delphi#RestoreOrigShell()
   endif
 
   command! -nargs=? DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
@@ -372,10 +411,10 @@ endfunction
 " Mappings
 " ----------------------
 
-function! DefineMappings()
+function! delphi#DefineMappings()
 
   " highlight selcted word
-  nnoremap <buffer> <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<cr>
+  nnoremap <buffer> <silent> <2-LeftMouse> :let @/='\V\<'.escape(expand('<cword>'), '\').'\>'<cr>:set hls<CR>
   " Save & Build
   nnoremap <buffer> <F7> :wa <bar> DelphiMakeRecent<CR>
   inoremap <buffer> <F7> <esc>:wa <bar> DelphiMakeRecent<CR>
@@ -426,7 +465,7 @@ endfunction
 " Other Plugins
 " ----------------------
  
-function! SetPlugins()
+function! delphi#SetPlugins()
   if exists(':RainbowToggle')
     let delphi_rainbow_conf = {
 	        \	'separately': {
@@ -467,7 +506,7 @@ function! s:CreateMenu(mode, title, map, cmd)
   execute menu_command
 endfunction
 
-function! BuildGuiMenus()
+function! delphi#BuildGuiMenus()
   "let b:browsefilter = "Delphi projects\t*.dproj\nDelphi group projects\t*.groupproj\n"
   if exists(':Tabularize') " Align selected assignes in nice columns with plugin
     call s:CreateMenu('v', "Align &assignments" , "<leader>t=", ":Tabularize /:=<CR>")

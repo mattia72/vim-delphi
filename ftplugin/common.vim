@@ -35,11 +35,11 @@ setlocal noexpandtab
 " set foldlevelstart=99 " folds are closed initially
 
 " Undo the stuff we changed
-if !exists('b:undo_ftplugin')
-  let b:undo_ftplugin = ''
+if exists('b:undo_ftplugin') && !empty(b:undo_ftplugin)
+  let b:undo_ftplugin .= ' | '
 else
-  let b:undo_ftplugin = '|'
+  let b:undo_ftplugin = ''
 endif
-let b:undo_ftplugin .= "
-      \ setlocal noexpandtab< | " 
+
+let b:undo_ftplugin .= "setlocal noexpandtab<" 
 

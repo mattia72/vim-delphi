@@ -36,7 +36,10 @@ elseif exists("b:current_syntax")
 endif
 
 syn case ignore
-syn sync lines=900 ccomment delphiComments
+syn sync fromstart ccomment delphiComments
+
+"colors can be chacked by: 
+":h syntax<CR>/group-name
 
 " http://docwiki.embarcadero.com/RADStudio/Tokyo/en/Fundamental_Syntactic_Elements_(Delphi)
 "
@@ -66,7 +69,7 @@ if exists("delphi_space_errors")
   endif
 endif
 
-" TODO handle `of` conditionally: "case..of" is conditional; "array of" isn't
+" TODO handle `of` conditionally: "case..of" is conditional "array of" isn't
 syn keyword delphiExcept try on raise at
 syn keyword delphiStructure class object record
 
@@ -101,7 +104,7 @@ syn match delphiType "\v<(ole)?variant>" display
 
 syn match  delphiNumber		"-\?\<\d\+\>" display
 syn match  delphiFloat		"-\?\<\d\+\.\d\+\>" display
-syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE]-\=\d\+\>"   display
+syn match  delphiFloat		"-\?\<\d\+\.\d\+[eE][-+]\=\d\+\>"   display
 syn match  delphiHexNumber	"\$[0-9a-fA-F]\+\>" display
 
 syn match delphiChar "\v\#\d+" display
@@ -130,7 +133,7 @@ if exists("delphi_highlight_function_parameters")
   syn keyword delphiFunctionParameter Sender containedin=delphiParenthesis,delphiBeginEndBlock contained display
 endif
 
-if exists("delphi_highlight_field_names")
+if exists("delphi_highlight_field_names")     " FMyField, FsStringField
   syn match delphiClassField "\v\C<F\u+\l\w*>\ze[^(]"
 endif
 
@@ -210,20 +213,23 @@ syn region delphiUsesBlock matchgroup=delphiUsesBlockSeparator start="\v<uses>" 
 syn match    delphiScopeSeparator "\:" contained
 syn match    delphiDeclareType    "\v\:\s*<[a-z_]\w*>" contains=delphiScopeSeparator
 
+"TODO semicolon breaks many other
+"syn match delphiSemicolon ';' transparent contained contains=NONE
 
-syn match delphiOperator  '\(@\|\^\|+\|-\|\*\|/\)' display
-syn match delphiOperator  '\(>=\|<=\|<>\|:=\|>\|<\|=\)' display
+syn match delphiAssignment '\%(:=\)' display contained contains=NONE
+syn match delphiOperator '\%(>=\|<=\|<>\)' display contained contains=NONE
+syn match delphiOperator '[><=+\-\^@*/]' display contained 
 
 " Asm syntax
 syn include @asm syntax/tasm.vim
 syn region delphiAsmBlock matchgroup=delphiAsmBlockSeparator start="\v<asm>" end="\v<end>" contains=@asm fold
 
 " Comments
-syn keyword delphiTodo contained TODO FIXME NOTE
-syn match delphiSpecialComment "@\w\+" 
-syn region delphiComment start="{" end="}" contains=delphiTodo,delphiSpecialComment fold
-syn region delphiComment start="(\*" end="\*)" contains=delphiTodo,delphiSpecialComment fold
-syn region delphiLineComment start="//" end="$" oneline contains=delphiTodo
+syn keyword delphiCommentTodo contained TODO FIXME NOTE
+syn match delphiCommentSpecial "@\w\+" 
+syn region delphiComment start="{" end="}" contains=delphiComment.* fold
+syn region delphiComment start="(\*" end="\*)" contains=delphiComment.* fold
+syn region delphiLineComment start="//" end="$" oneline contains=delphiCommentTodo
 
 
 " FIXME contains ALL highlights everything to delphiUnitName :( so it won't work
@@ -244,8 +250,8 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
   else
     command -nargs=+ HiLink hi def link <args>
   endif
-   HiLink delphiTodo                 Todo
-   HiLink delphiSpecialComment       SpecialComment
+   HiLink delphiCommentTodo          Todo
+   HiLink delphiCommentSpecial       SpecialComment
    HiLink delphiBeginEnd             Keyword
    HiLink delphiLineComment          Comment
    HiLink delphiComment              Comment
@@ -263,6 +269,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiDefine               Macro
    HiLink delphiString               String
    HiLink delphiChar                 Character
+   HiLink delphiAssignment           Delimiter
    HiLink delphiOperator             Operator
    HiLink delphiScopeSeparator       Delimiter
    HiLink delphiConstant             Constant
@@ -294,7 +301,7 @@ if version >= 508 || !exists("did_delphi_syntax_inits")
    HiLink delphiFunctionParameter    Identifier
    HiLink delphiFunctionDefinition   Type
    HiLink delphiParenthesis          Normal
-   HiLink delphiClassField           delphiTodo
+   HiLink delphiClassField           Tag
    HiLink delphiHungarianNotatedVariables Identifier
   delcommand HiLink
 endif
