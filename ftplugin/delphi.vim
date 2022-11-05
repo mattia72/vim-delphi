@@ -62,7 +62,8 @@ if exists("loaded_matchit")
   let s:after_impl = '\('.s:sl.'implementation\)\@<='
   let s:proc_or_func_words = '\<\%(constructor\|destructor\|procedure\|function\)\>'
   let s:end_word         = '\<end\>'
-
+  
+  let b:match_words            = ''
   let b:delphi_match_words     = ''
   "it doesn't work in interface
   "let b:delphi_match_words     .= s:after_impl.s:nc.s:proc_or_func_words.':'.s:nc.'\<begin\>:'.s:nc.s:end_word
@@ -82,7 +83,7 @@ if exists("loaded_matchit")
   if exists("g:matchup_matchparen_enabled")
     call matchup#util#append_match_words(b:delphi_match_words)
   else
-    b:match_words = b:delphi_match_words
+    let b:match_words .= b:delphi_match_words
   endif
 
 endif
