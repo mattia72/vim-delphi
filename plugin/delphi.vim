@@ -72,7 +72,7 @@ function! g:delphi#echod(msg)
   endif
 endfunction
 
-function delphi#OpenInDevEnv(...)
+function! delphi#OpenInDevEnv(...)
   if a:0 != 0 && !empty(a:1)
     let filepath = a:1
   else
@@ -226,10 +226,9 @@ function! g:delphi#SetRecentProject(...)
   endif
   "echom project_name
   call delphi#SearchAndSaveRecentProjectFullPath(project_name)
-
   if empty(g:delphi_recent_project)
     redraw
-	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find project "'.project_name.'". Set path or g:delphi_project_path and try again!' | echohl None
+	  echohl ErrorMsg |  echom 'vim-delphi: Can''t find recent project "'.project_name.'". Set path and try again!' | echohl None
 		"unlet g:delphi_recent_project
   endif
   redraw
@@ -386,12 +385,12 @@ function! delphi#DefineCommands()
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
           \  call delphi#SetDefaultShell()
 	        \| call delphi#HandleRecentProject(<f-args>) 
-	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project  
+	        \| execute 'AsyncRun'.<bang>.' -post='.fnameescape('call g:delphi#PostBuildSteps( )').' -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project
           \| call delphi#RestoreOrigShell()
 
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
           \  call delphi#SetDefaultShell()
-	        \| execute 'AsyncRun'.<bang>.' -post=call\ delphi\#PostBuildSteps() -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>) 
+	        \| execute 'AsyncRun'.<bang>.' -post='.fnameescape('call g:delphi#PostBuildSteps( )').' -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>))
           \| call delphi#RestoreOrigShell()
   else
     command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
