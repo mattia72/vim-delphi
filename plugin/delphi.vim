@@ -241,7 +241,7 @@ function! g:delphi#FindAndMake(...)
     let project_name = '*.dproj'
   endif
 
-  let project_file = delphi#FindProject(project_name)
+  let project_file = g:delphi#FindProject(project_name)
 
   "echom 'FindAndMake args: '.a:0.' "'.project_name.'" found: '.project_file
   if !empty(project_file) 
@@ -381,16 +381,16 @@ function! delphi#DefineCommands()
   command! -nargs=? -bar -complete=file_in_path DelphiOpenInDevEnv 
         \ call delphi#OpenInDevEnv(<f-args>)
 
-  if (exists(':AsyncRun'))
+if (exists('*asyncrun#run'))
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
           \  call delphi#SetDefaultShell()
 	        \| call delphi#HandleRecentProject(<f-args>) 
-	        \| execute 'AsyncRun'.<bang>.' -post='.fnameescape('call g:delphi#PostBuildSteps( )').' -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.g:delphi_recent_project
+	        \| call asyncun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '/p:config='.g:delphi_build_config.' '.g:delphi_recent_project)
           \| call delphi#RestoreOrigShell()
 
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
           \  call delphi#SetDefaultShell()
-	        \| execute 'AsyncRun'.<bang>.' -post='.fnameescape('call g:delphi#PostBuildSteps( )').' -auto=make -program=make @ /p:config='.g:delphi_build_config.' '.delphi#FindProject(<f-args>))
+	        \| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '/p:config='.g:delphi_build_config.' '.g:delphi#FindProject(<f-args>))
           \| call delphi#RestoreOrigShell()
   else
     command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
