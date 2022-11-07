@@ -273,7 +273,7 @@ function! g:delphi#SetRecentProjectAndMake(...)
     call delphi#FindAndMake(g:delphi_recent_project)
   else
     redraw
-		echohl ErrorMsg | echom 'vim-delphi: Project not found or g:delphi_recent_project is not defined properly.' | echohl None
+		echohl ErrorMsg | echom 'vim-delphi: Project '.g:delphi_recent_project. ' not found' | echom 'in '.execute('pwd') | echom 'Check g:delphi_recent_project!' | echohl None
   endif
 endfunction
 
