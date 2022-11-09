@@ -385,12 +385,12 @@ if (exists('*asyncrun#run'))
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
           \  call delphi#SetDefaultShell()
 	        \| call delphi#HandleRecentProject(<f-args>) 
-	        \| call asyncun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '/p:config='.g:delphi_build_config.' '.g:delphi_recent_project)
+	        \| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '@/p:config='.g:delphi_build_config.' '.g:delphi_recent_project)
           \| call delphi#RestoreOrigShell()
 
     command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
           \  call delphi#SetDefaultShell()
-	        \| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '/p:config='.g:delphi_build_config.' '.g:delphi#FindProject(<f-args>))
+	        \| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '@/p:config='.g:delphi_build_config.' '.g:delphi#FindProject(<f-args>))
           \| call delphi#RestoreOrigShell()
   else
     command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
