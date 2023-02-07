@@ -371,7 +371,22 @@ function! delphi#RestoreOrigShell()
   let &shellredir   = g:default_shell_options[5]
   "echohl ModeMsg | echo 'Orig shell has been restored.' | echohl None
 endfunction
- 
+
+function! delphi#FindExe(ArgLead, CmdLine, CursorPos)
+  let exeList = []
+  let pattern = '<DeployFile LocalName="(.*)"'
+  for l in  readfile(g:delphi_recent_project)
+    if(l =~ pattern)
+      call add(matchstr(l, pattern), exeList)
+    endif
+  endfor
+  return exeList
+endfunction
+
+function! delphi#ListBuildConfig(ArgLead, CmdLine, CursorPos)
+  return [ 'Debug', 'Release' ] 
+endfunction
+
 function! delphi#DefineCommands()
   " Retab spaced range, but only indentation
   command! -range -nargs=? -bang -bar RetabIndent call delphi#RetabIndent(<q-bang>, <line1>, <line2>, <q-args>)
@@ -403,7 +418,8 @@ if (exists('*asyncrun#run'))
           \| call delphi#RestoreOrigShell()
   endif
 
-  command! -nargs=? DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
+  command! -nargs=? -complete=customlist,delphi#ListBuildConfig DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
+  command! -nargs=? -complete=customlist,delphi#FindExe  DelphiMakeAndRun DelphiMakeRecent | !<q-args>
 endfunction
 
 " ----------------------
