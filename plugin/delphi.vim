@@ -393,30 +393,33 @@ function! delphi#DefineCommands()
 
   command! -nargs=0 -bar DelphiSwitchToDfm call delphi#SwitchPasOrDfm()
   command! -nargs=0 -bar DelphiSwitchToPas call delphi#SwitchPasOrDfm()
-  command! -nargs=? -bar -complete=file_in_path DelphiOpenInDevEnv 
-        \ call delphi#OpenInDevEnv(<f-args>)
+  command! -nargs=? -bar -complete=file_in_path DelphiOpenInDevEnv call delphi#OpenInDevEnv(<f-args>)
 
-if (exists('*asyncrun#run'))
-    command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
-          \  call delphi#SetDefaultShell()
-	        \| call delphi#HandleRecentProject(<f-args>) 
-	        \| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '@/p:config='.g:delphi_build_config.' '.g:delphi_recent_project)
-          \| call delphi#RestoreOrigShell()
+  command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent call delphi#DelphiMakeRecentCmd(<f-args>)
+  command! -bang -bar -nargs=? -complete=file_in_path DelphiMake call delphi#DelphiMakeCmd(<f-args>)
 
-    command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
-          \  call delphi#SetDefaultShell()
-	        \| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '@/p:config='.g:delphi_build_config.' '.g:delphi#FindProject(<f-args>))
-          \| call delphi#RestoreOrigShell()
-  else
-    command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
-          \  call delphi#SetDefaultShell()
-          \| call delphi#SetRecentProjectAndMake(<f-args>)
-          \| call delphi#RestoreOrigShell()
-    command! -nargs=? -bar -complete=file_in_path DelphiMake 
-          \  call delphi#SetDefaultShell()
-          \| call delphi#FindAndMake(<q-args>)
-          \| call delphi#RestoreOrigShell()
-  endif
+  "if (exists('*asyncrun#run'))
+    "command! -bang -bar -nargs=? -complete=file_in_path DelphiMakeRecent
+          "\  call delphi#SetDefaultShell()
+					"\| call delphi#HandleRecentProject(<f-args>) 
+					"\| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '@/p:config='.g:delphi_build_config.' '.g:delphi_recent_project)
+          "\| call delphi#RestoreOrigShell()
+
+    "command! -bang -bar -nargs=? -complete=file_in_path DelphiMake
+          "\  call delphi#SetDefaultShell()
+					"\| call asyncrun#run('<bang>', { 'post' : 'call g:delphi#PostBuildSteps()', 'auto':'make', 'program':'make'}, '@/p:config='.g:delphi_build_config.' '.g:delphi#FindProject(<f-args>))
+          "\| call delphi#RestoreOrigShell()
+  "else
+    "command! -nargs=? -bar -complete=file_in_path DelphiMakeRecent 
+          "\  call delphi#SetDefaultShell()
+          "\| call delphi#SetRecentProjectAndMake(<f-args>)
+          "\| call delphi#RestoreOrigShell()
+          
+    "command! -nargs=? -bar -complete=file_in_path DelphiMake 
+          "\  call delphi#SetDefaultShell()
+          "\| call delphi#FindAndMake(<q-args>)
+          "\| call delphi#RestoreOrigShell()
+  "endif
 
   command! -nargs=? -complete=customlist,delphi#ListBuildConfig DelphiBuildConfig call delphi#SetBuildConfig(<q-args>)
   command! -nargs=? -complete=customlist,delphi#FindExe  DelphiMakeAndRun DelphiMakeRecent | !<q-args>
