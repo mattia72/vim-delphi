@@ -449,7 +449,7 @@ function! delphi#DefineMappings()
   " jumpings
   nnoremap <buffer> <leader>dU gg:/^\s*\<uses\><CR>:noh<CR>
   nnoremap <buffer> <leader>du gg:/^\s*\<uses\><CR>n:noh<CR>
-  nnoremap <buffer> <leader>df gg:/^\s*\<interfaces\><CR>:noh<CR>
+  nnoremap <buffer> <leader>df gg:/^\s*\<interface\><CR>:noh<CR>
   nnoremap <buffer> <leader>di gg:/^\s*\<implementation\><CR>:noh<CR>
   nnoremap <buffer> <leader>dv ?^\s*\<var\><CR>:noh<CR>
   nnoremap <buffer> <leader>db ?^\s*\<begin\><CR>:noh<CR>
