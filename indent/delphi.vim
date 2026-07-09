@@ -43,7 +43,7 @@ setlocal indentkeys+==record,==if,==else,==case
 
 
 if exists("*GetDelphiIndent")
-  "echom 'delphi.vim: Here should we finish'
+	"echom 'delphi.vim: Here should we finish'
 	"finish
 endif
 
@@ -64,9 +64,9 @@ function! s:GetPrevNonCommentLineNum( line_num )
 endfunction
 
 function! s:RemoveComment(line)
-  let prev_unc_line =  substitute(a:line, s:delphi_comment, "", "")
-  ""echom "RemCom: ".substitute(prev_unc_line, s:cpp_comment, "", "") 
-  return substitute(prev_unc_line, s:delphi_line_comment, "", "")
+	let prev_unc_line = substitute(a:line, s:delphi_comment, "", "")
+	""echom "RemCom: ".substitute(prev_unc_line, s:cpp_comment, "", "") 
+	return substitute(prev_unc_line, s:delphi_line_comment, "", "")
 endfunction
 
 " Search backwards the matching start element
@@ -74,25 +74,25 @@ endfunction
 function! s:GetMatchingElemLineNum( line_num, start_element, end_element )
 
 	let nline = prevnonblank(a:line_num - 1)
-  let skip_start_elem_num = 0
+	let skip_start_elem_num = 0
 
 	while nline > 0
 		let line = getline(nline)
 
 		if !empty(a:end_element) && line =~ a:end_element
-		  let skip_start_elem_num += 1
+			let skip_start_elem_num += 1
 		endif
 
-		if line  =~ a:start_element
-      "echom 'start elem found'
-		  if skip_start_elem_num != 0
-        "echom 'but we skipp '.skip_start_elem_num
-		    let skip_start_elem_num -= 1
-		    next
-		  else
-        "echom 'that's it :)'.nline
-		    break
-		  endif
+		if line =~ a:start_element
+			"echom 'start elem found'
+			if skip_start_elem_num != 0
+				"echom 'but we skipp '.skip_start_elem_num
+				let skip_start_elem_num -= 1
+				next
+			else
+				"echom 'that's it :)'.nline
+				break
+			endif
 		endif
 
 		let nline = prevnonblank(nline-1)
@@ -106,12 +106,12 @@ let s:ind_block_words = join(['class','type','record'],'\>\|')
 
 " words after one line should be indented if not a block
 let s:ind_line_words = join([ 'if', 'then', 'else', 
-      \ 'for', 'while',
-      \ 'case','default'], '\>\|')
+			\ 'for', 'while',
+			\ 'case','default'], '\>\|')
 
 function! GetDelphiIndent( line_num )
-  "echom 'GetDelphiIndent start at: '.a:line_num
-	
+	"echom 'GetDelphiIndent start at: '.a:line_num
+
 	" Line 0 always goes at column 0
 	if a:line_num == 0 | return 0 | endif
 
@@ -187,7 +187,7 @@ function! GetDelphiIndent( line_num )
 
 	" Inside a parameter list (i.e. a "(" without a ")"). ???? Considers
 	" only the line before the current one. 
-	" FIXME: Get it working for  parameter lists longer than two lines.
+	" FIXME: Get it working for parameter lists longer than two lines.
 	if prev_codeline =~ '([^)]\+$'
 		return indnt + shiftwidth()
 	endif
@@ -234,19 +234,19 @@ function! GetDelphiIndent( line_num )
 	endif
 
 
-  " ____________________________________________________________________
-  " Object/Borland Pascal/Delphi Extensions
-  "
-  " Note that extended-pascal is handled here, unless it is simpler to
-  " handle them in the standard-pascal section above.
+	" ____________________________________________________________________
+	" Object/Borland Pascal/Delphi Extensions
+	"
+	" Note that extended-pascal is handled here, unless it is simpler to
+	" handle them in the standard-pascal section above.
 
 
 	" COLUMN 1 ALWAYS
 
-   "section headers at start of line.
-  "if this_line =~ '^\s*\(interface\|implementation\|uses\|unit\)\>'
-    "return 0
-  "endif
+	 "section headers at start of line.
+	 "if this_line =~ '^\s*\(interface\|implementation\|uses\|unit\)\>'
+		 "return 0
+	 "endif
 
 
 	" INDENT ONCE
@@ -272,7 +272,7 @@ function! GetDelphiIndent( line_num )
 	endif
 
 
-  " ____________________________________________________________________
+	" ____________________________________________________________________
 
 	" If nothing changed, return same indent.
 	return indnt
@@ -280,14 +280,14 @@ endfunction
 
 
 if !exists('b:undo_indent')
-    let b:undo_indent = ''
+		let b:undo_indent = ''
 else
-    let b:undo_indent = '|'
+		let b:undo_indent = '|'
 endif
 
 let b:undo_indent .= '
-    \ setlocal indentexpr< indentkeys<
-    \'
+		\ setlocal indentexpr< indentkeys<
+		\'
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
