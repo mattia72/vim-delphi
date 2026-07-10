@@ -65,12 +65,12 @@ endfunction
 
 function! s:RemoveComment(line)
 	let prev_unc_line = substitute(a:line, s:delphi_comment, "", "")
-	""echom "RemCom: ".substitute(prev_unc_line, s:cpp_comment, "", "") 
+	"echom "RemCom: ".substitute(prev_unc_line, s:cpp_comment, "", "") 
 	return substitute(prev_unc_line, s:delphi_line_comment, "", "")
 endfunction
 
 " Search backwards the matching start element
-" if end_element empty, it doesn't check for nested elements
+" If end_element empty, it doesn't check for nested elements
 function! s:GetMatchingElemLineNum( line_num, start_element, end_element )
 
 	let nline = prevnonblank(a:line_num - 1)
@@ -101,10 +101,10 @@ function! s:GetMatchingElemLineNum( line_num, start_element, end_element )
 	return nline
 endfunction
 
-" words in line after which we should indent
+" Words in line after which we should indent
 let s:ind_block_words = join(['class','type','record'],'\>\|')
 
-" words after one line should be indented if not a block
+" Words after one line should be indented if not a block
 let s:ind_line_words = join([ 'if', 'then', 'else', 
 			\ 'for', 'while',
 			\ 'case','default'], '\>\|')
@@ -132,7 +132,7 @@ function! GetDelphiIndent( line_num )
 	"if this_line =~ '^\s*\({\|(\*\)$\(IFDEF\|IFNDEF\|ELSE\|ENDIF\)'
 	if this_line =~ '^\s*\({\|(\*\)\$' | return 0 | endif
 
-	" section headers at start of line.
+	" Section headers at start of line.
 	if this_line =~ '^\s*\(program\|interface\|type\|implementation\|uses\|unit\)\>'
 		return 0
 	endif
@@ -243,7 +243,7 @@ function! GetDelphiIndent( line_num )
 
 	" COLUMN 1 ALWAYS
 
-	 "section headers at start of line.
+	 " Section headers at start of line.
 	 "if this_line =~ '^\s*\(interface\|implementation\|uses\|unit\)\>'
 		 "return 0
 	 "endif
